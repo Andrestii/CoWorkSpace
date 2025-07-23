@@ -1,0 +1,54 @@
+# ----------------------------
+# GLOBAL
+# ----------------------------
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS generated
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ----------------------------
+# NODE/EXPRESS (backend)
+# ----------------------------
+backend/node_modules/
+backend/.env
+backend/.DS_Store
+backend/dist/
+backend/coverage/
+backend/debug.log
+
+# ----------------------------
+# REACT + VITE (frontend)
+# ----------------------------
+frontend/node_modules/
+frontend/.env
+frontend/.DS_Store
+frontend/dist/
+frontend/.vite/
+frontend/.next/
+frontend/coverage/
+
+# Vite/React build artifacts
+frontend/build/
+frontend/.cache/
+
+# ----------------------------
+# OPTIONAL: Docker / DevOps
+# ----------------------------
+*.pid
+docker-compose.override.yml
