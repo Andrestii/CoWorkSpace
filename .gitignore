@@ -1,54 +1,34 @@
 # ----------------------------
-# GLOBAL
+# GLOBAL IGNORE
 # ----------------------------
 .DS_Store
 Thumbs.db
 *.log
-.env
-.env.local
-.env.*.local
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# OS generated
-.idea/
-.vscode/
+*.tmp
 *.swp
 *.swo
 
+# OS / IDE
+.vscode/
+.idea/
+
 # ----------------------------
-# NODE/EXPRESS (backend)
+# BACKEND (Node.js + Express)
 # ----------------------------
 backend/node_modules/
 backend/.env
-backend/.DS_Store
-backend/dist/
 backend/coverage/
 backend/debug.log
 
 # ----------------------------
-# REACT + VITE (frontend)
+# FRONTEND (HTML/CSS/JS puro)
 # ----------------------------
-frontend/node_modules/
-frontend/.env
-frontend/.DS_Store
-frontend/dist/
-frontend/.vite/
-frontend/.next/
-frontend/coverage/
-
-# Vite/React build artifacts
-frontend/build/
-frontend/.cache/
+# Nessun node_modules perché non usi Vite/React
+frontend/public/assets/scripts/helpers/*.log
+frontend/public/assets/scripts/pages/*.log
 
 # ----------------------------
-# OPTIONAL: Docker / DevOps
+# DOCKER / DEVOPS (se usi)
 # ----------------------------
 *.pid
 docker-compose.override.yml

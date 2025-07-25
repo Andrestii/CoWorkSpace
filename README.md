@@ -6,12 +6,12 @@ Piattaforma web per la gestione di spazi di coworking distribuiti in tutta Itali
 
 ## 🚀 Struttura dei Branch Git
 
-| Branch | Descrizione |
-|--------|-------------|
-| `main`  | Produzione – solo codice stabile e testato |
-| `dev`   | Integrazione – unione tra backend e frontend |
-| `front` | Sviluppo frontend (React + Vite + TypeScript) |
-| `back`  | Sviluppo backend (Node.js + Express + JWT) |
+| Branch   | Descrizione                                        |
+|----------|----------------------------------------------------|
+| `main`   | Produzione – solo codice stabile e testato         |
+| `dev`    | Integrazione – unione tra backend e frontend       |
+| `front`  | Sviluppo frontend (HTML, CSS, JS, jQuery, Bootstrap) |
+| `back`   | Sviluppo backend (Node.js + Express + JWT)         |
 
 ---
 
@@ -31,13 +31,13 @@ Server attivo su: `http://localhost:3001`
 
 ### 🧩 Frontend
 
-```bash
-cd frontend
-npm install
-npm run dev
+Apri direttamente il file:
+
+```
+frontend/public/index.html
 ```
 
-Frontend attivo su: `http://localhost:5173`
+oppure avvia un server locale (es. con Live Server di VSCode)
 
 ---
 
@@ -45,8 +45,14 @@ Frontend attivo su: `http://localhost:5173`
 
 ```
 coworkspace/
-├── frontend/   → React + Vite (UI)
-├── backend/    → Express, API REST, JWT
+├── frontend/
+│   ├── public/
+│   │   ├── index.html
+│   │   ├── assets/
+│   │   ├── css/pagine/
+│   │   ├── scripts/
+│   │   └── partials/
+├── backend/        → Express, API REST, JWT
 ├── .gitignore
 └── README.md
 ```
@@ -55,7 +61,7 @@ coworkspace/
 
 ## 📦 Tecnologie
 
-- **Frontend**: React, TypeScript, Vite
+- **Frontend**: HTML, CSS, JavaScript, Bootstrap, jQuery
 - **Backend**: Node.js, Express, JWT, Bcrypt
 - **Database (soon)**: PostgreSQL o MySQL
 - **Deployment**: Docker + GitHub Actions (in futuro)
