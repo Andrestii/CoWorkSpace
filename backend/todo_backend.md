@@ -3,11 +3,12 @@
 ### 📁 CONTROLLER / MODEL DA CREARE
 
 #### 🏢 sediController.js / sediModel.js
-- [ ] GET /api/sedi → elenco sedi attive
-- [ ] GET /api/sedi/:id → dettagli sede
-- [ ] POST /api/sedi → crea sede (solo admin)
-- [ ] PUT /api/sedi/:id → modifica sede
-- [ ] DELETE /api/sedi/:id → disattiva sede (`attiva = false`)
+- [x] GET /api/sedi → elenco sedi attive
+- [x] GET /api/sedi/:id → dettagli sede
+- [x] POST /api/sedi → crea sede (solo admin)
+- [x] PUT /api/sedi/:id → modifica sede
+- [x] DELETE /api/sedi/:id → disattiva sede (`attiva = false`)
+- [x] PUT /api/sedi/:id → attiva sede (`attiva = true`)
 
 #### 🧭 spaziController.js / spaziModel.js
 - [ ] GET /api/spazi?sede=ID → elenco spazi per sede
@@ -36,14 +37,6 @@
 - [ ] POST /api/pagamenti/conferma → conferma pagamento e aggiorna stato prenotazione
 - [ ] GET /api/pagamenti/storico → storico pagamenti utente
 
----
-
-### 🔐 MIDDLEWARE DI ACCESSO
-- [x] auth.js → verifica JWT
-- [ ] isAdmin.js → solo ruolo admin
-- [ ] isGestore.js → ruolo gestore o admin
-
-
 ### 👥 gestoriSediController.js / gestoriSediModel.js
 - [ ] POST /api/gestori-sedi → assegna gestore a una sede (solo admin)
 - [ ] GET /api/gestori-sedi/:idGestore → restituisce le sedi gestite da un utente
@@ -51,8 +44,15 @@
 
 ---
 
+### 🔐 MIDDLEWARE DI ACCESSO
+- [x] auth.js → verifica JWT
+- [x] isAdmin.js → solo ruolo admin
+- [x] isGestore.js → ruolo gestore o admin
+
+---
+
 ### 🔗 ROTTE DA REGISTRARE
-- [ ] `/api/sedi/`
+- [x] `/api/sedi/`
 - [ ] `/api/spazi/`
 - [ ] `/api/servizi/`
 - [ ] `/api/disponibilita/`
