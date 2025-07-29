@@ -291,16 +291,9 @@ const userController = {
     },
 
     async updateUserInfo(req, res) {
-        const updatedUser = await userModel.update(userId, {
-            nome: nome + " " + cognome,
-            email,
-            numero_telefono: numeroTelefono,
-            data_nascita: dataNascita,
-        });
-
         const userId = req.params.id;
+        const { nome, cognome, email, numeroTelefono, dataNascita } = req.body;
 
-        // Validate required fields
         if (!nome || !numeroTelefono) {
             return res.status(400).json({
                 error: "Nome, telefono e indirizzo sono richiesti",
@@ -309,7 +302,7 @@ const userController = {
 
         try {
             const updatedUser = await userModel.update(userId, {
-                nome: nome + " " + cognome,
+                nome: `${nome} ${cognome}`,
                 email,
                 numero_telefono: numeroTelefono,
                 data_nascita: dataNascita,
@@ -323,7 +316,7 @@ const userController = {
             console.error("Error updating user info:", error);
             res.status(500).json({ error: error.message });
         }
-    },
+    }
 };
 
 module.exports = userController;
