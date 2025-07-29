@@ -22,10 +22,10 @@ Piattaforma web per la gestione di spazi di coworking distribuiti in tutta Itali
 ```bash
 cd backend
 npm install
-node app.js
+node index.js
 ```
 
-Server attivo su: `http://localhost:3001`
+Server attivo su: `http://localhost:3000`
 
 ---
 

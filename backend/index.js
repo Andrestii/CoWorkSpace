@@ -5,6 +5,7 @@ const port = process.env.PORT || 3001;
 
 // Middleware to parse JSON requests
 app.use(express.json({ limit: "100mb" }));
+app.use(express.urlencoded({ extended: true }));
 
 // Add basic CORS support
 app.use((req, res, next) => {

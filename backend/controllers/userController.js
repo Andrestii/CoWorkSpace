@@ -23,7 +23,7 @@ const userController = {
      */
     async register(req, res) {
         try {
-            let { email, password, nome, ruolo, descrizione } = req.body;
+            let { email, password, nome, ruolo, descrizione, numero_telefono, data_nascita } = req.body;
             const profileImageFile = req.file;
             let profileImageUrl = null;
 
@@ -75,9 +75,12 @@ const userController = {
                 password,
                 nome,
                 ruolo,
-                descrizione: descrizione || null, // Optional field
-                profile_image: profileImageUrl, // Optional field
+                descrizione: descrizione || null,
+                numero_telefono: numero_telefono || null,
+                data_nascita: data_nascita || null,
+                profile_image: profileImageUrl,
             });
+
 
             console.log("User created:", data);
 
@@ -196,12 +199,12 @@ const userController = {
     async updateProfile(req, res) {
         try {
             const userId = req.user.id; // From auth middleware
-            const { nome, phone, address } = req.body;
+            const { nome, numero_telefono, descrizione } = req.body;
 
             const updatedData = await userModel.updateUserProfile(userId, {
                 nome: nome,
-                phone,
-                address,
+                numero_telefono,
+                descrizione,
             });
 
             res.status(200).json({
@@ -218,54 +221,29 @@ const userController = {
     async updateProfileImage(req, res) {
         try {
             const userId = req.user.id;
+            const profileImageFile = req.file;
 
-            // PROBLEMA 1: Non stai rimuovendo il prefisso dalla stringa base64
-            let imageBase64 = req.body.image;
-
-            // Rimuovi il prefisso "data:image/png;base64," o qualsiasi altro formato
-            if (imageBase64.includes("base64,")) {
-                imageBase64 = imageBase64.split("base64,")[1];
+            if (!profileImageFile) {
+                return res.status(400).json({ error: "Nessun file ricevuto" });
             }
 
-            // Determina il tipo di immagine dal prefisso
-            let contentType = "image/jpeg";
-            let extension = "jpg";
+            const fileName = `profile_${userId}_${Date.now()}${path.extname(profileImageFile.originalname)}`;
 
-            if (req.body.image.includes("image/png")) {
-                contentType = "image/png";
-                extension = "png";
-            }
-
-            const imageBuffer = Buffer.from(imageBase64, "base64");
-
-            // Usa l'estensione corretta per il file
-            const fileName = `profile_${userId}_${Date.now()}.${extension}`;
-
-            console.log(
-                `Caricamento immagine: ${contentType}, dimensione: ${imageBuffer.length} bytes`
-            );
-
-            // Carica su Supabase Storage con il contentType corretto
             const { data, error } = await supabase.storage
                 .from("profile-pics")
-                .upload(fileName, imageBuffer, {
-                    contentType: contentType,
+                .upload(fileName, profileImageFile.buffer, {
+                    contentType: profileImageFile.mimetype,
                     upsert: true,
                 });
 
-            if (error) {
-                console.error("Errore upload:", error);
-                throw error;
-            }
+            if (error) throw error;
 
-            // Versione corretta per ottenere l'URL pubblico
             const { data: urlData } = supabase.storage
                 .from("profile-pics")
                 .getPublicUrl(fileName);
 
             const publicURL = urlData.publicUrl;
 
-            // Aggiorna il profilo utente
             await userModel.updateUserProfile(userId, { profile_image: publicURL });
 
             res.status(200).json({
@@ -313,7 +291,13 @@ const userController = {
     },
 
     async updateUserInfo(req, res) {
-        const { nome, cognome, email, numeroTelefono, dataNascita } = req.body;
+        const updatedUser = await userModel.update(userId, {
+            nome: nome + " " + cognome,
+            email,
+            numero_telefono: numeroTelefono,
+            data_nascita: dataNascita,
+        });
+
         const userId = req.params.id;
 
         // Validate required fields
