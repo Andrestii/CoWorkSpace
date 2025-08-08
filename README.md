@@ -63,7 +63,7 @@ coworkspace/
 
 - **Frontend**: HTML, CSS, JavaScript, Bootstrap, jQuery
 - **Backend**: Node.js, Express, JWT, Bcrypt
-- **Database (soon)**: PostgreSQL o MySQL
+- **Database**: SupaBase
 - **Deployment**: Docker + GitHub Actions (in futuro)
 
 ---
