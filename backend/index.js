@@ -23,6 +23,7 @@ app.use((req, res, next) => {
 
 const setupSwagger = require("./swagger");
 setupSwagger(app);
+
 // Import routes
 const userRoutes = require("./routes/userRoutes");
 const sediRoutes = require("./routes/sediRoutes");
