@@ -146,7 +146,7 @@ footer {
 }
 
 .social-icons a {
-    display: inline-block;
+    display: inline-flex;
     width: 36px;
     height: 36px;
     background-color: #444;
@@ -155,6 +155,9 @@ footer {
     line-height: 36px;
     margin: 0 5px;
     transition: all 0.3s ease;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 
 .social-icons a:hover {
