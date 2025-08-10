@@ -147,10 +147,10 @@ const userController = {
                 // nome: result.user.nome
             };
 
-            if (result.user.ruolo === "artigiano" && result.user.shop_id) {
-                payload.shop_id = result.user.shop_id;
+            if (result.user.ruolo === "gestore" && result.user.sede_id) {
+                payload.sede_id = result.user.sede_id;
                 console.log(
-                    `Artisan logged in. Adding shop_id ${payload.shop_id} to JWT payload.`
+                    `Gestore logged in. Adding sede_id ${payload.sede_id} to JWT payload.`
                 ); // Log per debug
             }
 
