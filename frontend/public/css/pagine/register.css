@@ -1,0 +1,237 @@
+body {
+    background: #4A4A49;
+    font-family: 'Poppins', 'Playfair Display', Arial, sans-serif;
+    min-height: 100vh;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    margin-top: 90px;
+
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 1.5rem;
+    box-shadow: 0 12px 40px 0 rgba(92, 60, 44, 0.18), 0 1.5px 8px 0 rgba(76, 76, 73, 0.08);
+    overflow: hidden;
+    display: flex;
+    min-height: 500px;
+}
+
+.login-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: #5C3C2C;
+    margin-bottom: 1.5rem;
+    letter-spacing: 1.5px;
+    font-size: 2.1rem;
+    text-shadow: 0 2px 8px #e8ded5;
+    padding: 2rem;
+}
+
+.login-form {
+    padding: 2.5rem 2.2rem 1.5rem 2.2rem;
+}
+
+.form-floating>.form-control,
+.form-floating>.form-select {
+    border-radius: 0.9rem;
+    background: #f8f5f2;
+    border: 1.5px solid #d1bfa7;
+    margin-bottom: 1.2rem;
+    font-size: 1.07rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px 0 rgba(92, 60, 44, 0.04);
+}
+
+.form-floating>.form-control:focus,
+.form-floating>.form-select:focus {
+    border-color: #c4754a;
+    background: #fff;
+    box-shadow: 0 0 0 0.18rem #c4754a33;
+}
+
+.btn-login {
+    background: linear-gradient(90deg, #5C3C2C 0%, #c4754a 100%);
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    border-radius: 0.9rem;
+    padding: 0.9rem;
+    font-size: 1.13rem;
+    letter-spacing: 0.03em;
+    box-shadow: 0 2px 8px 0 rgba(92, 60, 44, 0.10);
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-login:hover,
+.btn-login:focus {
+    background: linear-gradient(90deg, #c4754a 0%, #5C3C2C 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 6px 18px 0 rgba(92, 60, 44, 0.13);
+}
+
+#register-message {
+    border-radius: 0.7rem;
+    font-size: 1.05rem;
+    margin-top: 1rem;
+    box-shadow: 0 2px 8px 0 rgba(92, 60, 44, 0.07);
+}
+
+.register-link {
+    color: #c4754a;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.register-link:hover {
+    color: #5C3C2C;
+    text-decoration: underline;
+}
+
+.login-side-art {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url('../../assets/image-register.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+    min-height: 500px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    border-left: 1.5px solid #e8ded5;
+}
+
+.text-overlay {
+    background: rgba(255, 255, 255, 0.92);
+    padding: 2.2rem 2.7rem 2.2rem 2.2rem;
+    border-radius: 1.5rem 0 0 0;
+    margin: 2.2rem;
+    box-shadow: 0 4px 16px 0 rgba(92, 60, 44, 0.08);
+}
+
+.text-overlay h3 {
+    color: #5C3C2C;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+}
+
+.text-overlay .highlight-text {
+    color: #f59e42;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.form-floating>label {
+    color: #a68b73;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.form-floating>.form-control:focus~label,
+.form-floating>.form-select:focus~label {
+    color: #c4754a;
+}
+
+@media (max-width: 991px) {
+
+    .login-side-art,
+    .text-overlay {
+        display: none;
+    }
+
+    .login-form {
+        padding: 2rem 1rem 1.5rem 1rem;
+    }
+}
+
+@media (max-width: 575px) {
+    .login-card {
+        border-radius: 0.7rem;
+        min-height: 0;
+    }
+
+    .login-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .login-form {
+        padding: 1.2rem 0.5rem 1rem 0.5rem;
+    }
+}
+
+
+/* Stili per lo stepper */
+.stepper-dots {
+    width: 100%;
+    padding: 0 10px;
+}
+
+.stepper-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+}
+
+.stepper-dot .number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    color: #6c757d;
+}
+
+.stepper-dot.active .number {
+    background-color: #8C6A5D;
+    color: white;
+}
+
+.stepper-dot.completed .number {
+    background-color: #198754;
+    color: white;
+}
+
+.stepper-dot .label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.stepper-dot.active .label {
+    color: #212529;
+    font-weight: 600;
+}
+
+.progress-line {
+    position: absolute;
+    top: 20px;
+    height: 2px;
+    background-color: #e9ecef;
+    width: 100%;
+    z-index: 0;
+}
+
+.step-content {
+    transition: all 0.3s ease;
+}
+
+/* Personalizzazione input file */
+input[type="file"] {
+    padding-top: 1.625rem;
+    padding-bottom: 0.625rem;
+}

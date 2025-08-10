@@ -1,1 +1,178 @@
-body { font-family: sans-serif; margin: 0; padding: 20px; }
+/* Impostazioni generali */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    background-color: #f9f7f4;
+}
+
+/* Hero section */
+.hero {
+    background-image: url('../../assets/hero-image.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 70vh;
+    position: relative;
+    background-attachment: fixed;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.hero h1 {
+    font-weight: 800;
+    letter-spacing: -1px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero .btn-outline-light {
+    border-width: 2px;
+    padding: 12px 30px;
+    transition: all 0.3s ease;
+}
+
+.hero .btn-outline-light:hover {
+    background-color: #fff;
+    color: #5c3c2c;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Card prodotto */
+.prodotto-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    border-radius: 12px;
+    border: none;
+}
+
+.prodotto-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.prodotto-card img {
+    height: 250px;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.prodotto-card:hover img {
+    transform: scale(1.05);
+}
+
+.prodotto-card .card-body {
+    text-align: center;
+    background-color: white;
+    padding: 20px;
+}
+
+.prodotto-card .card-title {
+    font-weight: 600;
+    color: #5c3c2c;
+    margin-bottom: 10px;
+}
+
+.prodotto-card .card-text {
+    font-weight: 700;
+    color: #9c6644;
+    font-size: 1.2rem;
+}
+
+/* Navbar brand */
+.navbar {
+    padding: 15px 0;
+    transition: all 0.3s ease;
+}
+
+.navbar-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: #5c3c2c !important;
+    font-weight: 700;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #5c3c2c !important;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #9c6644 !important;
+}
+
+.logo-navbar {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+    transition: transform 0.3s ease;
+}
+
+.logo-navbar:hover {
+    transform: rotate(10deg);
+}
+
+/* Sezione titoli */
+.section-title {
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.section-title:after {
+    content: "";
+    position: absolute;
+    width: 80px;
+    height: 3px;
+    background-color: #9c6644;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Footer */
+footer {
+    background-color: #2a2a2a;
+    padding: 30px 0;
+}
+
+.social-icons a {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background-color: #444;
+    color: white;
+    border-radius: 50%;
+    line-height: 36px;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    background-color: #9c6644;
+    transform: translateY(-3px);
+}
+
+
+/* Effetto evidenziazione */
+.highlight-marker {
+    background-image: linear-gradient(120deg, rgba(255, 196, 75, 0.7) 0%, rgba(255, 159, 0, 0.7) 100%);
+    padding: 0 5px;
+    border-radius: 3px;
+    color: #fff;
+    font-weight: 700;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    transform: rotate(-1deg);
+    display: inline-block;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
