@@ -5,6 +5,7 @@ const port = process.env.PORT || 3001;
 
 // Middleware to parse JSON requests
 app.use(express.json({ limit: "100mb" }));
+app.use(express.urlencoded({ extended: true }));
 
 // Add basic CORS support
 app.use((req, res, next) => {
@@ -24,7 +25,7 @@ const setupSwagger = require("./swagger");
 setupSwagger(app);
 // Import routes
 const userRoutes = require("./routes/userRoutes");
-
+const sediRoutes = require("./routes/sediRoutes");
 
 // Basic route
 app.get("/", (req, res) => {
@@ -38,6 +39,7 @@ app.get("/health", (req, res) => {
 
 // API routes
 app.use("/api/users", userRoutes);
+app.use("/api/sedi", sediRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

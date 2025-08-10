@@ -13,7 +13,7 @@ router.get("/me", authMiddleware, userController.getCurrentUser);
 
 router.put("/profile", authMiddleware, userController.updateProfile);
 
-router.post("/profile-image", authMiddleware, userController.updateProfileImage);
+router.post("/profile-image", authMiddleware, upload.single("profileImage"), userController.updateProfileImage);
 
 router.get("/getUserCount", authMiddleware, userController.getUserCount);
 

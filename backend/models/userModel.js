@@ -48,8 +48,10 @@ const userModel = {
                     email: userData.email,
                     password: userData.password,
                     ruolo: userData.ruolo,
-                    descrizione: userData.descrizione || null, // Optional field
-                    profile_image: userData.profile_image || null, // Optional field
+                    profile_image: userData.profile_image || null,
+                    numero_telefono: userData.numero_telefono || null,
+                    data_nascita: userData.data_nascita || null,
+                    descrizione: userData.descrizione || null,
                 },
             ])
             .select();
@@ -63,10 +65,11 @@ const userModel = {
             user: data,
             session: {
                 access_token: sessionToken,
-                expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
+                expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
             },
         };
     },
+
 
     /**
      * Update a user's profile
