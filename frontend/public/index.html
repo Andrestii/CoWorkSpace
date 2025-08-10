@@ -1,11 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
+
 <head>
-  <title>CoWorkSpace</title>
-  <link rel='stylesheet' href='assets/css/pagine/index.css'>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#000000">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CoWorkSpace - Lavora, Condividi, Connettiti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="css/pagine/index.css" rel="stylesheet">
 </head>
+
 <body>
-  <h1>Benvenuto su CoWorkSpace</h1>
-  <script src='assets/scripts/config.js'></script>
+
+  <!-- Navbar -->
+  <div id="navbar-placeholder"></div>
+
+
+  <!-- Hero Section -->
+  <section class="hero d-flex align-items-center text-white" style="margin-top: 80px;">
+    <div class="container text-center">
+      <h1 class="display-3 fw-bold mb-4">Scopri gli spazi di coworking in tutta Italia</h1>
+      <p class="lead mb-5 px-md-5 mx-md-5">
+        Spazi <span class="highlight-marker">unici</span>, progettati per favorire
+        <span class="highlight-marker">collaborazione</span> e creatività,
+        in ogni città d’Italia.
+      </p>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="#" class="btn btn-outline-light btn-lg">Esplora il Catalogo</a>
+        <a href="sedi.html" class="btn btn-primary btn-lg">Conosci le sedi</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categorie -->
+  <section class="container-fluid py-5 bg-white">
+    <!-- fare -->
+  </section>
+
+  <!-- Griglia servizi -->
+  <section class="container my-5 py-5">
+    <h2 class="text-center section-title">Sedi in evidenza</h2>
+    <div id="products" class="row gy-4 mt-4">
+      <!-- Le sedi verranno caricati dinamicamente -->
+    </div>
+    <div class="text-center mt-5">
+      <a href="#" class="btn btn-outline-primary btn-lg">Vedi tutti le sedi</a>
+    </div>
+  </section>
+
+  <!-- footer -->
+  <footer class="bg-dark text-white py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <h5 class="mb-3 text-uppercase">CoWorkSpace</h5>
+          <p>
+            La piattaforma che valorizza il coworking in Italia, mettendo in contatto
+            professionisti, aziende e creativi alla ricerca di spazi unici dove lavorare e collaborare.
+          </p>
+          <div class="social-icons mt-3">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-pinterest"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+          <h5 class="mb-3 text-uppercase">Naviga</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white-50">Home</a></li>
+            <li><a href="#" class="text-white-50">Sedi</a></li>
+            <li><a href="#" class="text-white-50">Servizi</a></li>
+            <li><a href="#" class="text-white-50">Chi siamo</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+          <h5 class="mb-3 text-uppercase">Account</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white-50">Il mio account</a></li>
+            <li><a href="#" class="text-white-50">Ordini</a></li>
+            <li><a href="#" class="text-white-50">Recensioni</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-4">
+          <h5 class="mb-3 text-uppercase">Newsletter</h5>
+          <p class="text-white-50">Iscriviti per ricevere novità su sedi e servizi</p>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="La tua email" aria-label="Email">
+            <button class="btn btn-primary" type="button">Iscriviti</button>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <p class="mb-md-0">&copy; 2025 CoWorkSpace. Tutti i diritti riservati.</p>
+        <div>
+          <a href="#" class="text-white-50 me-3">Privacy Policy</a>
+          <a href="#" class="text-white-50">Termini di Servizio</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="./scripts/config.js"></script>
+  <script src="./scripts/auth.js"></script>
+  <script src="./scripts/pages/index.js"></script>
+  <script src="./scripts/partials/navbar.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js'); // relativo a /frontend/public/
+    }
+  </script>
+
+
 </body>
+
 </html>
