@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const authMiddleware = require("../middleware/auth");
 const upload = require("../middleware/upload");
+const isGestore = require("../middleware/isAdmin");
 
 
 router.post("/register", upload.single("profileImage"), userController.register);
@@ -19,9 +20,9 @@ router.get("/getUserCount", authMiddleware, userController.getUserCount);
 
 router.get("/getAllUsers", authMiddleware, userController.getAllUsers);
 
-router.put("/ban/:id", authMiddleware, userController.banUser);
+router.put("/ban/:id", authMiddleware, isAdmin, userController.banUser);
 
-router.put("/unban/:id", authMiddleware, userController.unbanUser);
+router.put("/unban/:id", authMiddleware, isAdmin, userController.unbanUser);
 
 router.put("/updateInfo/:id", authMiddleware, userController.updateUserInfo);
 

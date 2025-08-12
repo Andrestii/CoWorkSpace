@@ -5,8 +5,8 @@ $(document).ready(function () {
         $("#loginButton").remove();
     }
 
-    // Esempio di servizi (in assenza di API)
-    const serviziEsempio = [
+    // Esempio di sedi (in assenza di API)
+    const sediEsempio = [
         {
             id: 101,
             nome: "CoWorkSpace Milano – Porta Nuova",
@@ -34,10 +34,10 @@ $(document).ready(function () {
     ];
 
     // Prova prima con l'API, se fallisce usa gli esempi
-    $.get("/api/servizi", function (servizi) {
-        renderServizi(servizi);
+    $.get("/api/sedi/getAllSedi", function (sedi) {
+        renderSedi(sedi);
     }).fail(function () {
-        renderServizi(serviziEsempio);
+        renderSedi(sediEsempio);
     });
 
     if (localStorage.getItem("authToken")) {
@@ -82,14 +82,13 @@ $(document).ready(function () {
             });
     }
 
-    function renderServizi(servizi) {
+    function renderSedi(servizi) {
         servizi.forEach((prod) => {
             $("#products").append(`
                         <div class="col-lg-4 col-md-6">
                             <div class="card h-100 shadow-sm prodotto-card">
-                                <img src="${prod.immagine ||
-                "https://via.placeholder.com/400x250"
-                }" class="card-img-top" alt="${prod.nome}">
+                                <img src="${prod.immagine || "https://via.placeholder.com/400x250"}" class="card-img-top" 
+                                    alt="${prod.nome}">
                                 <div class="card-body">
                                     <h5 class="card-title">${prod.nome}</h5>
                                     <p class="card-text">€${prod.prezzo}</p>
