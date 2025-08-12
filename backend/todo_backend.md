@@ -24,9 +24,11 @@
 - [ ] DELETE /api/servizi/:id → elimina servizio
 
 #### 📅 disponibilitaController.js / disponibilitaModel.js              ste  
-- [ ] GET /api/disponibilita?id_spazio=ID&data=YYYY-MM-DD
-- [ ] POST /api/disponibilita → crea disponibilità (gestore/admin)
-- [ ] PUT /api/disponibilita/:id → modifica disponibilità
+- [x] GET /api/disponibilita?id_spazio=ID&data=YYYY-MM-DD
+- [x] POST /api/disponibilita → crea disponibilità (gestore/admin)
+- [x] PUT /api/disponibilita/:id → modifica disponibilità
+- [x] DELETE /api/disponibilita/:id → elimina disponibilità
+- [x] GET /api/disponibilita/range?id_spazio=ID&from=YYYY-MM-DD&to=YYYY-MM-DD
 
 #### 📆 prenotazioniController.js / prenotazioniModel.js                depa
 - [ ] POST /api/prenotazioni → crea prenotazione
@@ -56,7 +58,7 @@
 - [x] `/api/sedi/`
 - [x] `/api/spazi/`
 - [ ] `/api/servizi/`
-- [ ] `/api/disponibilita/`
+- [x] `/api/disponibilita/`
 - [ ] `/api/prenotazioni/`
 - [ ] `/api/pagamenti/`
 - [ ] `/api/gestori-sedi/`
@@ -80,6 +82,6 @@
 
 ### 📦 DEPLOY (futuro)
 - [ ] Dockerfile backend
-- [ ] Config GitHub Actions CI/CD
+- [x] Config GitHub Actions CI/CD
 - [ ] Deploy su AWS o GCP (Firebase Hosting, App Engine, ECS…)
 

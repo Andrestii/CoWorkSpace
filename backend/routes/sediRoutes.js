@@ -3,7 +3,7 @@ const router = express.Router();
 const sediController = require("../controllers/sediController");
 const authMiddleware = require("../middleware/auth");
 const isGestore = require("../middleware/isGestore");
-const canManageSpazio = require("../middleware/canManageSede");
+const canManageSede = require("../middleware/canManageSede");
 
 
 router.get("/getAllSedi", sediController.getAllSedi);
