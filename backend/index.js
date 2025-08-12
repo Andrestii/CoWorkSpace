@@ -27,6 +27,8 @@ setupSwagger(app);
 // Import routes
 const userRoutes = require("./routes/userRoutes");
 const sediRoutes = require("./routes/sediRoutes");
+const spaziRoutes = require("./routes/spaziRoutes");
+
 
 // Basic route
 app.get("/", (req, res) => {
@@ -41,6 +43,7 @@ app.get("/health", (req, res) => {
 // API routes
 app.use("/api/users", userRoutes);
 app.use("/api/sedi", sediRoutes);
+app.use("/api/spazi", spaziRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
