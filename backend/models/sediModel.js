@@ -31,6 +31,14 @@ const sediModel = {
         return data;
     },
 
+    async addGestoreToSede(id_utente, id_sede) {
+        const { error } = await supabase
+            .from("gestori_sedi")
+            .insert([{ id_utente, id_sede }]);
+        if (error) throw error;
+        return { id_utente, id_sede };
+    },
+
     async updateSede(id, updateData) {
         const { data, error } = await supabase
             .from("sedi")

@@ -23,7 +23,14 @@ const sediController = {
 
     async createSede(req, res) {
         try {
+            // 1️⃣ Creo la sede
             const sede = await sediModel.createSede(req.body);
+
+            // 2️⃣ Se l'utente è un gestore, lo mappo su questa sede
+            if (req.user.ruolo === "gestore") {
+                await sediModel.addGestoreToSede(req.user.id, sede.id);
+            }
+
             res.status(201).json(sede);
         } catch (error) {
             console.error("Errore createSede:", error);

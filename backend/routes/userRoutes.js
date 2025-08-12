@@ -3,7 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const authMiddleware = require("../middleware/auth");
 const upload = require("../middleware/upload");
-const isGestore = require("../middleware/isAdmin");
+const isAdmin = require("../middleware/isAdmin");
 
 
 router.post("/register", upload.single("profileImage"), userController.register);
