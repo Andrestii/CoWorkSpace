@@ -37,8 +37,8 @@
 - [ ] GET /api/prenotazioni/spazio/:id → per spazio (visibile ai gestori/admin)
 
 #### 💳 pagamentiController.js / pagamentiModel.js                      ste
-- [ ] POST /api/pagamenti/conferma → conferma pagamento e aggiorna stato prenotazione
-- [ ] GET /api/pagamenti/storico → storico pagamenti utente
+- [x] POST /api/pagamenti/conferma → conferma pagamento e aggiorna stato prenotazione
+- [x] GET /api/pagamenti/storico → storico pagamenti utente
 
 ### 👥 gestoriSediController.js / gestoriSediModel.js                   depa
 - [ ] POST /api/gestori-sedi → assegna gestore a una sede (solo admin)
@@ -60,7 +60,7 @@
 - [ ] `/api/servizi/`
 - [x] `/api/disponibilita/`
 - [ ] `/api/prenotazioni/`
-- [ ] `/api/pagamenti/`
+- [x] `/api/pagamenti/`
 - [ ] `/api/gestori-sedi/`
 
 ---
