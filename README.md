@@ -64,7 +64,6 @@ coworkspace/
 - **Frontend**: HTML, CSS, JavaScript, Bootstrap, jQuery
 - **Backend**: Node.js, Express, JWT, Bcrypt
 - **Database**: SupaBase
-- **Deployment**: Docker + GitHub Actions (in futuro)
 
 ---
 
@@ -82,3 +81,6 @@ git merge back
 git checkout main
 git merge dev
 ```
+
+## swagger
+http://localhost:3000/api-docs/

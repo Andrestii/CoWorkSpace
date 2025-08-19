@@ -29,6 +29,7 @@ const userRoutes = require("./routes/userRoutes");
 const sediRoutes = require("./routes/sediRoutes");
 const spaziRoutes = require("./routes/spaziRoutes");
 const disponibilitaRoutes = require("./routes/disponibilitaRoutes");
+const pagamentiRoutes = require("./routes/pagamentiRoutes");
 
 
 // Basic route
@@ -46,6 +47,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/sedi", sediRoutes);
 app.use("/api/spazi", spaziRoutes);
 app.use("/api/disponibilita", disponibilitaRoutes);
+app.use("/api/pagamenti", pagamentiRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
