@@ -16,7 +16,7 @@ const canManageSpazio = require("../middleware/canManageSpazio");
  * @swagger
  * /disponibilita/list:
  *   get:
- *     summary: Ottiene la lista delle disponibilità
+ *     summary: Ottiene la lista di tutte le disponibilità
  *     tags: [Disponibilità]
  *     responses:
  *       200:
@@ -43,18 +43,32 @@ router.get("/list", disponibilitaController.list);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Disponibilita'
+ *             type: object
+ *             properties:
+ *               id_spazio:
+ *                 type: integer
+ *                 description: ID dello spazio
+ *               data_inizio:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Data e ora di inizio disponibilità
+ *               data_fine:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Data e ora di fine disponibilità
+ *             required:
+ *               - id_spazio
+ *               - data_inizio
+ *               - data_fine
  *     responses:
  *       201:
  *         description: Disponibilità creata con successo
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Disponibilita'
  *       400:
  *         description: Dati non validi
  *       401:
  *         description: Non autorizzato
+ *       403:
+ *         description: Accesso negato - Non hai i permessi per gestire questo spazio
  */
 router.post("/create", auth, isGestore, canManageSpazio("id_spazio"), disponibilitaController.create);
 
@@ -78,20 +92,32 @@ router.post("/create", auth, isGestore, canManageSpazio("id_spazio"), disponibil
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Disponibilita'
+ *             type: object
+ *             properties:
+ *               data_inizio:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Nuova data e ora di inizio
+ *               data_fine:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Nuova data e ora di fine
+ *             required:
+ *               - data_inizio
+ *               - data_fine
  *     responses:
  *       200:
  *         description: Disponibilità aggiornata con successo
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Disponibilita'
  *       400:
  *         description: Dati non validi
  *       401:
  *         description: Non autorizzato
+ *       403:
+ *         description: Accesso negato - Non hai i permessi per gestire questo spazio
  *       404:
  *         description: Slot non trovato
+ *       500:
+ *         description: Errore interno del server
  */
 router.put("/update/:id", auth, isGestore, async (req, res, next) => {
     const disponibilitaModel = require("../models/disponibilitaModel");
@@ -126,10 +152,12 @@ router.put("/update/:id", auth, isGestore, async (req, res, next) => {
  *         description: Disponibilità eliminata con successo
  *       401:
  *         description: Non autorizzato
+ *       403:
+ *         description: Accesso negato - Non hai i permessi per gestire questo spazio
  *       404:
  *         description: Slot non trovato
  *       500:
- *         description: Errore interno
+ *         description: Errore interno del server
  */
 router.delete(
     "/delete/:id",

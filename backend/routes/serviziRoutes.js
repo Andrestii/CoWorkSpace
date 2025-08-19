@@ -12,7 +12,7 @@ router.get("/getServizi", serviziController.getServizi);          // GET /api/se
 router.post("/createServizio", authMiddleware, isGestore, serviziController.createServizio);
 
 // Solo gestore/admin: aggiorna servizio
-router.put("/updateServizio/:id", authMiddleware, isGestore, serviziController.updateServizio);
+//router.put("/updateServizio/:id", authMiddleware, isGestore, serviziController.updateServizio);
 
 // Solo gestore/admin: elimina servizio
 router.delete("/deleteServizio/:id", authMiddleware, isGestore, serviziController.deleteServizio);
