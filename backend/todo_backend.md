@@ -21,7 +21,7 @@
 #### 🛎️ serviziController.js / serviziModel.js                          depa
 - [ ] GET /api/servizi → elenco servizi disponibili
 - [ ] POST /api/servizi → aggiungi nuovo servizio (solo admin)
-- [ ] DELETE /api/servizi/:id → elimina servizio
+- [ ] DELETE /api/servizi/:id → disattiva servizio
 
 #### 📅 disponibilitaController.js / disponibilitaModel.js              ste  
 - [x] GET /api/disponibilita?id_spazio=ID&data=YYYY-MM-DD
@@ -37,8 +37,8 @@
 - [ ] GET /api/prenotazioni/spazio/:id → per spazio (visibile ai gestori/admin)
 
 #### 💳 pagamentiController.js / pagamentiModel.js                      ste
-- [x] POST /api/pagamenti/conferma → conferma pagamento e aggiorna stato prenotazione
-- [x] GET /api/pagamenti/storico → storico pagamenti utente
+- [ ] POST /api/pagamenti/conferma → conferma pagamento e aggiorna stato prenotazione
+- [ ] GET /api/pagamenti/storico → storico pagamenti utente
 
 ### 👥 gestoriSediController.js / gestoriSediModel.js                   depa
 - [ ] POST /api/gestori-sedi → assegna gestore a una sede (solo admin)
@@ -60,7 +60,7 @@
 - [ ] `/api/servizi/`
 - [x] `/api/disponibilita/`
 - [ ] `/api/prenotazioni/`
-- [x] `/api/pagamenti/`
+- [ ] `/api/pagamenti/`
 - [ ] `/api/gestori-sedi/`
 
 ---
