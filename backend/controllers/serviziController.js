@@ -26,7 +26,9 @@ const serviziController = {
             }
 
             if (!TIPI_VALIDI.includes(String(nome))) {
-                return res.status(400).json({ error: `nome servizio non valido. Valori validi: ${TIPI_VALIDI.join(", ")}` });
+                return res.status(400).json({ 
+                    error: `Nome servizio non valido. Valori validi: ${TIPI_VALIDI.join(", ")}` 
+                });
             }
 
             const servizio = await serviziModel.createServizio({ nome });
@@ -37,14 +39,14 @@ const serviziController = {
         }
     },
 
-    // DELETE /api/servizi/:id
+    // DELETE /api/servizi/:id (soft delete → attivo=false)
     async deleteServizio(req, res) {
         try {
             const id = Number(req.params.id);
             if (!id) return res.status(400).json({ error: "ID non valido" });
 
-            const servizio = await serviziModel.deleteServizio(id);
-            res.status(200).json({ message: "Servizio eliminato", servizio });
+            const servizio = await serviziModel.softDeleteServizio(id);
+            res.status(200).json({ message: "Servizio disattivato", servizio });
         } catch (error) {
             console.error("Errore deleteServizio:", error);
             res.status(500).json({ error: error.message });
