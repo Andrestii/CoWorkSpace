@@ -1,4 +1,6 @@
 const disponibilitaModel = require("../models/disponibilitaModel");
+const path = require("path");
+const supabase = require("../config/database");
 
 const disponibilitaController = {
     async list(req, res) {

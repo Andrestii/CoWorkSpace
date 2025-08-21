@@ -1,4 +1,6 @@
 const sediModel = require("../models/sediModel");
+const path = require("path");
+const supabase = require("../config/database");
 
 const sediController = {
     async getAllSedi(req, res) {
@@ -23,10 +25,27 @@ const sediController = {
 
     async createSede(req, res) {
         try {
-            // 1️⃣ Creo la sede
-            const sede = await sediModel.createSede(req.body);
+            let sedeData = req.body;
+            const file = req.file;
+            if (file) {
+                const fileName = `sedi/${Date.now()}${path.extname(file.originalname)}`;
+                const { data, error } = await supabase.storage
+                    .from("sedi-images")
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype,
+                        upsert: true,
+                    });
 
-            // 2️⃣ Se l'utente è un gestore, lo mappo su questa sede
+                if (error) throw error;
+
+                const { data: urlData } = supabase.storage
+                    .from("sedi-images")
+                    .getPublicUrl(fileName);
+
+                sedeData.immagine = urlData.publicUrl;
+            }
+            const sede = await sediModel.createSede(sedeData);
+
             if (req.user.ruolo === "gestore") {
                 await sediModel.addGestoreToSede(req.user.id, sede.id);
             }
@@ -40,7 +59,28 @@ const sediController = {
 
     async updateSede(req, res) {
         try {
-            const sede = await sediModel.updateSede(req.params.id, req.body);
+            let updateData = req.body;
+            const file = req.file;
+
+            if (file) {
+                const fileName = `sedi/${Date.now()}${path.extname(file.originalname)}`;
+                const { data, error } = await supabase.storage
+                    .from("sedi-images")
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype,
+                        upsert: true,
+                    });
+
+                if (error) throw error;
+
+                const { data: urlData } = supabase.storage
+                    .from("sedi-images")
+                    .getPublicUrl(fileName);
+
+                updateData.immagine = urlData.publicUrl;
+            }
+
+            const sede = await sediModel.updateSede(req.params.id, updateData);
             res.status(200).json(sede);
         } catch (error) {
             console.error("Errore updateSede:", error);

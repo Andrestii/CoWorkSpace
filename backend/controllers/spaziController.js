@@ -1,5 +1,7 @@
 // backend/controllers/spaziController.js
 const spaziModel = require("../models/spaziModel");
+const path = require("path");
+const supabase = require("../config/database");
 
 const TIPI_VALIDI = ["postazione", "ufficio", "sala_riunioni"];
 
@@ -28,7 +30,27 @@ const spaziController = {
                 return res.status(400).json({ error: `tipologia non valida. Valori: ${TIPI_VALIDI.join(", ")}` });
             }
 
-            const spazio = await spaziModel.createSpazio(req.body);
+            let payload = { ...req.body };
+            const file = req.file;
+            if (file) {
+                const fileName = `spazi/${Date.now()}${path.extname(file.originalname)}`;
+                const { error } = await supabase.storage
+                    .from("spazi-images")
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype,
+                        upsert: true,
+                    });
+
+                if (error) throw error;
+
+                const { data: urlData } = supabase.storage
+                    .from("spazi-images")
+                    .getPublicUrl(fileName);
+
+                payload.immagine = urlData.publicUrl;
+            }
+
+            const spazio = await spaziModel.createSpazio(payload);
             res.status(201).json({ message: "Spazio creato", spazio });
         } catch (error) {
             console.error("Errore createSpazio:", error);
@@ -46,7 +68,27 @@ const spaziController = {
                 return res.status(400).json({ error: `tipologia non valida. Valori: ${TIPI_VALIDI.join(", ")}` });
             }
 
-            const spazio = await spaziModel.updateSpazio(id, req.body);
+            let changes = { ...req.body };
+            const file = req.file;
+            if (file) {
+                const fileName = `spazi/${Date.now()}${path.extname(file.originalname)}`;
+                const { error } = await supabase.storage
+                    .from("spazi-images")
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype,
+                        upsert: true,
+                    });
+
+                if (error) throw error;
+
+                const { data: urlData } = supabase.storage
+                    .from("spazi-images")
+                    .getPublicUrl(fileName);
+
+                changes.immagine = urlData.publicUrl;
+            }
+
+            const spazio = await spaziModel.updateSpazio(id, changes);
             res.status(200).json({ message: "Spazio aggiornato", spazio });
         } catch (error) {
             console.error("Errore updateSpazio:", error);
@@ -54,7 +96,7 @@ const spaziController = {
         }
     },
 
-    // DELETE /api/spazi/:id  (soft delete → attivo=false)
+    // DELETE /api/spazi/:id
     async deleteSpazio(req, res) {
         try {
             const id = Number(req.params.id);
@@ -68,7 +110,7 @@ const spaziController = {
         }
     },
 
-    // PUT /api/spazi/:id  (soft attiva → attivo=true)
+    // PUT /api/spazi/:id/attiva
     async attivaSpazio(req, res) {
         try {
             const id = Number(req.params.id);
@@ -82,7 +124,7 @@ const spaziController = {
         }
     },
 
-    // POST /api/spazi/:id/servizi  { servizi: [1,2,3] }
+    // POST /api/spazi/:id/servizi
     async setServizi(req, res) {
         try {
             const id = Number(req.params.id);

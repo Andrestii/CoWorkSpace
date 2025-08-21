@@ -5,6 +5,7 @@ const spaziController = require("../controllers/spaziController");
 const authMiddleware = require("../middleware/auth");
 const isGestore = require("../middleware/isGestore");
 const canManageSpazio = require("../middleware/canManageSpazio");
+const upload = require("../middleware/upload");
 
 /**
  * @swagger
@@ -59,7 +60,7 @@ router.get("/getSpazi", spaziController.getSpazi);
  *       403:
  *         description: Accesso negato - Solo i gestori possono creare spazi
  */
-router.post("/createSpazio", authMiddleware, isGestore, spaziController.createSpazio);
+router.post("/createSpazio", authMiddleware, isGestore, upload.single("immagine"), spaziController.createSpazio);
 
 /**
  * @swagger
@@ -98,7 +99,7 @@ router.post("/createSpazio", authMiddleware, isGestore, spaziController.createSp
  *       404:
  *         description: Spazio non trovato
  */
-router.put("/updateSpazio/:id", authMiddleware, isGestore, canManageSpazio("id"), spaziController.updateSpazio);
+router.put("/updateSpazio/:id", authMiddleware, isGestore, upload.single("immagine"), canManageSpazio("id"), spaziController.updateSpazio);
 
 /**
  * @swagger

@@ -4,6 +4,7 @@ const sediController = require("../controllers/sediController");
 const authMiddleware = require("../middleware/auth");
 const isGestore = require("../middleware/isGestore");
 const canManageSede = require("../middleware/canManageSede");
+const upload = require("../middleware/upload");
 
 /**
  * @swagger
@@ -83,7 +84,7 @@ router.get("/getAllSedi/:id", sediController.getSedeById);
  *       403:
  *         description: Accesso negato - Solo i gestori possono creare sedi
  */
-router.post("/createSede", authMiddleware, isGestore, sediController.createSede);
+router.post("/createSede", authMiddleware, isGestore, upload.single("immagine"), sediController.createSede);
 
 /**
  * @swagger
@@ -122,7 +123,7 @@ router.post("/createSede", authMiddleware, isGestore, sediController.createSede)
  *       404:
  *         description: Sede non trovata
  */
-router.put("/updateSede/:id", authMiddleware, isGestore, canManageSede("id"), sediController.updateSede);
+router.put("/updateSede/:id", authMiddleware, isGestore, canManageSede("id"), upload.single("immagine"), sediController.updateSede);
 
 /**
  * @swagger
@@ -181,5 +182,7 @@ router.delete("/deleteSede/:id", authMiddleware, isGestore, canManageSede("id"),
  *         description: Sede non trovata
  */
 router.put("/attivaSede/:id", authMiddleware, isGestore, canManageSede("id"), sediController.attivaSede);
+
+
 
 module.exports = router;

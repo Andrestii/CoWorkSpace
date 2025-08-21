@@ -22,6 +22,7 @@ class SpaziModel {
             capienza: payload.capienza !== undefined ? Number(payload.capienza) : null,
             prezzo_orario: Number(payload.prezzo_orario),
             attivo: payload.attivo !== undefined ? !!payload.attivo : true,
+            immagine: payload.immagine || null,
         };
 
         const { data, error } = await supabase
@@ -42,6 +43,7 @@ class SpaziModel {
         if (changes.capienza !== undefined) toUpdate.capienza = Number(changes.capienza);
         if (changes.prezzo_orario !== undefined) toUpdate.prezzo_orario = Number(changes.prezzo_orario);
         if (changes.attivo !== undefined) toUpdate.attivo = !!changes.attivo;
+        if (changes.immagine !== undefined) toUpdate.immagine = changes.immagine;
 
         const { data, error } = await supabase
             .from(TABLE_SPAZI)
