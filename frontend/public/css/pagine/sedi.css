@@ -2,7 +2,6 @@
 
 /* Hero della pagina sedi */
 .hero {
-    background-image: url('../../assets/sedi-hero.jpg'); /* puoi mettere una tua immagine */
     background-size: cover;
     background-position: center;
     height: 50vh;
