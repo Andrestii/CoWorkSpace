@@ -126,6 +126,6 @@ router.put("/updateStatoPrenotazione/:id", authMiddleware, isGestore, prenotazio
  *       404:
  *         description: Spazio non trovato
  */
-router.get("/getPrenotazioniSpazio/:id_spazio", prenotazioniController.getPrenotazioniSpazio);
+router.get("/getPrenotazioniSpazio/:id", prenotazioniController.getPrenotazioniSpazio);
 
 module.exports = router;
