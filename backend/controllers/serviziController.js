@@ -4,7 +4,6 @@ const serviziModel = require("../models/serviziModel");
 const TIPI_VALIDI = ["wifi", "aria_condizionata", "parcheggio", "caffè", "stampa"];
 
 const serviziController = {
-    // GET /api/servizi?nome=...
     async getServizi(req, res) {
         try {
             const nome = req.query.nome ? String(req.query.nome).trim() : undefined;
@@ -16,7 +15,6 @@ const serviziController = {
         }
     },
 
-    // POST /api/servizi
     async createServizio(req, res) {
         try {
             const { nome } = req.body;
@@ -39,7 +37,6 @@ const serviziController = {
         }
     },
 
-    // DELETE /api/servizi/:id (soft delete → attivo=false)
     async deleteServizio(req, res) {
         try {
             const id = Number(req.params.id);

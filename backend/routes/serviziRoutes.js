@@ -7,14 +7,14 @@ const isGestore = require("../middleware/isGestore");
 
 // Pubblico: lista servizi
 // GET /api/servizi?nome=...
-router.get("/", serviziController.getServizi);
+router.get("/getServizi", serviziController.getServizi);
 
 // Solo gestore/admin: crea servizio
 // POST /api/servizi
-router.post("/", authMiddleware, isGestore, serviziController.createServizio);
+router.post("/createServizio", authMiddleware, isGestore, serviziController.createServizio);
 
 // Solo gestore/admin: disattiva servizio
 // DELETE /api/servizi/:id
-router.delete("/:id", authMiddleware, isGestore, serviziController.deleteServizio);
+router.delete("/deleteServizio/:id", authMiddleware, isGestore, serviziController.deleteServizio);
 
 module.exports = router;

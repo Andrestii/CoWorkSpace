@@ -4,7 +4,6 @@ const prenotazioniModel = require("../models/prenotazioniModel");
 const STATI_VALIDI = ["in_attesa", "confermato", "pagato", "annullato"];
 
 const prenotazioniController = {
-    // POST /api/prenotazioni
     async createPrenotazione(req, res) {
         try {
             const { id_spazio, data, ora_inizio, ora_fine, importo } = req.body;
@@ -28,7 +27,6 @@ const prenotazioniController = {
         }
     },
 
-    // GET /api/prenotazioni/utente
     async getPrenotazioniUtente(req, res) {
         try {
             const id_utente = req.user?.id;
@@ -42,7 +40,6 @@ const prenotazioniController = {
         }
     },
 
-    // PUT /api/prenotazioni/:id
     async updateStatoPrenotazione(req, res) {
         try {
             const id = Number(req.params.id);
@@ -63,7 +60,6 @@ const prenotazioniController = {
         }
     },
 
-    // GET /api/prenotazioni/spazio/:id
     async getPrenotazioniSpazio(req, res) {
         try {
             const idSpazio = Number(req.params.id);
