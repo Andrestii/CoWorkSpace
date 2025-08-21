@@ -30,7 +30,8 @@ const sediRoutes = require("./routes/sediRoutes");
 const spaziRoutes = require("./routes/spaziRoutes");
 const disponibilitaRoutes = require("./routes/disponibilitaRoutes");
 const pagamentiRoutes = require("./routes/pagamentiRoutes");
-
+const prenotazioniRoutes = require("./routes/prenotazioniRoutes");
+const serviziRoutes = require("./routes/serviziRoutes");
 
 // Basic route
 app.get("/", (req, res) => {
@@ -48,6 +49,8 @@ app.use("/api/sedi", sediRoutes);
 app.use("/api/spazi", spaziRoutes);
 app.use("/api/disponibilita", disponibilitaRoutes);
 app.use("/api/pagamenti", pagamentiRoutes);
+app.use("/api/prenotazioni", prenotazioniRoutes);
+app.use("/api/servizi", serviziRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
