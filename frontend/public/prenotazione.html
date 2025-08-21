@@ -49,23 +49,17 @@
         <input type="text" id="data" class="form-control calendario" placeholder="Seleziona una data" required>
       </div>
 
-      <!-- Fasce orarie -->
-      <div class="col-12">
-        <label class="form-label">Orario</label>
-        <div class="btn-group flex-wrap" id="orari">
-          <input type="radio" class="btn-check" name="orario" id="slot1" value="09:00 - 11:00" required>
-          <label class="btn btn-outline-primary m-1" for="slot1">09:00 - 11:00</label>
-
-          <input type="radio" class="btn-check" name="orario" id="slot2" value="11:30 - 13:30">
-          <label class="btn btn-outline-primary m-1" for="slot2">11:30 - 13:30</label>
-
-          <input type="radio" class="btn-check" name="orario" id="slot3" value="14:00 - 16:00">
-          <label class="btn btn-outline-primary m-1" for="slot3">14:00 - 16:00</label>
-
-          <input type="radio" class="btn-check" name="orario" id="slot4" value="16:30 - 18:30">
-          <label class="btn btn-outline-primary m-1" for="slot4">16:30 - 18:30</label>
-        </div>
+      <!-- Orari -->
+      <div class="col-md-3">
+        <label class="form-label">Orario Inizio</label>
+        <input type="text" id="orarioInizio" class="form-control timepicker" placeholder="Seleziona orario inizio" required>
       </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Orario Fine</label>
+        <input type="text" id="orarioFine" class="form-control timepicker" placeholder="Seleziona orario fine" required>
+      </div>
+
 
       <!-- Note -->
       <div class="col-12">
@@ -83,10 +77,9 @@
           <p class="fw-bold text-success">Totale: € <span id="riepilogoPrezzo">0</span></p>
         </div>
       </div>
-
-      <div class="col-12 text-center">
-        <button type="submit" class="btn btn-primary btn-lg">Procedi al pagamento</button>
-      </div>
+        <div class="col-12 text-center">
+          <button type="submit" class="btn btn-primary btn-lg">Procedi al pagamento</button>
+        </div>
     </form>
   </section>
 
@@ -122,6 +115,31 @@
       </form>
     </div>
   </section>
+
+    <!-- Modal Conferma Pagamento -->
+  <div class="modal fade" id="confermaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Pagamento Confermato</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center p-4">
+          <p class="lead">Grazie per la tua prenotazione!</p>
+          <p><strong>Sede:</strong> <span id="modalSede"></span></p>
+          <p><strong>Data:</strong> <span id="modalData"></span></p>
+          <p><strong>Orario:</strong> <span id="modalOrario"></span></p>
+          <p class="fw-bold text-success">Totale: € <span id="modalPrezzo"></span></p>
+
+          <div class="mt-3 d-flex justify-content-center gap-3">
+            <a href="index.html" class="btn btn-primary"><i class="fas fa-home me-2"></i> Home</a>
+            <a href="sedi.html" class="btn btn-outline-secondary"><i class="fas fa-map-marker-alt me-2"></i> Altre Sedi</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Footer -->
   <footer class="bg-dark text-white py-5 text-center">

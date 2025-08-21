@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sedi disponibili - CoWorkSpace</title>
+  <title>Dettaglio Sede - CoWorkSpace</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="css/pagine/index.css" rel="stylesheet"> <!-- stile base -->
-<link href="css/pagine/sedi.css" rel="stylesheet"> <!-- stile extra per sedi -->
-
+  <link href="css/pagine/index.css" rel="stylesheet">
+  <link href="css/pagine/sedi.css" rel="stylesheet">
 </head>
 <body>
 
@@ -16,32 +15,32 @@
   <div id="navbar-placeholder"></div>
 
   <!-- Hero -->
-  <section class="hero d-flex align-items-center text-white" style="margin-top:80px;">
+  <section class="hero d-flex align-items-center text-white" style="margin-top:80px; height:40vh;">
     <div class="container text-center">
-      <h1 class="display-4 fw-bold">Le nostre sedi</h1>
-      <p class="lead">Scopri gli spazi disponibili e prenota subito il tuo posto.</p>
-      <a href="index.html" class="btn btn-outline-light btn-lg">Torna alla Home</a>
+      <h1 class="display-4 fw-bold" id="sedeNome">Dettaglio sede</h1>
+      <p class="lead">Scopri tutte le informazioni della sede scelta</p>
     </div>
   </section>
 
-  <!-- Lista sedi -->
-  <section class="container my-5">
-    <h2 class="text-center section-title">Sedi disponibili</h2>
-    <div id="listaSedi" class="row gy-4 mt-4">
-      <!-- Verranno inserite dinamicamente con JS -->
+  <!-- Contenuto sede -->
+  <section class="container my-5" id="dettaglioSede">
+    <div id="loading" class="text-center my-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p>Caricamento dettagli sede...</p>
+    </div>
+    <div id="errore" class="text-center text-danger d-none mt-4">
+      Errore nel caricamento della sede. Riprova più tardi.
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-dark text-white py-5">
-    <div class="container text-center">
-      <p>&copy; 2025 CoWorkSpace. Tutti i diritti riservati.</p>
-    </div>
+  <footer class="bg-dark text-white py-5 text-center">
+    <p>&copy; 2025 CoWorkSpace. Tutti i diritti riservati.</p>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="./scripts/partials/navbar.js"></script>
+  <script src="scripts/config.js"></script>
   <script src="./scripts/pages/sedi.js"></script>
 </body>
 </html>
