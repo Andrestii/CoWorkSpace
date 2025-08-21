@@ -38,10 +38,20 @@ const pagamentiController = require('../controllers/pagamentiController');
  *     responses:
  *       200:
  *         description: Pagamento confermato con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Pagamento confermato con successo"
  *       400:
- *         description: Dati non validi
+ *         description: Dati non validi o importo non corretto
  *       401:
  *         description: Non autorizzato
+ *       404:
+ *         description: Prenotazione non trovata
  */
 router.post('/conferma', auth, pagamentiController.confermaPagamento);
 
@@ -65,16 +75,26 @@ router.post('/conferma', auth, pagamentiController.confermaPagamento);
  *                 properties:
  *                   id_pagamento:
  *                     type: integer
+ *                     description: ID univoco del pagamento
  *                   id_prenotazione:
  *                     type: integer
+ *                     description: ID della prenotazione associata
  *                   importo:
  *                     type: number
  *                     format: float
+ *                     description: Importo pagato
  *                   data_pagamento:
  *                     type: string
  *                     format: date-time
+ *                     description: Data e ora del pagamento
+ *                   stato:
+ *                     type: string
+ *                     enum: [confermato, in attesa, rifiutato]
+ *                     description: Stato attuale del pagamento
  *       401:
  *         description: Non autorizzato
+ *       500:
+ *         description: Errore interno del server
  */
 router.get('/storico', auth, pagamentiController.storicoPagamenti);
 

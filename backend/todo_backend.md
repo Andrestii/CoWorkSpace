@@ -19,9 +19,9 @@
 - [x] POST /api/spazi/:id/servizi → collega servizi allo spazio
 
 #### 🛎️ serviziController.js / serviziModel.js                          depa
-- [ ] GET /api/servizi → elenco servizi disponibili
-- [ ] POST /api/servizi → aggiungi nuovo servizio (solo admin)
-- [ ] DELETE /api/servizi/:id → elimina servizio
+- [x] GET /api/servizi → elenco servizi disponibili
+- [x] POST /api/servizi → aggiungi nuovo servizio (solo admin)
+- [x] DELETE /api/servizi/:id → disattiva servizio
 
 #### 📅 disponibilitaController.js / disponibilitaModel.js              ste  
 - [x] GET /api/disponibilita?id_spazio=ID&data=YYYY-MM-DD
@@ -31,14 +31,14 @@
 - [x] GET /api/disponibilita/range?id_spazio=ID&from=YYYY-MM-DD&to=YYYY-MM-DD
 
 #### 📆 prenotazioniController.js / prenotazioniModel.js                depa
-- [ ] POST /api/prenotazioni → crea prenotazione
-- [ ] GET /api/prenotazioni/utente → prenotazioni per utente loggato
-- [ ] PUT /api/prenotazioni/:id → cambia stato (confermato/pagato/annullato)
-- [ ] GET /api/prenotazioni/spazio/:id → per spazio (visibile ai gestori/admin)
+- [x] POST /api/prenotazioni → crea prenotazione
+- [x] GET /api/prenotazioni/utente → prenotazioni per utente loggato
+- [x] PUT /api/prenotazioni/:id → cambia stato (confermato/pagato/annullato)
+- [x] GET /api/prenotazioni/spazio/:id → per spazio (visibile ai gestori/admin)
 
 #### 💳 pagamentiController.js / pagamentiModel.js                      ste
-- [x] POST /api/pagamenti/conferma → conferma pagamento e aggiorna stato prenotazione
-- [x] GET /api/pagamenti/storico → storico pagamenti utente
+- [ ] POST /api/pagamenti/conferma → conferma pagamento e aggiorna stato prenotazione
+- [ ] GET /api/pagamenti/storico → storico pagamenti utente
 
 ### 👥 gestoriSediController.js / gestoriSediModel.js                   depa
 - [ ] POST /api/gestori-sedi → assegna gestore a una sede (solo admin)
@@ -59,8 +59,8 @@
 - [x] `/api/spazi/`
 - [ ] `/api/servizi/`
 - [x] `/api/disponibilita/`
-- [ ] `/api/prenotazioni/`
-- [x] `/api/pagamenti/`
+- [x] `/api/prenotazioni/`
+- [ ] `/api/pagamenti/`
 - [ ] `/api/gestori-sedi/`
 
 ---
