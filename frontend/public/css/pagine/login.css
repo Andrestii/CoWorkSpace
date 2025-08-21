@@ -51,15 +51,33 @@
     padding: 40px 30px 30px;
 }
 
-.form-floating {
-    margin-bottom: 20px;
+.form-floating>.form-control,
+.form-floating>.form-select {
+    border-radius: 0.9rem;
+    background: #f8f5f2;
+    border: 1.5px solid #d1bfa7;
+    margin-bottom: 1.2rem;
+    font-size: 1.07rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px 0 rgba(92, 60, 44, 0.04);
 }
 
-.form-control {
-    border-radius: 8px;
-    padding: 12px;
-    border: 1px solid #ddd;
-    font-size: 16px;
+.form-floating>.form-control:focus,
+.form-floating>.form-select:focus {
+    border-color: #c4754a;
+    background: #fff;
+    box-shadow: 0 0 0 0.18rem #c4754a33;
+}
+
+.form-floating>label {
+    color: #a68b73;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.form-floating>.form-control:focus~label,
+.form-floating>.form-select:focus~label {
+    color: #c4754a;
 }
 
 .btn-login {
@@ -105,44 +123,53 @@
 
 .facebook {
     background-color: #3b5998;
+    text-decoration: none;
 }
 
 .google {
     background-color: #dd4b39;
+    text-decoration: none;
 }
 
 .register-link {
-    color: #9c6644;
+    color: #c4754a;
     font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
 }
 
 .register-link:hover {
-    color: #5c3c2c;
+    color: #5C3C2C;
+    text-decoration: underline;
 }
 
 .login-side-art {
-    background-image: url('../../assets/login-image.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url('../../assets/login-image.jpg');
     background-size: cover;
     background-position: center;
     height: 100%;
-    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, .4);
     min-height: 500px;
     position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    border-left: 1.5px solid #e8ded5;
 }
 
-.login-side-art:before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(92, 60, 44, 0.4);
+.text-overlay {
+    background: rgba(255, 255, 255, 0.92);
+    padding: 2.2rem 2.7rem 2.2rem 2.2rem;
+    border-radius: 1.5rem 0 0 0;
+    margin: 2.2rem;
+    box-shadow: 0 4px 16px 0 rgba(92, 60, 44, 0.08);
 }
 
-.login-side-art .text-overlay {
-    position: absolute;
-    bottom: 40px;
-    left: 30px;
-    right: 30px;
-    color: white;
+.text-overlay h3 {
+    color: #5C3C2C;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
 }
 
 .highlight-text {

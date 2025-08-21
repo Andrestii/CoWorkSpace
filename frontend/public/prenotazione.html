@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prenotazione - CoWorkSpace</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+  <link href="css/pagine/prenotazione.css" rel="stylesheet">
+  <link href="css/pagine/index.css" rel="stylesheet"> <!-- stile base -->
+<link href="css/pagine/sedi.css" rel="stylesheet"> <!-- stile extra per sedi -->
+
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="hero d-flex align-items-center text-white" style="margin-top:80px;">
+    <div class="container text-center">
+      <h1 class="display-4 fw-bold">Prenota il tuo spazio</h1>
+      <p class="lead">Scegli la sede, la data e la fascia oraria. Completa la prenotazione in pochi click.</p>
+      <a href="sedi.html" class="btn btn-outline-light btn-lg">Torna alle sedi</a>
+    </div>
+  </section>
+
+  <!-- Prenotazione -->
+  <section class="container my-5">
+    <h2 class="text-center section-title">Dettagli prenotazione</h2>
+
+    <form id="bookingForm" class="row g-4">
+      <!-- Selezione sede -->
+      <div class="col-md-6">
+        <label class="form-label">Sede</label>
+        <select class="form-select" id="sede" required>
+          <option value="">-- Scegli una sede --</option>
+          <option value="Milano Porta Nuova">Milano – Porta Nuova</option>
+          <option value="Roma Trastevere">Roma – Trastevere</option>
+          <option value="Torino San Salvario">Torino – San Salvario</option>
+          <option value="Firenze Centro">Firenze – Centro Storico</option>
+        </select>
+      </div>
+
+      <!-- Calendario -->
+      <div class="col-md-6">
+        <label class="form-label">Data</label>
+        <input type="text" id="data" class="form-control calendario" placeholder="Seleziona una data" required>
+      </div>
+
+      <!-- Orari -->
+      <div class="col-md-3">
+        <label class="form-label">Orario Inizio</label>
+        <input type="text" id="orarioInizio" class="form-control timepicker" placeholder="Seleziona orario inizio" required>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Orario Fine</label>
+        <input type="text" id="orarioFine" class="form-control timepicker" placeholder="Seleziona orario fine" required>
+      </div>
+
+
+      <!-- Note -->
+      <div class="col-12">
+        <label class="form-label">Note</label>
+        <textarea class="form-control" rows="3" id="note"></textarea>
+      </div>
+
+      <!-- Riepilogo -->
+      <div class="col-12">
+        <div class="card shadow-sm p-4" id="riepilogo" style="display:none;">
+          <h5 class="mb-3">Riepilogo prenotazione</h5>
+          <p><strong>Sede:</strong> <span id="riepilogoSede"></span></p>
+          <p><strong>Data:</strong> <span id="riepilogoData"></span></p>
+          <p><strong>Orario:</strong> <span id="riepilogoOrario"></span></p>
+          <p class="fw-bold text-success">Totale: € <span id="riepilogoPrezzo">0</span></p>
+        </div>
+      </div>
+        <div class="col-12 text-center">
+          <button type="submit" class="btn btn-primary btn-lg">Procedi al pagamento</button>
+        </div>
+    </form>
+  </section>
+
+  <!-- Pagamento -->
+  <section class="container my-5" id="paymentSection" style="display:none;">
+    <h2 class="text-center section-title">Pagamento</h2>
+    <div class="card shadow-sm p-4">
+      <form id="paymentForm">
+        <div class="mb-3">
+          <label class="form-label">Metodo di pagamento</label>
+          <select class="form-select" id="metodo" required>
+            <option value="carta">Carta di credito</option>
+            <option value="paypal">PayPal</option>
+            <option value="satispay">Satispay</option>
+          </select>
+        </div>
+        <div id="cartaFields">
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Numero carta (16 cifre)" required>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <input type="text" class="form-control" placeholder="MM/AA" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <input type="text" class="form-control" placeholder="CVV" required>
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-success btn-lg">Conferma e paga</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+    <!-- Modal Conferma Pagamento -->
+  <div class="modal fade" id="confermaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Pagamento Confermato</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center p-4">
+          <p class="lead">Grazie per la tua prenotazione!</p>
+          <p><strong>Sede:</strong> <span id="modalSede"></span></p>
+          <p><strong>Data:</strong> <span id="modalData"></span></p>
+          <p><strong>Orario:</strong> <span id="modalOrario"></span></p>
+          <p class="fw-bold text-success">Totale: € <span id="modalPrezzo"></span></p>
+
+          <div class="mt-3 d-flex justify-content-center gap-3">
+            <a href="index.html" class="btn btn-primary"><i class="fas fa-home me-2"></i> Home</a>
+            <a href="sedi.html" class="btn btn-outline-secondary"><i class="fas fa-map-marker-alt me-2"></i> Altre Sedi</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-5 text-center">
+    <p>&copy; 2025 CoWorkSpace. Tutti i diritti riservati.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="./scripts/partials/navbar.js"></script>
+  <script src="./scripts/pages/prenotazione.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+/* Eredita lo stile base da index.css */
+
+/* Hero della pagina sedi */
+.hero {
+    background-size: cover;
+    background-position: center;
+    height: 50vh;
+    position: relative;
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+}
+.hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Card sede */
+.card.prodotto-card {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    border: none;
+    overflow: hidden;
+}
+.card.prodotto-card img {
+    height: 220px;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+.card.prodotto-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+.card.prodotto-card:hover img {
+    transform: scale(1.05);
+}
+.card-body {
+    text-align: center;
+}
+.card-title {
+    font-weight: 600;
+    color: #5c3c2c;
+}
+.card-text {
+    font-size: 0.9rem;
+    color: #777;
+}
+.card .btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+.card .btn:hover {
+    background-color: #5c3c2c;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* Dettaglio sede */
+#dettaglioSede img {
+    max-height: 350px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+#dettaglioSede h2 {
+    color: #5c3c2c;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+#dettaglioSede .btn {
+    transition: all 0.3s ease;
+}
+#dettaglioSede .btn:hover {
+    transform: scale(1.05);
+}
