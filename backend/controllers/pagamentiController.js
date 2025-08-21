@@ -1,4 +1,6 @@
 const pagamentiModel = require('../models/pagamentiModel');
+const path = require("path");
+const supabase = require("../config/database");
 
 module.exports = {
     // POST /api/pagamenti/conferma

@@ -1,5 +1,7 @@
 // backend/controllers/serviziController.js
 const serviziModel = require("../models/serviziModel");
+const path = require("path");
+const supabase = require("../config/database");
 
 const TIPI_VALIDI = ["wifi", "aria_condizionata", "parcheggio", "caffè", "stampa"];
 
@@ -24,8 +26,8 @@ const serviziController = {
             }
 
             if (!TIPI_VALIDI.includes(String(nome))) {
-                return res.status(400).json({ 
-                    error: `Nome servizio non valido. Valori validi: ${TIPI_VALIDI.join(", ")}` 
+                return res.status(400).json({
+                    error: `Nome servizio non valido. Valori validi: ${TIPI_VALIDI.join(", ")}`
                 });
             }
 

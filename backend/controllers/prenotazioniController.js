@@ -1,5 +1,7 @@
 // backend/controllers/prenotazioniController.js
 const prenotazioniModel = require("../models/prenotazioniModel");
+const path = require("path");
+const supabase = require("../config/database");
 
 const STATI_VALIDI = ["in_attesa", "confermato", "pagato", "annullato"];
 
@@ -10,8 +12,8 @@ const prenotazioniController = {
             const id_utente = req.user?.id; // preso dal token JWT
 
             if (!id_utente || !id_spazio || !data || !ora_inizio || !ora_fine) {
-                return res.status(400).json({ 
-                    error: "id_spazio, data, ora_inizio, ora_fine sono obbligatori" 
+                return res.status(400).json({
+                    error: "id_spazio, data, ora_inizio, ora_fine sono obbligatori"
                 });
             }
 
@@ -47,8 +49,8 @@ const prenotazioniController = {
 
             if (!id) return res.status(400).json({ error: "ID non valido" });
             if (!STATI_VALIDI.includes(String(stato))) {
-                return res.status(400).json({ 
-                    error: `Stato non valido. Valori ammessi: ${STATI_VALIDI.join(", ")}` 
+                return res.status(400).json({
+                    error: `Stato non valido. Valori ammessi: ${STATI_VALIDI.join(", ")}`
                 });
             }
 
