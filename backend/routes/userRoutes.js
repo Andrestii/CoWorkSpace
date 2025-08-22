@@ -23,26 +23,14 @@ const isAdmin = require("../middleware/isAdmin");
  *       content:
  *         multipart/form-data:
  *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               nome:
- *                 type: string
- *               cognome:
- *                 type: string
- *               ruolo:
- *                 type: string
- *                 enum: [cliente, gestore, admin]
- *                 example: cliente
- *               profileImage:
- *                 type: string
- *                 format: binary
+ *             $ref: '#/components/schemas/UserRegister'
  *     responses:
  *       201:
  *         description: Utente registrato con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       400:
  *         description: Dati non validi
  */
@@ -50,24 +38,23 @@ router.post("/register", upload.single("profileImage"), userController.register)
 
 /**
  * @swagger
- *  /users/login:
+ * /users/login:
  *   post:
- *     summary: Effettua il login
+ *     summary: Effettua il login dell'utente
  *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
+ *             $ref: '#/components/schemas/UserLogin'
  *     responses:
  *       200:
  *         description: Login effettuato con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserLoginResponse'
  *       401:
  *         description: Credenziali non valide
  */
@@ -75,29 +62,27 @@ router.post("/login", userController.login);
 
 /**
  * @swagger
- *  /users/me:
+ * /users/me:
  *   get:
- *     summary: Ottiene i dati dell'utente corrente
+ *     summary: Ottiene i dati dell'utente autenticato
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Dati utente
+ *         description: Dati dell'utente
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
- *       401:
- *         description: Non autorizzato
  */
 router.get("/me", authMiddleware, userController.getCurrentUser);
 
 /**
  * @swagger
- *  /users/profile:
+ * /users/profile:
  *   put:
- *     summary: Aggiorna il profilo utente
+ *     summary: Aggiorna il profilo dell'utente autenticato
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -106,22 +91,24 @@ router.get("/me", authMiddleware, userController.getCurrentUser);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             $ref: '#/components/schemas/UserProfileUpdate'
  *     responses:
  *       200:
- *         description: Profilo aggiornato con successo
+ *         description: Profilo aggiornato
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       400:
  *         description: Dati non validi
- *       401:
- *         description: Non autorizzato
  */
 router.put("/profile", authMiddleware, userController.updateProfile);
 
 /**
  * @swagger
- *  /users/profile-image:
+ * /users/profile-image:
  *   post:
- *     summary: Aggiorna l'immagine del profilo
+ *     summary: Aggiorna l'immagine del profilo dell'utente autenticato
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -135,19 +122,22 @@ router.put("/profile", authMiddleware, userController.updateProfile);
  *               profileImage:
  *                 type: string
  *                 format: binary
+ *                 description: Nuova immagine profilo
  *     responses:
  *       200:
- *         description: Immagine aggiornata con successo
+ *         description: Immagine aggiornata
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       400:
- *         description: File non valido
- *       401:
- *         description: Non autorizzato
+ *         description: Dati non validi
  */
 router.post("/profile-image", authMiddleware, upload.single("profileImage"), userController.updateProfileImage);
 
 /**
  * @swagger
- *  /users/getUserCount:
+ * /users/getUserCount:
  *   get:
  *     summary: Ottiene il numero totale di utenti
  *     tags: [Users]
@@ -155,7 +145,7 @@ router.post("/profile-image", authMiddleware, upload.single("profileImage"), use
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Numero di utenti
+ *         description: Numero utenti
  *         content:
  *           application/json:
  *             schema:
@@ -163,14 +153,12 @@ router.post("/profile-image", authMiddleware, upload.single("profileImage"), use
  *               properties:
  *                 count:
  *                   type: integer
- *       401:
- *         description: Non autorizzato
  */
 router.get("/getUserCount", authMiddleware, userController.getUserCount);
 
 /**
  * @swagger
- *  /users/getAllUsers:
+ * /users/getAllUsers:
  *   get:
  *     summary: Ottiene la lista di tutti gli utenti
  *     tags: [Users]
@@ -178,23 +166,21 @@ router.get("/getUserCount", authMiddleware, userController.getUserCount);
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Lista degli utenti
+ *         description: Lista utenti
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/User'
- *       401:
- *         description: Non autorizzato
  */
 router.get("/getAllUsers", authMiddleware, userController.getAllUsers);
 
 /**
  * @swagger
- *  /users/ban/{id}:
+ * /users/ban/{id}:
  *   put:
- *     summary: Banna un utente
+ *     summary: Bana un utente (solo admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -207,11 +193,7 @@ router.get("/getAllUsers", authMiddleware, userController.getAllUsers);
  *         description: ID dell'utente da bannare
  *     responses:
  *       200:
- *         description: Utente bannato con successo
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato - Solo gli admin possono bannare
+ *         description: Utente bannato
  *       404:
  *         description: Utente non trovato
  */
@@ -219,9 +201,9 @@ router.put("/ban/:id", authMiddleware, isAdmin, userController.banUser);
 
 /**
  * @swagger
- *  /users/unban/{id}:
+ * /users/unban/{id}:
  *   put:
- *     summary: Rimuove il ban di un utente
+ *     summary: Sbanna un utente (solo admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -234,11 +216,7 @@ router.put("/ban/:id", authMiddleware, isAdmin, userController.banUser);
  *         description: ID dell'utente da sbannare
  *     responses:
  *       200:
- *         description: Ban rimosso con successo
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato - Solo gli admin possono rimuovere i ban
+ *         description: Utente sbannato
  *       404:
  *         description: Utente non trovato
  */
@@ -246,9 +224,9 @@ router.put("/unban/:id", authMiddleware, isAdmin, userController.unbanUser);
 
 /**
  * @swagger
- *  /users/updateInfo/{id}:
+ * /users/updateInfo/{id}:
  *   put:
- *     summary: Aggiorna le informazioni di un utente
+ *     summary: Aggiorna le informazioni di un utente (solo admin)
  *     tags: [Users]
  *     security:
  *       - bearerAuth: []
@@ -264,14 +242,16 @@ router.put("/unban/:id", authMiddleware, isAdmin, userController.unbanUser);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             $ref: '#/components/schemas/UserProfileUpdate'
  *     responses:
  *       200:
- *         description: Informazioni aggiornate con successo
+ *         description: Informazioni utente aggiornate
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       400:
  *         description: Dati non validi
- *       401:
- *         description: Non autorizzato
  *       404:
  *         description: Utente non trovato
  */

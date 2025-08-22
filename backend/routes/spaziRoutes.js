@@ -18,7 +18,7 @@ const upload = require("../middleware/upload");
  * @swagger
  * /spazi/getSpazi:
  *   get:
- *     summary: Restituisce la lista di tutti gli spazi
+ *     summary: Ottiene la lista di tutti gli spazi
  *     tags: [Spazi]
  *     responses:
  *       200:
@@ -36,14 +36,14 @@ router.get("/getSpazi", spaziController.getSpazi);
  * @swagger
  * /spazi/createSpazio:
  *   post:
- *     summary: Crea un nuovo spazio
+ *     summary: Crea un nuovo spazio (solo gestore)
  *     tags: [Spazi]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/Spazio'
  *     responses:
@@ -55,10 +55,6 @@ router.get("/getSpazi", spaziController.getSpazi);
  *               $ref: '#/components/schemas/Spazio'
  *       400:
  *         description: Dati non validi
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato - Solo i gestori possono creare spazi
  */
 router.post("/createSpazio", authMiddleware, isGestore, upload.single("immagine"), spaziController.createSpazio);
 
@@ -66,7 +62,7 @@ router.post("/createSpazio", authMiddleware, isGestore, upload.single("immagine"
  * @swagger
  * /spazi/updateSpazio/{id}:
  *   put:
- *     summary: Aggiorna uno spazio esistente
+ *     summary: Aggiorna uno spazio esistente (solo gestore)
  *     tags: [Spazi]
  *     security:
  *       - bearerAuth: []
@@ -80,22 +76,18 @@ router.post("/createSpazio", authMiddleware, isGestore, upload.single("immagine"
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/Spazio'
  *     responses:
  *       200:
- *         description: Spazio aggiornato con successo
+ *         description: Spazio aggiornato
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Spazio'
  *       400:
  *         description: Dati non validi
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato - Non hai i permessi per gestire questo spazio
  *       404:
  *         description: Spazio non trovato
  */
@@ -105,7 +97,7 @@ router.put("/updateSpazio/:id", authMiddleware, isGestore, upload.single("immagi
  * @swagger
  * /spazi/deleteSpazio/{id}:
  *   delete:
- *     summary: Elimina uno spazio esistente
+ *     summary: Elimina uno spazio (solo gestore)
  *     tags: [Spazi]
  *     security:
  *       - bearerAuth: []
@@ -118,11 +110,7 @@ router.put("/updateSpazio/:id", authMiddleware, isGestore, upload.single("immagi
  *         description: ID dello spazio da eliminare
  *     responses:
  *       200:
- *         description: Spazio eliminato con successo
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato - Non hai i permessi per gestire questo spazio
+ *         description: Spazio eliminato
  *       404:
  *         description: Spazio non trovato
  */
@@ -132,7 +120,7 @@ router.delete("/deleteSpazio/:id", authMiddleware, isGestore, canManageSpazio("i
  * @swagger
  * /spazi/attivaSpazio/{id}:
  *   put:
- *     summary: Attiva/disattiva uno spazio esistente
+ *     summary: Attiva uno spazio (solo gestore)
  *     tags: [Spazi]
  *     security:
  *       - bearerAuth: []
@@ -142,18 +130,14 @@ router.delete("/deleteSpazio/:id", authMiddleware, isGestore, canManageSpazio("i
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID dello spazio da attivare/disattivare
+ *         description: ID dello spazio da attivare
  *     responses:
  *       200:
- *         description: Stato dello spazio modificato con successo
+ *         description: Spazio attivato
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Spazio'
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato - Non hai i permessi per gestire questo spazio
  *       404:
  *         description: Spazio non trovato
  */
@@ -163,7 +147,7 @@ router.put("/attivaSpazio/:id", authMiddleware, isGestore, canManageSpazio("id")
  * @swagger
  * /spazi/setServizi/{id}/servizi:
  *   post:
- *     summary: Imposta i servizi per uno spazio
+ *     summary: Imposta i servizi associati a uno spazio (solo gestore)
  *     tags: [Spazi]
  *     security:
  *       - bearerAuth: []
@@ -185,16 +169,12 @@ router.put("/attivaSpazio/:id", authMiddleware, isGestore, canManageSpazio("id")
  *                 type: array
  *                 items:
  *                   type: integer
- *                 description: Array di ID dei servizi
+ *                 description: Lista degli ID dei servizi da associare
  *     responses:
  *       200:
- *         description: Servizi impostati con successo
+ *         description: Servizi associati con successo
  *       400:
  *         description: Dati non validi
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato - Non hai i permessi per gestire questo spazio
  *       404:
  *         description: Spazio non trovato
  */
