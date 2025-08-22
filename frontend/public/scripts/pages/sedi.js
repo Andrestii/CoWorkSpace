@@ -1,56 +1,57 @@
-// scripts/sedi.js
+// ./scripts/pages/sedi.js
 $(document).ready(function () {
-   const apiUrl = apiConfig.apiUrl; // URL del backend
+    const apiBase = apiConfig.apiUrl + '/sedi';
+    const token = localStorage.getItem('authToken');
 
-    // Funzione per caricare le sedi
-    function caricaSedi() {
-        const token = localStorage.getItem('authToken'); // recupera il token salvato
-
-        if (!token) {
-            alert('Devi effettuare il login per vedere le sedi.');
-            window.location.href = 'login.html';
-            return;
-        }
-
-        $.ajax({
-            url: apiUrl + '/sedi/getAllSedi', // endpoint corretto
-            type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            success: function (response) {
-                $('#sedi-container').empty();
-
-                if (!response || response.length === 0) {
-                    $('#sedi-container').html('<p>Nessuna sede disponibile.</p>');
-                    return;
-                }
-
-                // Cicliamo le sedi e aggiungiamo HTML dinamico
-                response.forEach(sede => {
-                    const sedeHtml = `
-                        <div class="card mb-3">
-                            <img src="${sede.immagine_url}" class="card-img-top" alt="${sede.nome}">
-                            <div class="card-body">
-                                <h5 class="card-title">${sede.nome}</h5>
-                                <p class="card-text">${sede.indirizzo}</p>
-                                <p class="card-text"><small class="text-muted">${sede.citta}</small></p>
-                            </div>
-                        </div>
-                    `;
-                    $('#sedi-container').append(sedeHtml);
-                });
-            },
-            error: function (xhr) {
-                let errorMsg = 'Errore nel caricamento delle sedi.';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMsg = xhr.responseJSON.message;
-                }
-                $('#sedi-container').html(`<p class="text-danger">${errorMsg}</p>`);
-            }
-        });
+    if (!token) {
+        alert('Devi effettuare il login per vedere le sedi.');
+        window.location.href = 'login.html';
+        return;
     }
 
-    // Chiamata iniziale
-    caricaSedi();
+    $('#loading').show();
+    $('#errore').addClass('d-none');
+    $('#sedi-container').empty();
+
+    $.ajax({
+        url: `${apiBase}/getAllSedi`,
+        type: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+        .done(function (sedi) {
+            $('#loading').hide();
+
+            if (!sedi || sedi.length === 0) {
+                $('#sedi-container').html('<p class="text-center">Nessuna sede disponibile.</p>');
+                return;
+            }
+
+            sedi.forEach(sede => {
+                const imgSrc = sede.immagine || 'https://via.placeholder.com/400x250?text=Sede';
+                const cardHtml = `
+                                    <div class="col-md-4">
+                                    <div class="card h-100 shadow-sm">
+                                        <img src="${imgSrc}" class="card-img-top" alt="${sede.nome}">
+                                        <div class="card-body">
+                                        <h5 class="card-title">${sede.nome}</h5>
+                                        <p class="card-text text-muted">${sede.indirizzo}, ${sede.citta}</p>
+                                        <a href="sede.html?id=${sede.id}" class="btn btn-outline-primary mt-2">
+                                            <i class="fa-solid fa-circle-info me-1"></i> Dettagli
+                                        </a>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    `;
+
+                $('#sedi-container').append(cardHtml);
+            });
+        })
+        .fail(function (xhr) {
+            $('#loading').hide();
+            let msg = 'Errore nel caricamento delle sedi.';
+            if (xhr.responseJSON && (xhr.responseJSON.error || xhr.responseJSON.message)) {
+                msg = xhr.responseJSON.error || xhr.responseJSON.message;
+            }
+            $('#errore').removeClass('d-none').text(msg);
+        });
 });

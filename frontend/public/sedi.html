@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,6 +10,7 @@
   <link href="css/pagine/index.css" rel="stylesheet">
   <link href="css/pagine/sedi.css" rel="stylesheet">
 </head>
+
 <body>
 
   <!-- Navbar -->
@@ -22,15 +24,16 @@
     </div>
   </section>
 
-  <!-- Contenuto sede -->
-  <section class="container my-5" id="dettaglioSede">
+  <!-- Contenuto sedi -->
+  <section class="container my-5">
     <div id="loading" class="text-center my-5">
       <div class="spinner-border text-primary" role="status"></div>
-      <p>Caricamento dettagli sede...</p>
+      <p>Caricamento sedi...</p>
     </div>
     <div id="errore" class="text-center text-danger d-none mt-4">
-      Errore nel caricamento della sede. Riprova più tardi.
+      Errore nel caricamento delle sedi. Riprova più tardi.
     </div>
+    <div id="sedi-container" class="row g-4 mt-4"></div>
   </section>
 
   <!-- Footer -->
@@ -43,4 +46,5 @@
   <script src="scripts/config.js"></script>
   <script src="./scripts/pages/sedi.js"></script>
 </body>
+
 </html>
