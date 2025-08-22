@@ -16,7 +16,7 @@ const isGestore = require("../middleware/isGestore");
  * @swagger
  * /prenotazioni/createPrenotazione:
  *   post:
- *     summary: Crea una nuova prenotazione
+ *     summary: Crea una nuova prenotazione per l'utente autenticato
  *     tags: [Prenotazioni]
  *     security:
  *       - bearerAuth: []
@@ -25,18 +25,16 @@ const isGestore = require("../middleware/isGestore");
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               id_disponibilita:
- *                 type: integer
- *                 description: ID della disponibilità da prenotare
+ *             $ref: '#/components/schemas/Prenotazione'
  *     responses:
  *       201:
  *         description: Prenotazione creata con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Prenotazione'
  *       400:
  *         description: Dati non validi
- *       401:
- *         description: Non autorizzato
  */
 router.post("/createPrenotazione", authMiddleware, prenotazioniController.createPrenotazione);
 
@@ -44,21 +42,19 @@ router.post("/createPrenotazione", authMiddleware, prenotazioniController.create
  * @swagger
  * /prenotazioni/getMiePrenotazioni:
  *   get:
- *     summary: Ottiene la lista delle prenotazioni dell'utente
+ *     summary: Ottiene tutte le prenotazioni dell'utente autenticato
  *     tags: [Prenotazioni]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Lista delle prenotazioni
+ *         description: Lista delle prenotazioni dell'utente
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Prenotazione'
- *       401:
- *         description: Non autorizzato
  */
 router.get("/getMiePrenotazioni", authMiddleware, prenotazioniController.getPrenotazioniUtente);
 
@@ -66,7 +62,7 @@ router.get("/getMiePrenotazioni", authMiddleware, prenotazioniController.getPren
  * @swagger
  * /prenotazioni/updateStatoPrenotazione/{id}:
  *   put:
- *     summary: Aggiorna lo stato di una prenotazione
+ *     summary: Aggiorna lo stato di una prenotazione (solo gestore)
  *     tags: [Prenotazioni]
  *     security:
  *       - bearerAuth: []
@@ -76,7 +72,7 @@ router.get("/getMiePrenotazioni", authMiddleware, prenotazioniController.getPren
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID della prenotazione
+ *         description: ID della prenotazione da aggiornare
  *     requestBody:
  *       required: true
  *       content:
@@ -86,16 +82,16 @@ router.get("/getMiePrenotazioni", authMiddleware, prenotazioniController.getPren
  *             properties:
  *               stato:
  *                 type: string
- *                 enum: [confermata, rifiutata, in attesa]
+ *                 description: Nuovo stato della prenotazione
  *     responses:
  *       200:
- *         description: Stato aggiornato con successo
+ *         description: Stato prenotazione aggiornato
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Prenotazione'
  *       400:
  *         description: Dati non validi
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato
  *       404:
  *         description: Prenotazione non trovata
  */
@@ -103,13 +99,13 @@ router.put("/updateStatoPrenotazione/:id", authMiddleware, isGestore, prenotazio
 
 /**
  * @swagger
- * /prenotazioni/getPrenotazioniSpazio/{id_spazio}:
+ * /prenotazioni/getPrenotazioniSpazio/{id}:
  *   get:
- *     summary: Ottiene la lista delle prenotazioni per uno spazio specifico
+ *     summary: Ottiene tutte le prenotazioni di uno spazio specifico
  *     tags: [Prenotazioni]
  *     parameters:
  *       - in: path
- *         name: id_spazio
+ *         name: id
  *         schema:
  *           type: integer
  *         required: true

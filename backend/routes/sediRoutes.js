@@ -17,7 +17,7 @@ const upload = require("../middleware/upload");
  * @swagger
  * /sedi/getAllSedi:
  *   get:
- *     summary: Restituisce la lista di tutte le sedi
+ *     summary: Ottiene la lista di tutte le sedi
  *     tags: [Sedi]
  *     responses:
  *       200:
@@ -35,7 +35,7 @@ router.get("/getAllSedi", sediController.getAllSedi);
  * @swagger
  * /sedi/getAllSedi/{id}:
  *   get:
- *     summary: Restituisce una sede specifica tramite ID
+ *     summary: Ottiene i dettagli di una sede tramite ID
  *     tags: [Sedi]
  *     parameters:
  *       - in: path
@@ -43,7 +43,7 @@ router.get("/getAllSedi", sediController.getAllSedi);
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID della sede da recuperare
+ *         description: ID della sede
  *     responses:
  *       200:
  *         description: Dettagli della sede
@@ -60,14 +60,14 @@ router.get("/getAllSedi/:id", sediController.getSedeById);
  * @swagger
  * /sedi/createSede:
  *   post:
- *     summary: Crea una nuova sede
+ *     summary: Crea una nuova sede (solo gestore)
  *     tags: [Sedi]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/Sede'
  *     responses:
@@ -79,10 +79,6 @@ router.get("/getAllSedi/:id", sediController.getSedeById);
  *               $ref: '#/components/schemas/Sede'
  *       400:
  *         description: Dati non validi
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato - Solo i gestori possono creare sedi
  */
 router.post("/createSede", authMiddleware, isGestore, upload.single("immagine"), sediController.createSede);
 
@@ -90,7 +86,7 @@ router.post("/createSede", authMiddleware, isGestore, upload.single("immagine"),
  * @swagger
  * /sedi/updateSede/{id}:
  *   put:
- *     summary: Aggiorna una sede esistente
+ *     summary: Aggiorna una sede esistente (solo gestore)
  *     tags: [Sedi]
  *     security:
  *       - bearerAuth: []
@@ -104,22 +100,18 @@ router.post("/createSede", authMiddleware, isGestore, upload.single("immagine"),
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/Sede'
  *     responses:
  *       200:
- *         description: Sede aggiornata con successo
+ *         description: Sede aggiornata
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Sede'
  *       400:
  *         description: Dati non validi
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato - Non hai i permessi per gestire questa sede
  *       404:
  *         description: Sede non trovata
  */
@@ -129,7 +121,7 @@ router.put("/updateSede/:id", authMiddleware, isGestore, canManageSede("id"), up
  * @swagger
  * /sedi/deleteSede/{id}:
  *   delete:
- *     summary: Elimina una sede esistente
+ *     summary: Elimina una sede (solo gestore)
  *     tags: [Sedi]
  *     security:
  *       - bearerAuth: []
@@ -142,11 +134,7 @@ router.put("/updateSede/:id", authMiddleware, isGestore, canManageSede("id"), up
  *         description: ID della sede da eliminare
  *     responses:
  *       200:
- *         description: Sede eliminata con successo
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato - Non hai i permessi per gestire questa sede
+ *         description: Sede eliminata
  *       404:
  *         description: Sede non trovata
  */
@@ -156,7 +144,7 @@ router.delete("/deleteSede/:id", authMiddleware, isGestore, canManageSede("id"),
  * @swagger
  * /sedi/attivaSede/{id}:
  *   put:
- *     summary: Attiva/disattiva una sede esistente
+ *     summary: Attiva una sede (solo gestore)
  *     tags: [Sedi]
  *     security:
  *       - bearerAuth: []
@@ -166,18 +154,14 @@ router.delete("/deleteSede/:id", authMiddleware, isGestore, canManageSede("id"),
  *         schema:
  *           type: integer
  *         required: true
- *         description: ID della sede da attivare/disattivare
+ *         description: ID della sede da attivare
  *     responses:
  *       200:
- *         description: Stato della sede modificato con successo
+ *         description: Sede attivata
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Sede'
- *       401:
- *         description: Non autorizzato
- *       403:
- *         description: Accesso negato - Non hai i permessi per gestire questa sede
  *       404:
  *         description: Sede non trovata
  */
