@@ -1,17 +1,22 @@
-version: "3.8"
-
 services:
-  frontend:
-    build: ./frontend
-    ports:
-      - "8080:80"
-
   backend:
-    build: ./backend
+    build:
+      context: ./backend
     ports:
       - "3000:3000"
-    environment:
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_KEY=${SUPABASE_KEY}
     env_file:
       - ./backend/.env
+    environment:
+      NODE_ENV: development
+    volumes:              
+      - ./backend:/app
+      - /app/node_modules
+    command: sh -c "npm run dev || node index.js"
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend

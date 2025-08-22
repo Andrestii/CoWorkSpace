@@ -15,9 +15,17 @@ Piattaforma web per la gestione di spazi di coworking distribuiti in tutta Itali
 
 ---
 
-## 🖥 Avvio del progetto in locale
+## 🖥 Avvio del progetto
 
-### 🔧 Backend
+Puoi avviare il progetto in **due modi**:  
+1. **Locale (Node.js + Live Server)**  
+2. **Docker Compose (containerizzati)**
+
+---
+
+### 🔧 Opzione 1 – Avvio in locale
+
+#### Backend
 
 ```bash
 cd backend
@@ -27,9 +35,7 @@ node index.js
 
 Server attivo su: `http://localhost:3000`
 
----
-
-### 🧩 Frontend
+#### Frontend
 
 Apri direttamente:
 
@@ -38,6 +44,46 @@ frontend/public/index.html
 ```
 
 oppure avvia un server locale (es. estensione **Live Server** di VSCode).
+
+---
+
+### 🐳 Opzione 2 – Avvio con Docker
+
+Il progetto può essere avviato con **Docker Compose**, che gestisce separatamente **backend** e **frontend**.
+
+#### Avvio container
+
+```bash
+docker compose up --build
+```
+
+#### Arresto dei container
+
+```bash
+docker compose down
+```
+
+#### Ricostruzione completa (dopo modifiche)
+
+```bash
+docker compose down --remove-orphans
+docker compose build --no-cache
+docker compose up
+```
+
+#### 🌐 Servizi esposti
+
+- **Backend** → `http://localhost:3000`  
+- **Frontend** → `http://localhost:8080`  
+
+#### 🔄 Aggiornamenti
+
+- **Backend** → grazie a `nodemon` le modifiche vengono rilevate automaticamente e il server si riavvia.  
+- **Frontend** → Se modifichi file HTML/CSS/JS è necessario ricostruire con:
+
+```bash
+docker compose up --build
+```
 
 ---
 
@@ -61,9 +107,9 @@ coworkspace/
 
 ## 📦 Tecnologie
 
-- **Frontend**: HTML, CSS, JavaScript, Bootstrap, jQuery
-- **Backend**: Node.js, Express, JWT
-- **Database**: Supabase (PostgreSQL)
+- **Frontend**: HTML, CSS, JavaScript, Bootstrap, jQuery  
+- **Backend**: Node.js, Express, JWT  
+- **Database**: Supabase (PostgreSQL)  
 
 ---
 
@@ -117,5 +163,3 @@ Schema principale (estratto da `.sql`):
 - `prenotazioni` → prenotazioni utenti
 - `pagamenti` → gestione transazioni
 - `gestori_sedi` → associazione gestori ↔ sedi
-
----
