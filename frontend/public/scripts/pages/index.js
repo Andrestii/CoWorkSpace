@@ -1,111 +1,95 @@
-// Esempio dinamico
-$(document).ready(function () {
-    if (Auth.isLoggedIn()) {
-        $("#registratiButton").remove();
-        $("#loginButton").remove();
-    }
-
-    // Esempio di sedi (in assenza di API)
-    const sediEsempio = [
-        {
-            id: 101,
-            nome: "CoWorkSpace Milano – Porta Nuova",
-            citta: "Milano",
-            indirizzo: "Via della Moscova 12",
-            immagine:
-                "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=60"
-        },
-        {
-            id: 102,
-            nome: "CoWorkSpace Roma – Trastevere Hub",
-            citta: "Roma",
-            indirizzo: "Via dei Riari 25",
-            immagine:
-                "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=60"
-        },
-        {
-            id: 103,
-            nome: "CoWorkSpace Torino – San Salvario",
-            citta: "Torino",
-            indirizzo: "Corso Marconi 18",
-            immagine:
-                "https://images.unsplash.com/photo-1552581234-26160f608093?auto=format&fit=crop&w=1200&q=60"
+// ./scripts/pages/index.js
+$(function () {
+    // Effetto ombra navbar on scroll (opzionale se non lo fai in navbar.js)
+    $(window).on('scroll', function () {
+        if ($(window).scrollTop() > 50) {
+            $('.navbar').addClass('shadow-lg');
+        } else {
+            $('.navbar').removeClass('shadow-lg');
         }
-    ];
-
-    // Prova prima con l'API, se fallisce usa gli esempi
-    $.get("/api/sedi/getAllSedi", function (sedi) {
-        renderSedi(sedi);
-    }).fail(function () {
-        renderSedi(sediEsempio);
     });
 
-    if (localStorage.getItem("authToken")) {
+    // Carica 3 sedi random dal backend
+    loadFeaturedSedi();
+
+    function loadFeaturedSedi() {
+        const url = `${apiConfig.apiUrl}/sedi/getAllSedi`;
+
         $.ajax({
-            url: apiConfig.apiUrl + "/users/me",
-            type: "GET",
-            contentType: "application/json",
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("authToken"),
-            },
+            url,
+            method: 'GET'
         })
-            .done(function (response) {
-                console.log(response);
-                if (response.ruolo === "gestore" || response.ruolo === "Gestore") {
-                    // Prima recupera l'ID del negozio del gestore
-                    $.ajax({
-                        url: apiConfig.apiUrl + "/sedes/getSedeByUserId/" + response.id,
-                        type: "GET",
-                        contentType: "application/json"
-                    })
-                        .done(function (sedeData) {
-                            // Quando abbiamo l'ID della sede creiamo il link corretto
-                            $("#navbarNav").append(`
-              <a class="nav-link btn" href="sede.html?id=${sedeData.id}">
-                <i class="fas fa-archive me-1"></i>Gestisci la tua sede
-              </a>
-            `);
-                        })
-                        .fail(function (error) {
-                            // Se il gestore non ha ancora una sede, offri l'opzione di crearne uno
-                            console.error("Errore nel recupero delle sedi:", error);
-                            $("#navbarNav").append(`
-              <a class="nav-link btn" href="register.html?step=2">
-                <i class="fas fa-plus-circle me-1"></i>Crea la tua sede
-              </a>
-            `);
-                        });
+            .done(function (sedi) {
+                if (!Array.isArray(sedi) || sedi.length === 0) {
+                    // fallback se non ci sono sedi
+                    renderSediCards([]);
+                    return;
                 }
+
+                const randomThree = pickRandom(sedi, 3);
+                renderSediCards(randomThree);
             })
-            .fail(function (error) {
-                console.error("Errore:", error);
+            .fail(function () {
+                // fallback statico minimale
+                const fallback = [
+                    { id: 0, nome: 'Sede Milano Navigli', indirizzo: 'Via Giovanni B., 12', citta: 'Milano', immagine: null },
+                    { id: 0, nome: 'Sede Roma Centro', indirizzo: 'Via delle Arti, 5', citta: 'Roma', immagine: null },
+                    { id: 0, nome: 'Sede Bologna Fiera', indirizzo: 'Viale Europa, 20', citta: 'Bologna', immagine: null }
+                ];
+                renderSediCards(fallback);
             });
     }
 
-    function renderSedi(servizi) {
-        servizi.forEach((prod) => {
-            $("#products").append(`
-                        <div class="col-lg-4 col-md-6">
-                            <div class="card h-100 shadow-sm prodotto-card">
-                                <img src="${prod.immagine || "https://via.placeholder.com/400x250"}" class="card-img-top" 
-                                    alt="${prod.nome}">
-                                <div class="card-body">
-                                    <h5 class="card-title">${prod.nome}</h5>
-                                    <p class="card-text">€${prod.prezzo}</p>
-                                    <button class="btn btn-sm btn-outline-primary mt-2">Aggiungi al carrello</button>
-                                </div>
-                            </div>
-                        </div>
-                    `);
+    function pickRandom(arr, n) {
+        const copy = arr.slice();
+        // Fisher–Yates shuffle in-place
+        for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy.slice(0, Math.min(n, copy.length));
+    }
+
+    function renderSediCards(list) {
+        const $grid = $('#products').empty();
+
+        if (!list.length) {
+            $grid.append(`
+        <div class="col-12">
+          <p class="text-center text-muted">Nessuna sede disponibile al momento.</p>
+        </div>
+      `);
+            return;
+        }
+
+        list.forEach(sede => {
+            const img = sede.immagine || 'https://via.placeholder.com/600x360?text=Sede';
+            const indirizzo = [sede.indirizzo, sede.citta].filter(Boolean).join(', ');
+            const id = sede.id || ''; // se fallback non ha id, link disabilitato
+
+            $grid.append(`
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 shadow-sm prodotto-card">
+            <img src="${img}" class="card-img-top" alt="${escapeHtml(sede.nome || 'Sede')}">
+            <div class="card-body">
+              <h5 class="card-title mb-1">${escapeHtml(sede.nome || 'Sede')}</h5>
+              <p class="card-text text-muted">${escapeHtml(indirizzo)}</p>
+              ${id !== ''
+                    ? `<a class="btn btn-sm btn-outline-primary mt-2" href="sede.html?id=${id}">
+                     <i class="fa-solid fa-circle-info me-1"></i> Dettagli
+                   </a>`
+                    : `<button class="btn btn-sm btn-outline-secondary mt-2" disabled>Dettagli</button>`
+                }
+            </div>
+          </div>
+        </div>
+      `);
         });
     }
 
-    // Navbar scroll effect
-    $(window).scroll(function () {
-        if ($(window).scrollTop() > 50) {
-            $(".navbar").addClass("shadow-lg");
-        } else {
-            $(".navbar").removeClass("shadow-lg");
-        }
-    });
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, s => (
+            { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[s]
+        ));
+    }
 });
