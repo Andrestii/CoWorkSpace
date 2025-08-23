@@ -33,7 +33,18 @@
     <div id="errore" class="text-center text-danger d-none mt-4">
       Errore nel caricamento delle sedi. Riprova più tardi.
     </div>
-    <div id="sedi-container" class="row g-4 mt-4"></div>
+
+  <!-- Filtro per Regione (dinamico) -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <label for="filtroRegione" class="form-label fw-bold">Filtra per regione</label>
+      <select id="filtroRegione" class="form-select" disabled>
+        <option value="">Caricamento regioni...</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="sedi-container" class="row g-4 mt-4"></div>
   </section>
 
   <!-- footer -->

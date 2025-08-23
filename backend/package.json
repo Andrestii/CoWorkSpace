@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "jest --runInBand"
   },
@@ -10,10 +11,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@supabase/supabase-js": "^2.55.0",
-    "bcrypt": "^6.0.0",
+    "@supabase/supabase-js": "^2.56.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
+    "dotenv": "^16.4.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
@@ -21,7 +21,6 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "cross-env": "^10.0.0",
     "jest": "^30.0.5",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4"

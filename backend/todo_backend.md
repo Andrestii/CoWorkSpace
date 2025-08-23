@@ -56,31 +56,27 @@
 ### 🔗 ROTTE DA REGISTRARE
 - [x] `/api/sedi/`
 - [x] `/api/spazi/`
-- [ ] `/api/servizi/`
+- [x] `/api/servizi/`
 - [x] `/api/disponibilita/`
 - [x] `/api/prenotazioni/`
-- [ ] `/api/pagamenti/`
-- [ ] `/api/gestori-sedi/`
+- [x] `/api/pagamenti/`
+- [x] `/api/gestori-sedi/`
 
 ---
 
 ### ✨ FUNZIONALITÀ EXTRA
 - [ ] Email di notifica (conferma prenotazione, modifica disponibilità)
-- [ ] Swagger per documentazione API
-- [ ] Logging (con `winston` o simili)
-- [ ] Validazione input con `Joi` o `express-validator`
+- [x] Swagger per documentazione API
 
 ---
 
 ### 🧪 TESTING
-- [ ] Unit test per ogni model (Jest)
-- [ ] Test API (Postman o Supertest)
-- [ ] Mock utenti/sedi/prenotazioni per test demo
+- [x] Unit test per ogni model (Jest)
+- [x] Test API (Postman o Supertest)
+- [x] Mock utenti/sedi/prenotazioni per test demo
 
 ---
 
 ### 📦 DEPLOY (futuro)
-- [ ] Dockerfile backend
-- [x] Config GitHub Actions CI/CD
-- [ ] Deploy su AWS o GCP (Firebase Hosting, App Engine, ECS…)
+- [x] Dockerfile backend
 
