@@ -96,7 +96,7 @@ function caricaSpaziDellaSede(idSede) {
 }
 
 function renderCardSpazio(spazio) {
-  const img = spazio.immagine || 'https://via.placeholder.com/800x500?text=Spazio';
+  const img = spazio.immagine || './assets/images/default-spazio.jpg'; // Da aggiungere default-spazio.jpg
   const cap = Number.isFinite(spazio.capienza) ? `${spazio.capienza} posti` : '—';
   const prezzo = (spazio.prezzo_orario != null) ? `${Number(spazio.prezzo_orario).toFixed(2)} € / h` : '—';
   const labelTipologia = spazio.tipologia  ? spazio.tipologia.charAt(0).toUpperCase() + spazio.tipologia.slice(1).toLowerCase()  : '';
