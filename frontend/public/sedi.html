@@ -34,15 +34,39 @@
       Errore nel caricamento delle sedi. Riprova più tardi.
     </div>
 
-  <!-- Filtro per Regione (dinamico) -->
-  <div class="row mb-4">
-    <div class="col-md-4">
-      <label for="filtroRegione" class="form-label fw-bold">Filtra per regione</label>
-      <select id="filtroRegione" class="form-select" disabled>
-        <option value="">Caricamento regioni...</option>
-      </select>
-    </div>
+  <!-- FILTRI SEDI -->
+<div class="row g-3 align-items-end mb-4" id="sedi-filters">
+  <div class="col-md-3">
+    <label for="filtroCitta" class="form-label fw-bold">Città</label>
+    <select id="filtroCitta" class="form-select" disabled>
+      <option value="">Tutte</option>
+    </select>
   </div>
+
+  <div class="col-md-3">
+    <label for="filtroTipologia" class="form-label fw-bold">Tipologia spazio</label>
+    <select id="filtroTipologia" class="form-select">
+      <option value="">Tutte</option>
+      <option value="postazione">Postazione</option>
+      <option value="ufficio">Ufficio</option>
+      <option value="sala_riunioni">Sala riunioni</option>
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <label for="filtroServizi" class="form-label fw-bold">Servizi</label>
+    <select id="filtroServizi" class="form-select" disabled>
+      <option value="">Tutti</option>
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <label for="filtroData" class="form-label fw-bold">Data</label>
+    <input id="filtroData" type="date" class="form-control" />
+  </div>
+
+</div>
+
 
   <div id="sedi-container" class="row g-4 mt-4"></div>
   </section>
