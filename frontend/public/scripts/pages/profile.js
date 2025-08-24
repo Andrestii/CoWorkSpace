@@ -51,8 +51,8 @@ $(document).ready(function () {
     // 1) preferisci signed URL dal backend (profileImageUrl)
     // 2) altrimenti costruisci public URL dal path (profile_image)
     const profileUrl =
-      user.profileImageUrl ||
-      (user.profile_image ? supaPublicUrl(user.profile_image) : null);
+      user.profileImageUrl || user.profile_image || null;
+
 
     setImg($("#profile-image"), profileUrl, "https://via.placeholder.com/120?text=Avatar");
 

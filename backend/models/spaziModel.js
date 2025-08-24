@@ -1,4 +1,3 @@
-// backend/models/spaziModel.js
 const supabase = require("../config/database");
 
 const TABLE_SPAZI = "spazi";
@@ -6,8 +5,19 @@ const TABLE_SPAZI_SERVIZI = "spazi_servizi";
 
 class SpaziModel {
     async listBySede(idSede) {
-        let q = supabase.from(TABLE_SPAZI).select("*").eq("attivo", true);
+        let q = supabase
+            .from(TABLE_SPAZI)
+            .select(`
+                *,
+                spazi_servizi (
+                    id_servizio,
+                    servizi ( id, nome )
+                )
+            `)
+            .eq("attivo", true);
+
         if (idSede) q = q.eq("id_sede", idSede);
+
         const { data, error } = await q.order("id", { ascending: true });
         if (error) throw error;
         return data;
@@ -25,12 +35,7 @@ class SpaziModel {
             immagine: payload.immagine || null,
         };
 
-        const { data, error } = await supabase
-            .from(TABLE_SPAZI)
-            .insert(body)
-            .select()
-            .single();
-
+        const { data, error } = await supabase.from(TABLE_SPAZI).insert(body).select().single();
         if (error) throw error;
         return data;
     }
@@ -45,13 +50,7 @@ class SpaziModel {
         if (changes.attivo !== undefined) toUpdate.attivo = !!changes.attivo;
         if (changes.immagine !== undefined) toUpdate.immagine = changes.immagine;
 
-        const { data, error } = await supabase
-            .from(TABLE_SPAZI)
-            .update(toUpdate)
-            .eq("id", Number(id))
-            .select()
-            .single();
-
+        const { data, error } = await supabase.from(TABLE_SPAZI).update(toUpdate).eq("id", Number(id)).select().single();
         if (error) throw error;
         return data;
     }
@@ -80,7 +79,6 @@ class SpaziModel {
         return data;
     }
 
-    // sovrascrive i collegamenti servizi<->spazio
     async setServizi(spazioId, serviziIds = []) {
         const del = await supabase.from(TABLE_SPAZI_SERVIZI).delete().eq("id_spazio", Number(spazioId));
         if (del.error) throw del.error;
@@ -92,14 +90,52 @@ class SpaziModel {
             id_servizio: Number(idServizio),
         }));
 
-        const { data, error } = await supabase
-            .from(TABLE_SPAZI_SERVIZI)
-            .insert(rows)
-            .select();
-
+        const { data, error } = await supabase.from(TABLE_SPAZI_SERVIZI).insert(rows).select();
         if (error) throw error;
         return data;
     }
+
+    async listBySedeAndServizio(idSede, servizioNome) {
+        let q = supabase
+            .from(TABLE_SPAZI)
+            .select(`
+                *,
+                spazi_servizi (
+                    servizi ( id, nome )
+                )
+            `)
+            .eq("attivo", true);
+
+        if (idSede) q = q.eq("id_sede", idSede);
+        if (servizioNome) q = q.ilike("spazi_servizi.servizi.nome", `%${servizioNome}%`);
+
+        const { data, error } = await q.order("id", { ascending: true });
+        if (error) throw error;
+        return data;
+    }
+
+    async addServizioToSpazio(spazioId, servizioId) {
+        // usa upsert per evitare errore su duplicati (PK: id_spazio, id_servizio)
+        const { data, error } = await supabase
+            .from("spazi_servizi")
+            .upsert({ id_spazio: Number(spazioId), id_servizio: Number(servizioId) }, { onConflict: "id_spazio,id_servizio" })
+            .select()
+            .single();
+        if (error) throw error;
+        return data;
+    }
+
+    async removeServizioFromSpazio(spazioId, servizioId) {
+        const { data, error } = await supabase
+            .from("spazi_servizi")
+            .delete()
+            .eq("id_spazio", Number(spazioId))
+            .eq("id_servizio", Number(servizioId))
+            .select();
+        if (error) throw error;
+        return data;
+    }
+
 }
 
 module.exports = new SpaziModel();

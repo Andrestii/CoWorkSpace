@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Carrello - CoWorkSpace</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="css/pagine/index.css" rel="stylesheet" />
+  <link href="css/pagine/sedi.css" rel="stylesheet" />
+  <style>
+    .pc-card-img{width:100%;height:360px;overflow:hidden;background:#f5f5f5;border-radius:12px}
+    .pc-card-img img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+    @media (min-width: 992px){ .pc-card-img{height:420px} }
+    .summary-box .row + .row { margin-top: .35rem; }
+    .form-hint{font-size:.9rem;color:#6c757d}
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="hero d-flex align-items-center text-white" style="margin-top:80px;height:32vh;">
+    <div class="container text-center">
+      <h1 class="display-5 fw-bold">Completa la prenotazione</h1>
+      <p class="lead">Seleziona data e orari per il tuo spazio</p>
+    </div>
+  </section>
+
+  <section class="container my-5" id="cartContent">
+    <div id="loading" class="text-center my-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p>Caricamento dati dello spazio...</p>
+    </div>
+    <div id="errore" class="alert alert-danger d-none"></div>
+
+    <!-- Dettaglio + form -->
+    <div id="cartBody" class="row g-4 d-none">
+      <!-- Colonna immagine -->
+      <div class="col-lg-6">
+        <div class="pc-card-img mb-2">
+          <img id="spazioImg" src="" alt="Spazio" />
+        </div>
+      </div>
+
+      <!-- Colonna info + form -->
+      <div class="col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h2 id="spazioNome" class="mb-1">Spazio</h2>
+            <p id="spazioDescr" class="text-muted"></p>
+
+            <ul class="list-unstyled mb-4">
+              <li id="sedeNomeRow"></li>
+              <li id="sedeAddrRow" class="text-muted"></li>
+              <li><strong>Tipologia:</strong> <span id="spazioTipologia">-</span></li>
+              <li><strong>Capienza:</strong> <span id="spazioCapienza">-</span></li>
+              <li><strong>Prezzo orario:</strong> <span id="spazioPrezzo">-</span></li>
+            </ul>
+
+            <hr />
+
+            <!-- Form prenotazione -->
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="dataPren" class="form-label">Data</label>
+                <input type="date" class="form-control" id="dataPren" />
+                <div class="form-hint">Seleziona la data</div>
+              </div>
+              <div class="col-md-3">
+                <label for="oraInizio" class="form-label">Ora inizio</label>
+                <input type="time" class="form-control" id="oraInizio" step="900" />
+              </div>
+              <div class="col-md-3">
+                <label for="oraFine" class="form-label">Ora fine</label>
+                <input type="time" class="form-control" id="oraFine" step="900" />
+              </div>
+            </div>
+
+            <div id="formError" class="alert alert-warning mt-3 d-none"></div>
+
+            <div class="summary-box bg-light rounded p-3 mt-3">
+              <div class="row">
+                <div class="col-6 text-muted">Durata</div>
+                <div class="col-6 text-end"><strong id="durataTxt">-</strong></div>
+              </div>
+              <div class="row">
+                <div class="col-6 text-muted">Totale</div>
+                <div class="col-6 text-end"><strong id="totaleTxt">-</strong></div>
+              </div>
+            </div>
+
+            <button id="btnConferma" class="btn btn-primary btn-lg w-100 mt-3" disabled>
+              <i class="fa-solid fa-check me-2"></i>Conferma e vai al pagamento
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-5 mt-5">
+    <div class="container">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <p class="mb-md-0">&copy; 2025 CoWorkSpace. Tutti i diritti riservati.</p>
+        <div>
+          <a href="#" class="text-white-50 me-3">Privacy Policy</a>
+          <a href="#" class="text-white-50">Termini di Servizio</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="./scripts/partials/navbar.js"></script>
+  <script src="scripts/config.js"></script>
+  <script src="./scripts/pages/carrello.js"></script>
+</body>
+</html>
