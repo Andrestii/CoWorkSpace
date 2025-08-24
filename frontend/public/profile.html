@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Il Mio Profilo - CoWorkSpace</title>
 
   <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <!-- Styles -->
-  <link href="css/pagine/index.css" rel="stylesheet">
-  <link href="css/pagine/profile.css" rel="stylesheet">
+  <link href="css/pagine/index.css" rel="stylesheet" />
+  <link href="css/pagine/profile.css" rel="stylesheet" />
 </head>
 <body>
-
   <!-- Navbar -->
   <div id="navbar-placeholder"></div>
 
   <!-- Profile Page -->
-  <div class="profile-container container py-5" id="profile-container">
+  <div class="profile-container container py-5" id="profile-container" style="padding-top: 110px;">
     <div class="profile-header mb-5 d-flex justify-content-between align-items-center">
       <div>
         <h1 class="mb-2">Il Mio Profilo</h1>
@@ -39,9 +38,9 @@
         <div class="profile-sidebar p-3 rounded shadow-sm">
           <div class="user-info text-center mb-4">
             <div class="avatar-container mb-3 position-relative">
-              <img src="https://via.placeholder.com/120" alt="Avatar" class="rounded-circle user-avatar" id="profile-image">
+              <img src="https://via.placeholder.com/120" alt="Avatar" class="rounded-circle user-avatar" id="profile-image" />
               <div class="avatar-edit" id="avatar-edit-btn"><i class="fas fa-camera"></i></div>
-              <input type="file" id="avatar-upload" accept="image/*" hidden>
+              <input type="file" id="avatar-upload" accept="image/*" hidden />
             </div>
             <h5 id="user-name">Nome Cognome</h5>
             <p class="text-muted" id="user-email">email@email.com</p>
@@ -60,15 +59,8 @@
               <i class="fas fa-calendar-check me-2"></i> Le mie prenotazioni
               <span class="badge bg-secondary ms-auto d-none">0</span>
             </div>
-            <div class="nav-item" data-target="pagamenti">
-              <i class="fas fa-credit-card me-2"></i> Metodi di pagamento
-              <span class="badge bg-secondary ms-auto d-none">0</span>
-            </div>
-            <div class="nav-item" data-target="sicurezza">
-              <i class="fas fa-lock me-2"></i> Sicurezza
-            </div>
 
-            <!-- Solo Gestore (mostrato via JS) -->
+            <!-- Solo Gestore (mostrate via JS se ruolo=gestore) -->
             <div class="nav-item nav-gestore d-none" data-target="dash-gestore">
               <i class="fas fa-chart-line me-2"></i> Dashboard gestore
             </div>
@@ -90,7 +82,6 @@
       <!-- Contenuti -->
       <section class="col-lg-9">
         <div class="profile-content-container">
-
           <!-- Info Personali -->
           <div class="content-section active" id="info-personali">
             <div class="content-card p-4 shadow-sm rounded">
@@ -107,24 +98,24 @@
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Nome</label>
-                    <input type="text" class="form-control" id="nome" readonly>
+                    <input type="text" class="form-control" id="nome" readonly />
                   </div>
                   <div class="col-md-6 mb-3">
                     <label class="form-label">Cognome</label>
-                    <input type="text" class="form-control" id="cognome" readonly>
+                    <input type="text" class="form-control" id="cognome" readonly />
                   </div>
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Email</label>
-                  <input type="email" class="form-control" id="email" readonly>
+                  <input type="email" class="form-control" id="email" readonly />
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Telefono</label>
-                  <input type="text" class="form-control" id="telefono" readonly>
+                  <input type="text" class="form-control" id="telefono" readonly />
                 </div>
                 <div class="mb-3">
                   <label class="form-label">Data di nascita</label>
-                  <input type="date" class="form-control" id="data-nascita" readonly>
+                  <input type="date" class="form-control" id="data-nascita" readonly />
                 </div>
                 <div class="text-end">
                   <button type="button" class="btn btn-outline-secondary me-2 d-none" id="cancel-edit">Annulla</button>
@@ -134,12 +125,11 @@
             </div>
           </div>
 
-          <!-- Cliente -->
+          <!-- Cliente: Le mie prenotazioni -->
           <div class="content-section" id="prenotazioni"></div>
-          <div class="content-section" id="pagamenti"></div>
 
-          <!-- Gestore: dashboard sintetica -->
-          <div class="content-section" id="dash-gestore" style="display:none;">
+          <!-- Gestore: Dashboard sintetica -->
+          <div class="content-section" id="dash-gestore" style="display: none;">
             <div class="row g-3">
               <div class="col-md-4">
                 <div class="kpi-card">
@@ -169,8 +159,8 @@
             </div>
           </div>
 
-          <!-- Gestore: le mie sedi -->
-          <div class="content-section" id="mie-sedi" style="display:none;">
+          <!-- Gestore: Le mie sedi -->
+          <div class="content-section" id="mie-sedi" style="display: none;">
             <div class="content-header">
               <h4>Le mie sedi</h4>
               <a href="sedi.html" class="btn btn-sm btn-outline-primary">Vai a Sedi</a>
@@ -180,8 +170,8 @@
             </div>
           </div>
 
-          <!-- Gestore: prenotazioni ricevute -->
-          <div class="content-section" id="prenotazioni-gestore" style="display:none;">
+          <!-- Gestore: Prenotazioni ricevute -->
+          <div class="content-section" id="prenotazioni-gestore" style="display: none;">
             <div class="content-header">
               <h4>Prenotazioni ricevute</h4>
             </div>
@@ -190,7 +180,13 @@
                 <table class="table align-middle" id="tab-pren-gestore">
                   <thead>
                     <tr>
-                      <th>#</th><th>Data</th><th>Sede</th><th>Cliente</th><th>Orario</th><th>Totale</th><th>Stato</th>
+                      <th>#</th>
+                      <th>Data</th>
+                      <th>Sede</th>
+                      <th>Cliente</th>
+                      <th>Orario</th>
+                      <th>Totale</th>
+                      <th>Stato</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -199,19 +195,21 @@
             </div>
           </div>
 
-          <!-- Gestore: disponibilità -->
-          <div class="content-section" id="disponibilita" style="display:none;">
+          <!-- Gestore: Disponibilità -->
+          <div class="content-section" id="disponibilita" style="display: none;">
             <div class="content-header">
               <h4>Gestione disponibilità</h4>
-              <a href="#" class="btn btn-sm btn-outline-secondary disabled">(+ in arrivo)</a>
             </div>
             <div class="content-body">
-              <p class="text-muted">Qui potrai definire orari e slot prenotabili per ogni tua sede.</p>
+              <p class="text-muted">Qui puoi creare, modificare o eliminare disponibilità degli spazi che gestisci.</p>
+
+              <!-- Lista spazi + disponibilità (JS) -->
+              <div id="disp-spazi-list" class="row g-3"></div>
+
+              <!-- Modal Crea/Modifica disponibilità (creata dinamicamente da JS se serve)
+                   Se preferisci mantenerla staticamente, puoi incollare qui il markup che il JS crea -->
             </div>
           </div>
-
-          <!-- (Opzionale) Altre sezioni comuni -->
-          <div class="content-section" id="sicurezza"></div>
         </div>
       </section>
     </div>
@@ -226,6 +224,8 @@
   <script src="./scripts/config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- Auth helpers & pagina -->
   <script src="./scripts/auth.js"></script>
   <script src="./scripts/pages/profile.js"></script>
   <script src="./scripts/partials/navbar.js"></script>
