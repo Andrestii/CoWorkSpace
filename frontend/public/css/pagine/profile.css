@@ -1,6 +1,4 @@
-/* =======================
-   PROFILO UTENTE
-   ======================= */
+/* PROFILO UTENTE */
 .profile-container {
     min-height: 100vh;
     padding-top: 130px;
@@ -14,9 +12,7 @@
     font-family: 'Playfair Display', serif;
 }
 
-/* =======================
-   SIDEBAR
-   ======================= */
+/* SIDEBAR */
 .profile-sidebar {
     background: #fff;
     border-radius: 15px;
@@ -113,9 +109,7 @@
     width: 60%;
 }
 
-/* =======================
-   AREA CONTENUTI
-   ======================= */
+/* AREA CONTENUTI */
 
 .profile-content-container {
     padding: 20px;
@@ -149,9 +143,7 @@
 
 .content-body { padding: 30px; }
 
-/* =======================
-   FORMS & BOTTONI
-   ======================= */
+/* FORMS & BOTTONI */
 .form-control:focus {
     border-color: #9c6644;
     box-shadow: 0 0 0 0.25rem rgba(156, 102, 68, 0.25);
@@ -177,9 +169,7 @@
     color: #333;
 }
 
-/* =======================
-   PRENOTAZIONI PASSATE
-   ======================= */
+/* PRENOTAZIONI PASSATE */
 .booking-item {
     margin-bottom: 25px;
     border: 1px solid #eee;
@@ -227,9 +217,7 @@
     color: #5c3c2c;
 }
 
-/* =======================
-   INDIRIZZI
-   ======================= */
+/* INDIRIZZI */
 .address-item {
     padding: 20px;
     border: 1px solid #eee;
@@ -251,9 +239,7 @@
     text-transform: uppercase;
 }
 
-/* =======================
-   METODI DI PAGAMENTO
-   ======================= */
+/* METODI DI PAGAMENTO */
 .payment-method-item {
     display: flex;
     align-items: center;
@@ -343,9 +329,7 @@
 /* Nav gestore flag (già hidden via d-none in HTML) */
 .profile-nav .nav-item.nav-gestore i { color: #5c3c2c; }
 
-/* =======================
-   RESPONSIVE
-   ======================= */
+/* RESPONSIVE */
 @media (max-width: 991px) {
     .profile-container .row {flex-direction: column; }
     .profile-sidebar { margin-bottom: 30px; margin-bottom: 20px }
