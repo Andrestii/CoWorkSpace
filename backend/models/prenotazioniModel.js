@@ -13,7 +13,7 @@ class PrenotazioniModel {
             ora_inizio: payload.ora_inizio, // formato: HH:MM:SS
             ora_fine: payload.ora_fine,     // formato: HH:MM:SS
             importo: payload.importo !== undefined ? Number(payload.importo) : null,
-            stato: payload.stato || "in_attesa", // in_attesa | confermato | pagato | annullato
+            stato: payload.stato || "pagato",
             id_transazione_pagamento: payload.id_transazione_pagamento || null,
             data_creazione: new Date().toISOString(),
         };
@@ -41,7 +41,7 @@ class PrenotazioniModel {
     }
 
     // Aggiorna stato di una prenotazione (confermato/pagato/annullato)
-     async updateStato(id, nuovoStato) {
+    async updateStato(id, nuovoStato) {
         const { data, error } = await supabase
             .from(TABLE_PRENOTAZIONI)
             .update({ stato: String(nuovoStato) })
@@ -57,10 +57,14 @@ class PrenotazioniModel {
     async listBySpazio(idSpazio) {
         const { data, error } = await supabase
             .from(TABLE_PRENOTAZIONI)
-            .select("*")
+            .select(`
+                        *,
+                        utente:utenti ( id, nome, email )
+                    `)
             .eq("id_spazio", Number(idSpazio))
             .order("data", { ascending: true })
             .order("ora_inizio", { ascending: true });
+
 
         if (error) throw error;
         return data;

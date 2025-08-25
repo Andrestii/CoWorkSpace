@@ -58,6 +58,28 @@ router.get("/getAllSedi/:id", sediController.getSedeById);
 
 /**
  * @swagger
+ * /sedi/mie:
+ *   get:
+ *     summary: Ottiene tutte le sedi del gestore autenticato
+ *     tags: [Sedi]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista sedi del gestore
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Sede'
+ *       401:
+ *         description: Non autorizzato
+ */
+router.get("/mie", authMiddleware, isGestore, sediController.getMieSedi);
+
+/**
+ * @swagger
  * /sedi/createSede:
  *   post:
  *     summary: Crea una nuova sede (solo gestore)
@@ -166,7 +188,5 @@ router.delete("/deleteSede/:id", authMiddleware, isGestore, canManageSede("id"),
  *         description: Sede non trovata
  */
 router.put("/attivaSede/:id", authMiddleware, isGestore, canManageSede("id"), sediController.attivaSede);
-
-
 
 module.exports = router;

@@ -21,6 +21,17 @@ const sediModel = {
         return data;
     },
 
+    async getSediByGestore(idGestore) {
+        const { data, error } = await supabase
+            .from("sedi")
+            .select("*, gestori_sedi!inner(id_utente)")
+            .eq("gestori_sedi.id_utente", idGestore)
+            .eq("attiva", true);
+
+        if (error) throw error;
+        return data;
+    },
+
     async createSede(sedeData) {
         const { data, error } = await supabase
             .from("sedi")

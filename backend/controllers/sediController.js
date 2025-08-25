@@ -23,6 +23,16 @@ const sediController = {
         }
     },
 
+    async getMieSedi(req, res) {
+        try {
+            const mieSedi = await sediModel.getSediByGestore(req.user.id);
+            res.status(200).json(mieSedi);
+        } catch (error) {
+            console.error("Errore getMieSedi:", error);
+            res.status(500).json({ error: error.message });
+        }
+    },
+
     async createSede(req, res) {
         try {
             let sedeData = req.body;

@@ -12,6 +12,7 @@
         rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="favicon.ico">
     <link href="css/pagine/index.css" rel="stylesheet">
     <link href="css/pagine/register.css" rel="stylesheet">
 </head>
@@ -22,193 +23,196 @@
 
     <!-- Register Section -->
     <div class="page">
-    <div class="login-container py-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-xl-10">
-                    <div class="login-card">
-                        <div class="row g-0">
-                            <div class="col-lg-6">
-                                <div class="login-header">
-                                    <h2>Crea il tuo account</h2>
-                                </div>
-                                <div class="login-form">
-                                    <form id="registerForm">
-                                        <!-- Stepper superiore - visibile solo quando si seleziona "gestore" -->
-                                        <div id="gestoreStepper" class="mb-4" style="display: none;">
-                                            <div class="d-flex justify-content-between position-relative stepper-dots">
-                                                <div class="stepper-dot active" data-step="1">
-                                                    <div class="number">1</div>
-                                                    <div class="label">Account</div>
+        <div class="login-container py-5">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-10">
+                        <div class="login-card">
+                            <div class="row g-0">
+                                <div class="col-lg-6">
+                                    <div class="login-header">
+                                        <h2>Crea il tuo account</h2>
+                                    </div>
+                                    <div class="login-form">
+                                        <form id="registerForm">
+                                            <!-- Stepper superiore - visibile solo quando si seleziona "gestore" -->
+                                            <div id="gestoreStepper" class="mb-4" style="display: none;">
+                                                <div
+                                                    class="d-flex justify-content-between position-relative stepper-dots">
+                                                    <div class="stepper-dot active" data-step="1">
+                                                        <div class="number">1</div>
+                                                        <div class="label">Account</div>
+                                                    </div>
+                                                    <div class="stepper-dot" data-step="2">
+                                                        <div class="number">2</div>
+                                                        <div class="label">Negozio</div>
+                                                    </div>
+                                                    <div class="stepper-dot" data-step="3">
+                                                        <div class="number">3</div>
+                                                        <div class="label">Dettagli</div>
+                                                    </div>
+                                                    <div class="progress-line"></div>
                                                 </div>
-                                                <div class="stepper-dot" data-step="2">
-                                                    <div class="number">2</div>
-                                                    <div class="label">Negozio</div>
-                                                </div>
-                                                <div class="stepper-dot" data-step="3">
-                                                    <div class="number">3</div>
-                                                    <div class="label">Dettagli</div>
-                                                </div>
-                                                <div class="progress-line"></div>
                                             </div>
+
+                                            <!-- Step 1: Informazioni account (già presente) -->
+                                            <div id="step1" class="step-content">
+                                                <div class="form-floating">
+                                                    <input type="file" class="form-control" id="profileImageField"
+                                                        name="profileImage" placeholder="Immagine profilo">
+                                                    <label for="profileImageField">Immagine profilo</label>
+                                                </div>
+                                                <div class="form-floating">
+                                                    <input type="text" class="form-control" id="nomeField" name="nome"
+                                                        placeholder="Nome completo">
+                                                    <label for="nomeField">Nome completo</label>
+                                                </div>
+                                                <div class="form-floating">
+                                                    <input type="email" class="form-control" id="emailField"
+                                                        name="email" placeholder="nome@esempio.com" required>
+                                                    <label for="emailField">Indirizzo email</label>
+                                                </div>
+                                                <div class="form-floating">
+                                                    <input type="password" class="form-control" id="passwordField"
+                                                        name="password" placeholder="Password">
+                                                    <label for="passwordField">Password</label>
+                                                </div>
+                                                <div class="form-floating">
+                                                    <select class="form-select" id="ruoloField" name="ruolo">
+                                                        <option value="" disabled selected>Scegli il tuo ruolo</option>
+                                                        <option value="cliente">Cliente</option>
+                                                        <option value="gestore">Gestore</option>
+                                                    </select>
+                                                    <label for="ruoloField">Ruolo</label>
+                                                </div>
+                                            </div>
+
+                                            <!-- Step 2: Dati sede -->
+                                            <div id="step2" class="step-content" style="display: none;">
+                                                <h5 class="mb-3">Dati sede</h5>
+
+                                                <div class="form-floating mb-3">
+                                                    <input type="text" class="form-control" id="sedeNameField"
+                                                        placeholder="Nome sede">
+                                                    <label for="sedeNameField">Nome sede</label>
+                                                </div>
+
+                                                <div class="form-floating mb-3">
+                                                    <textarea class="form-control" id="sedeDescriptionField"
+                                                        placeholder="Descrizione" style="height: 110px"></textarea>
+                                                    <label for="sedeDescriptionField">Descrizione</label>
+                                                </div>
+
+                                                <div class="form-floating mb-3">
+                                                    <input type="text" class="form-control" id="sedeAddressField"
+                                                        placeholder="Indirizzo">
+                                                    <label for="sedeAddressField">Indirizzo</label>
+                                                </div>
+
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control" id="sedeCityField"
+                                                                placeholder="Città">
+                                                            <label for="sedeCityField">Città</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control"
+                                                                id="sedeProvinceField" placeholder="Provincia (es. MI)">
+                                                            <label for="sedeProvinceField">Provincia</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row g-3 mt-0">
+                                                    <div class="col-md-6">
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control" id="sedeCapField"
+                                                                placeholder="CAP">
+                                                            <label for="sedeCapField">CAP</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control" id="sedeRegionField"
+                                                                placeholder="Regione">
+                                                            <label for="sedeRegionField">Regione</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Step 3: Coordinate e stato -->
+                                            <div id="step3" class="step-content" style="display: none;">
+                                                <h5 class="mb-3">Posizione e stato</h5>
+
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <div class="form-floating">
+                                                            <input type="number" step="any" class="form-control"
+                                                                id="sedeLatField" placeholder="Latitudine">
+                                                            <label for="sedeLatField">Latitudine</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-floating">
+                                                            <input type="number" step="any" class="form-control"
+                                                                id="sedeLngField" placeholder="Longitudine">
+                                                            <label for="sedeLngField">Longitudine</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-check form-switch mt-3">
+                                                    <input class="form-check-input" type="checkbox" id="sedeActiveField"
+                                                        checked>
+                                                    <label class="form-check-label" for="sedeActiveField">Sede
+                                                        attiva</label>
+                                                </div>
+
+                                                <div class="form-text mt-3">
+                                                    (Opzionale) Logo sede:
+                                                    <input type="file" class="form-control mt-2" id="sedeLogoField"
+                                                        accept="image/*">
+                                                </div>
+                                            </div>
+
+                                            <!-- Navigazione stepper -->
+                                            <div id="stepperNavigation" style="display: none;" class="mt-4 mb-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <button type="button" id="prevStepBtn"
+                                                        class="btn btn-outline-secondary" style="display: none;">
+                                                        <i class="fas fa-arrow-left me-2"></i>Indietro
+                                                    </button>
+                                                    <button type="button" id="nextStepBtn" class="btn btn-primary">
+                                                        Avanti<i class="fas fa-arrow-right ms-2"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" id="submitBtn"
+                                                class="btn btn-login w-100 mt-3">Registrati</button>
+                                            <div id="register-message" class="alert mt-3" role="alert"
+                                                style="display:none;"></div>
+                                        </form>
+                                        <div class="text-center mt-4">
+                                            <p>Hai già un account? <a href="login.html" class="register-link">Accedi</a>
+                                            </p>
                                         </div>
-
-                                        <!-- Step 1: Informazioni account (già presente) -->
-                                        <div id="step1" class="step-content">
-                                            <div class="form-floating">
-                                                <input type="file" class="form-control" id="profileImageField"
-                                                    name="profileImage" placeholder="Immagine profilo">
-                                                <label for="profileImageField">Immagine profilo</label>
-                                            </div>
-                                            <div class="form-floating">
-                                                <input type="text" class="form-control" id="nomeField" name="nome"
-                                                    placeholder="Nome completo">
-                                                <label for="nomeField">Nome completo</label>
-                                            </div>
-                                            <div class="form-floating">
-                                                <input type="email" class="form-control" id="emailField" name="email"
-                                                    placeholder="nome@esempio.com" required>
-                                                <label for="emailField">Indirizzo email</label>
-                                            </div>
-                                            <div class="form-floating">
-                                                <input type="password" class="form-control" id="passwordField"
-                                                    name="password" placeholder="Password">
-                                                <label for="passwordField">Password</label>
-                                            </div>
-                                            <div class="form-floating">
-                                                <select class="form-select" id="ruoloField" name="ruolo">
-                                                    <option value="" disabled selected>Scegli il tuo ruolo</option>
-                                                    <option value="cliente">Cliente</option>
-                                                    <option value="gestore">Gestore</option>
-                                                </select>
-                                                <label for="ruoloField">Ruolo</label>
-                                            </div>
-                                        </div>
-
-                                        <!-- Step 2: Dati sede -->
-                                        <div id="step2" class="step-content" style="display: none;">
-                                            <h5 class="mb-3">Dati sede</h5>
-
-                                            <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="sedeNameField"
-                                                    placeholder="Nome sede">
-                                                <label for="sedeNameField">Nome sede</label>
-                                            </div>
-
-                                            <div class="form-floating mb-3">
-                                                <textarea class="form-control" id="sedeDescriptionField"
-                                                    placeholder="Descrizione" style="height: 110px"></textarea>
-                                                <label for="sedeDescriptionField">Descrizione</label>
-                                            </div>
-
-                                            <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="sedeAddressField"
-                                                    placeholder="Indirizzo">
-                                                <label for="sedeAddressField">Indirizzo</label>
-                                            </div>
-
-                                            <div class="row g-3">
-                                                <div class="col-md-6">
-                                                    <div class="form-floating">
-                                                        <input type="text" class="form-control" id="sedeCityField"
-                                                            placeholder="Città">
-                                                        <label for="sedeCityField">Città</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-floating">
-                                                        <input type="text" class="form-control" id="sedeProvinceField"
-                                                            placeholder="Provincia (es. MI)">
-                                                        <label for="sedeProvinceField">Provincia</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row g-3 mt-0">
-                                                <div class="col-md-6">
-                                                    <div class="form-floating">
-                                                        <input type="text" class="form-control" id="sedeCapField"
-                                                            placeholder="CAP">
-                                                        <label for="sedeCapField">CAP</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-floating">
-                                                        <input type="text" class="form-control" id="sedeRegionField"
-                                                            placeholder="Regione">
-                                                        <label for="sedeRegionField">Regione</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Step 3: Coordinate e stato -->
-                                        <div id="step3" class="step-content" style="display: none;">
-                                            <h5 class="mb-3">Posizione e stato</h5>
-
-                                            <div class="row g-3">
-                                                <div class="col-md-6">
-                                                    <div class="form-floating">
-                                                        <input type="number" step="any" class="form-control"
-                                                            id="sedeLatField" placeholder="Latitudine">
-                                                        <label for="sedeLatField">Latitudine</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-floating">
-                                                        <input type="number" step="any" class="form-control"
-                                                            id="sedeLngField" placeholder="Longitudine">
-                                                        <label for="sedeLngField">Longitudine</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-check form-switch mt-3">
-                                                <input class="form-check-input" type="checkbox" id="sedeActiveField"
-                                                    checked>
-                                                <label class="form-check-label" for="sedeActiveField">Sede
-                                                    attiva</label>
-                                            </div>
-
-                                            <div class="form-text mt-3">
-                                                (Opzionale) Logo sede:
-                                                <input type="file" class="form-control mt-2" id="sedeLogoField"
-                                                    accept="image/*">
-                                            </div>
-                                        </div>
-
-                                        <!-- Navigazione stepper -->
-                                        <div id="stepperNavigation" style="display: none;" class="mt-4 mb-3">
-                                            <div class="d-flex justify-content-between">
-                                                <button type="button" id="prevStepBtn" class="btn btn-outline-secondary"
-                                                    style="display: none;">
-                                                    <i class="fas fa-arrow-left me-2"></i>Indietro
-                                                </button>
-                                                <button type="button" id="nextStepBtn" class="btn btn-primary">
-                                                    Avanti<i class="fas fa-arrow-right ms-2"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <button type="submit" id="submitBtn"
-                                            class="btn btn-login w-100 mt-3">Registrati</button>
-                                        <div id="register-message" class="alert mt-3" role="alert"
-                                            style="display:none;"></div>
-                                    </form>
-                                    <div class="text-center mt-4">
-                                        <p>Hai già un account? <a href="login.html" class="register-link">Accedi</a></p>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6 d-none d-lg-block">
-                                <div class="login-side-art">
-                                    <div class="text-overlay">
-                                        <h3 class="fw-bold">Unisciti a CoWorkSpace</h3>
-                                        <p class="mt-3">
-                                            Connetti <span class="highlight-text">talenti</span>, condividi
-                                            <span class="highlight-text">spazi</span> e trasforma il tuo modo di
-                                            lavorare.
-                                        </p>
+                                <div class="col-lg-6 d-none d-lg-block">
+                                    <div class="login-side-art">
+                                        <div class="text-overlay">
+                                            <h3 class="fw-bold">Unisciti a CoWorkSpace</h3>
+                                            <p class="mt-3">
+                                                Connetti <span class="highlight-text">talenti</span>, condividi
+                                                <span class="highlight-text">spazi</span> e trasforma il tuo modo di
+                                                lavorare.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -217,7 +221,6 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 
     <!-- footer -->

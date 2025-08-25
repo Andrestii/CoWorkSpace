@@ -16,7 +16,7 @@ $(function () {
 
   // === Recupero dati dal carrello ===
   let checkout = null;
-  try { checkout = JSON.parse(localStorage.getItem("checkout")); } catch (e) {}
+  try { checkout = JSON.parse(localStorage.getItem("checkout")); } catch (e) { }
   if (!checkout || !checkout.spazio || !checkout.prenotazione) {
     showGlobal("Dati carrello non trovati. Torna al carrello.", "warning");
     return;
@@ -39,7 +39,7 @@ $(function () {
   $("#ccExp").on("input", function () {
     let v = onlyDigits($(this).val());
     v = v.substring(0, 4);
-    if (v.length >= 3) v = v.substring(0,2) + "/" + v.substring(2);
+    if (v.length >= 3) v = v.substring(0, 2) + "/" + v.substring(2);
     $(this).val(v);
   });
 
@@ -102,7 +102,7 @@ $(function () {
       showGlobal("Pagamento completato e prenotazione registrata.", "success");
 
       // Redirect dolce (profilo o lista prenotazioni)
-      setTimeout(() => location.href = "profile.html#prenotazioni", 1500);
+      setTimeout(() => location.href = "profilo.html#prenotazioni", 1500);
     } catch (e2) {
       console.error(e2);
       showGlobal(e2.message || "Errore durante il pagamento.", "danger");
@@ -131,8 +131,8 @@ $(function () {
   function groupEvery4(s) { return s.replace(/(.{4})/g, "$1 ").trim(); }
   function prettyTipo(t) {
     if (!t) return "-";
-    return String(t).replace(/_/g," ").split(" ")
-      .map(w => w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(" ");
+    return String(t).replace(/_/g, " ").split(" ")
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
   }
 
   function validateCard(name, num, exp, cvv) {
@@ -175,15 +175,15 @@ $(function () {
   function hhmmToMinutes(hhmm) {
     if (!hhmm) return 0;
     const [h, m] = hhmm.split(":").map(Number);
-    return (h*60 + m);
+    return (h * 60 + m);
   }
 
   function genTransactionId() {
     // id univoco "CARD-YYYYMMDDHHMMSS-rand"
     const d = new Date();
-    const pad = (n)=>String(n).padStart(2,"0");
-    const stamp = d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+pad(d.getHours())+pad(d.getMinutes())+pad(d.getSeconds());
-    const rnd = Math.random().toString(36).slice(2,8).toUpperCase();
+    const pad = (n) => String(n).padStart(2, "0");
+    const stamp = d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds());
+    const rnd = Math.random().toString(36).slice(2, 8).toUpperCase();
     return `CARD-${stamp}-${rnd}`;
   }
 
@@ -206,7 +206,7 @@ $(function () {
       },
       body: JSON.stringify(body)
     });
-    const json = await r.json().catch(()=> ({}));
+    const json = await r.json().catch(() => ({}));
     if (!r.ok) {
       const msg = json?.error || json?.message || `HTTP ${r.status}`;
       throw new Error(msg);

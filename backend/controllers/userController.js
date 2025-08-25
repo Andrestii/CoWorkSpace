@@ -198,12 +198,14 @@ const userController = {
      */
     async updateProfile(req, res) {
         try {
-            const userId = req.user.id; // From auth middleware
-            const { nome, numero_telefono, descrizione } = req.body;
+            const userId = req.user.id; // dall'auth middleware
+            const { nome, email, numero_telefono, data_nascita, descrizione } = req.body;
 
             const updatedData = await userModel.updateUserProfile(userId, {
-                nome: nome,
+                nome,
+                email,
                 numero_telefono,
+                data_nascita,
                 descrizione,
             });
 

@@ -20,6 +20,7 @@ const prenotazioniController = {
             const prenotazione = await prenotazioniModel.createPrenotazione({
                 ...req.body,
                 id_utente,
+                stato: "pagato"   // <-- qui forziamo sempre lo stato
             });
 
             res.status(201).json({ message: "Prenotazione creata", prenotazione });

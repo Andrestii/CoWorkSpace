@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,16 +9,20 @@
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="icon" href="favicon.ico">
 
   <!-- Styles -->
   <link href="css/pagine/index.css" rel="stylesheet" />
-  <link href="css/pagine/profile.css" rel="stylesheet" />
+  <link href="css/pagine/profilo.css" rel="stylesheet" />
 </head>
+
 <body>
-  <!-- Navbar -->
+  <!-- Navbar (contiene il solo logout valido) -->
   <div id="navbar-placeholder"></div>
 
   <!-- Profile Page -->
@@ -27,9 +32,7 @@
         <h1 class="mb-2">Il Mio Profilo</h1>
         <p class="text-muted">Gestisci i tuoi dati personali e monitora le tue prenotazioni</p>
       </div>
-      <button class="btn btn-outline-dark" id="logout-btn">
-        <i class="fas fa-sign-out-alt me-2"></i>Logout
-      </button>
+      <!-- ❌ RIMOSSO il bottone Logout locale: resta solo quello in navbar -->
     </div>
 
     <div class="row g-4">
@@ -38,7 +41,8 @@
         <div class="profile-sidebar p-3 rounded shadow-sm">
           <div class="user-info text-center mb-4">
             <div class="avatar-container mb-3 position-relative">
-              <img src="https://via.placeholder.com/120" alt="Avatar" class="rounded-circle user-avatar" id="profile-image" />
+              <img src="https://via.placeholder.com/120" alt="Avatar" class="rounded-circle user-avatar"
+                id="profile-image" />
               <div class="avatar-edit" id="avatar-edit-btn"><i class="fas fa-camera"></i></div>
               <input type="file" id="avatar-upload" accept="image/*" hidden />
             </div>
@@ -49,7 +53,7 @@
             </div>
           </div>
 
-          <!-- NAV unificata -->
+          <!-- NAV dinamica (JS mostra/nasconde per ruolo) -->
           <nav class="profile-nav">
             <!-- Comuni -->
             <div class="nav-item active" data-target="info-personali">
@@ -60,7 +64,7 @@
               <span class="badge bg-secondary ms-auto d-none">0</span>
             </div>
 
-            <!-- Solo Gestore (mostrate via JS se ruolo=gestore) -->
+            <!-- Gestore -->
             <div class="nav-item nav-gestore d-none" data-target="dash-gestore">
               <i class="fas fa-chart-line me-2"></i> Dashboard gestore
             </div>
@@ -68,13 +72,18 @@
               <i class="fas fa-building me-2"></i> Le mie sedi
               <span class="badge bg-secondary ms-auto d-none">0</span>
             </div>
-            <div class="nav-item nav-gestore d-none" data-target="prenotazioni-gestore">
-              <i class="fas fa-list-check me-2"></i> Prenotazioni ricevute
+            <div class="nav-item nav-gestore d-none" data-target="miei-spazi">
+              <i class="fas fa-chair me-2"></i> I miei spazi
               <span class="badge bg-secondary ms-auto d-none">0</span>
             </div>
             <div class="nav-item nav-gestore d-none" data-target="disponibilita">
               <i class="fas fa-clock me-2"></i> Disponibilità
             </div>
+            <div class="nav-item nav-gestore d-none" data-target="prenotazioni-gestore">
+              <i class="fas fa-list-check me-2"></i> Prenotazioni ricevute
+              <span class="badge bg-secondary ms-auto d-none">0</span>
+            </div>
+
           </nav>
         </div>
       </aside>
@@ -82,6 +91,7 @@
       <!-- Contenuti -->
       <section class="col-lg-9">
         <div class="profile-content-container">
+
           <!-- Info Personali -->
           <div class="content-section active" id="info-personali">
             <div class="content-card p-4 shadow-sm rounded">
@@ -129,7 +139,7 @@
           <div class="content-section" id="prenotazioni"></div>
 
           <!-- Gestore: Dashboard sintetica -->
-          <div class="content-section" id="dash-gestore" style="display: none;">
+          <div class="content-section" id="dash-gestore" style="display:none;">
             <div class="row g-3">
               <div class="col-md-4">
                 <div class="kpi-card">
@@ -160,7 +170,7 @@
           </div>
 
           <!-- Gestore: Le mie sedi -->
-          <div class="content-section" id="mie-sedi" style="display: none;">
+          <div class="content-section" id="mie-sedi" style="display:none;">
             <div class="content-header">
               <h4>Le mie sedi</h4>
               <a href="sedi.html" class="btn btn-sm btn-outline-primary">Vai a Sedi</a>
@@ -170,8 +180,19 @@
             </div>
           </div>
 
+          <!-- Gestore: I miei spazi -->
+          <div class="content-section" id="miei-spazi" style="display:none;">
+            <div class="content-header">
+              <h4>I miei spazi</h4>
+              <a href="spazi.html" class="btn btn-sm btn-outline-primary">Vai a Spazi</a>
+            </div>
+            <div class="content-body">
+              <div class="row" id="miei-spazi-grid"></div>
+            </div>
+          </div>
+
           <!-- Gestore: Prenotazioni ricevute -->
-          <div class="content-section" id="prenotazioni-gestore" style="display: none;">
+          <div class="content-section" id="prenotazioni-gestore" style="display:none;">
             <div class="content-header">
               <h4>Prenotazioni ricevute</h4>
             </div>
@@ -196,18 +217,13 @@
           </div>
 
           <!-- Gestore: Disponibilità -->
-          <div class="content-section" id="disponibilita" style="display: none;">
+          <div class="content-section" id="disponibilita" style="display:none;">
             <div class="content-header">
               <h4>Gestione disponibilità</h4>
             </div>
             <div class="content-body">
-              <p class="text-muted">Qui puoi creare, modificare o eliminare disponibilità degli spazi che gestisci.</p>
-
-              <!-- Lista spazi + disponibilità (JS) -->
+              <p class="text-muted">Crea, modifica o elimina disponibilità degli spazi che gestisci.</p>
               <div id="disp-spazi-list" class="row g-3"></div>
-
-              <!-- Modal Crea/Modifica disponibilità (creata dinamicamente da JS se serve)
-                   Se preferisci mantenerla staticamente, puoi incollare qui il markup che il JS crea -->
             </div>
           </div>
         </div>
@@ -227,7 +243,8 @@
 
   <!-- Auth helpers & pagina -->
   <script src="./scripts/auth.js"></script>
-  <script src="./scripts/pages/profile.js"></script>
+  <script src="./scripts/pages/profilo.js"></script>
   <script src="./scripts/partials/navbar.js"></script>
 </body>
+
 </html>

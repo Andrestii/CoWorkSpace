@@ -78,7 +78,9 @@ const userModel = {
         const { data, error } = await supabase
             .from("utenti")
             .update(profileData)
-            .eq("id", userId);
+            .eq("id", userId)
+            .select()
+            .single();   // <— così ritorna un record unico
 
         if (error) throw error;
         return data;
