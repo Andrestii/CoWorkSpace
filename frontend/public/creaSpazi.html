@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crea Spazio - CoWorkSpace</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="icon" href="favicon.ico">
+
+  <!-- Stili -->
+  <link href="css/pagine/index.css" rel="stylesheet" />
+  <link href="css/pagine/profilo.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Navbar -->
+  <div id="navbar-placeholder"></div>
+
+  <div class="profile-container container py-5" style="padding-top:110px">
+    <div class="profile-header mb-4 d-flex align-items-center justify-content-between">
+      <div>
+        <h1 class="mb-2">Crea nuovo spazio</h1>
+        <p class="text-muted">Associa lo spazio a una tua sede e definisci i dettagli.</p>
+      </div>
+      <a class="btn btn-outline-secondary" href="profilo.html">
+        <i class="fa-regular fa-circle-left me-1"></i> Torna al profilo
+      </a>
+    </div>
+
+    <section class="profile-content-container">
+      <div class="content-section active" id="crea-spazio">
+        <div class="content-header">
+          <h4 class="mb-0">Dettagli spazio</h4>
+        </div>
+        <div class="content-body">
+          <form id="form-spazio" enctype="multipart/form-data">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Nome</label>
+                <input type="text" class="form-control" id="spazio-nome" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Sede</label>
+                <select id="spazio-sede" class="form-select" required>
+                  <option value="">Caricamento sedi…</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Tipologia</label>
+                <select id="spazio-tipologia" class="form-select" required>
+                  <option value="postazione">Postazione</option>
+                  <option value="ufficio">Ufficio</option>
+                  <option value="sala_riunioni">Sala riunioni</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Capienza</label>
+                <input type="number" min="1" class="form-control" id="spazio-capienza">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Prezzo orario (€)</label>
+                <input type="number" step="0.01" min="0" class="form-control" id="spazio-prezzo">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Descrizione</label>
+                <textarea id="spazio-descrizione" class="form-control" rows="4"></textarea>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label">Indirizzo (facoltativo)</label>
+                <input type="text" class="form-control" id="spazio-indirizzo">
+              </div>
+              <div class="col-md-4 d-flex align-items-end">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="spazio-attivo" checked>
+                  <label class="form-check-label" for="spazio-attivo">Attivo</label>
+                </div>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label">Immagine (opzionale)</label>
+                <input type="file" id="spazio-immagine" class="form-control" accept="image/*">
+              </div>
+              <div class="col-md-4">
+                <img id="spazio-preview" class="img-fluid rounded border d-none" alt="Anteprima" />
+              </div>
+            </div>
+
+            <div class="text-end mt-4">
+              <a href="profilo.html" class="btn btn-outline-secondary me-2">Annulla</a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fa-regular fa-floppy-disk me-1"></i> Crea spazio
+              </button>
+            </div>
+          </form>
+
+          <div id="no-sedi-alert" class="alert alert-warning mt-4 d-none">
+            Non hai ancora nessuna sede. <a class="alert-link" href="creaSedi.html">Crea una sede</a> prima di aggiungere uno spazio.
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Toast -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index:1055">
+    <div id="crea-spazio-toast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">Operazione completata</div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Chiudi"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script src="./scripts/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="./scripts/auth.js"></script>
+  <script src="./scripts/pages/creaSpazi.js"></script>
+  <script src="./scripts/partials/navbar.js"></script>
+</body>
+</html>
