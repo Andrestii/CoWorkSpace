@@ -1,0 +1,105 @@
+/* --- Success toast (bottom-right) --- */
+.success-pop {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1080;
+}
+
+.success-card {
+    width: 320px;
+    padding: 16px 18px;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .15);
+    animation: slideUp .45s ease-out both;
+}
+
+.success-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.success-check {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #22c55e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.success-check svg {
+    width: 30px;
+    height: 30px;
+    stroke: #fff;
+    stroke-width: 3.2;
+    fill: none;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: dash .6s .15s ease forwards;
+}
+
+.success-text h6 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.success-text p {
+    margin: 2px 0 0;
+    color: #6c757d;
+    font-size: .95rem;
+}
+
+.success-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(14px);
+        opacity: 0
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1
+    }
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0
+    }
+}
+
+/* coriandoli */
+.confetti {
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 0;
+    z-index: 1081;
+    pointer-events: none;
+}
+
+.confetti i {
+    position: absolute;
+    top: -12px;
+    width: 8px;
+    height: 14px;
+    background: var(--c);
+    opacity: .95;
+    transform: rotate(30deg);
+    animation: fall 1.4s linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0.8;
+    }
+}

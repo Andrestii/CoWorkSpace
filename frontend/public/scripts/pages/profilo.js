@@ -13,6 +13,8 @@ $(document).ready(function () {
   const API_PREN = `${API_ROOT}/prenotazioni`;
   const API_DISP = `${API_ROOT}/disponibilita`;
 
+  let SPAZI_MAP = null;
+
   // ====== Supabase (avatar) ======
   const SUPABASE_URL = apiConfig.supabaseUrl;
   const SUPABASE_BUCKET = apiConfig.supabaseBucket || "avatars";
@@ -186,58 +188,80 @@ $(document).ready(function () {
   // =================================
   // CLIENTE: Le mie prenotazioni
   // =================================
-  function loadUserBookings() {
-    const $c = $("#prenotazioni").html(loadingState("Caricamento prenotazioni..."));
-    $.ajax({
-      url: `${API_PREN}/getMiePrenotazioni`,
-      type: "GET",
-      headers: { Authorization: "Bearer " + token },
-    })
-      .done(rows => renderBookingsList(rows || [], $c))
-      .fail(() => $c.html(errorState("Errore nel caricamento delle prenotazioni.")));
+  async function loadUserBookings() {
+    const COLS = 5; // Spazio | Stato | Totale | Data | Azioni
+    const $tb = $("#tab-mie-pren tbody");
+    $tb.html(`<tr><td colspan="${COLS}" class="text-muted">Caricamento...</td></tr>`);
+
+    try {
+      const prenPromise = $.ajax({
+        url: `${API_PREN}/getMiePrenotazioni`,
+        type: "GET",
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      // carico/riuso solo la mappa degli spazi (niente sedi)
+      if (!SPAZI_MAP) SPAZI_MAP = await getSpaziMap();
+
+      const rows = await prenPromise;
+      renderBookingsTable(rows || [], SPAZI_MAP);
+      updateBadge("prenotazioni", (rows || []).length);
+    } catch (e) {
+      console.error(e);
+      $tb.html(`<tr><td colspan="${COLS}" class="text-danger">Errore nel caricamento delle prenotazioni.</td></tr>`);
+      updateBadge("prenotazioni", 0);
+    }
   }
 
-  function renderBookingsList(rows, $c) {
-    $c.empty();
+  function renderBookingsTable(allRows, spaziMap = {}) {
+    const COLS = 5; // Spazio | Stato | Totale | Data | Azioni
+    const $tb = $("#tab-mie-pren tbody").empty();
+
+    let rows = Array.isArray(allRows) ? allRows.slice() : [];
+
+    // ordina per data/creazione desc
+    rows.sort((a, b) => {
+      const da = new Date(a.created_at || `${a.data || ""}T${a.ora_inizio || "00:00"}`).getTime();
+      const db = new Date(b.created_at || `${b.data || ""}T${b.ora_inizio || "00:00"}`).getTime();
+      return db - da;
+    });
+
     if (!rows.length) {
-      updateBadge("prenotazioni", 0);
-      $c.html('<p class="text-muted text-center">Non hai ancora effettuato prenotazioni.</p>');
+      $tb.html(`<tr><td colspan="${COLS}" class="text-muted">Nessuna prenotazione trovata.</td></tr>`);
       return;
     }
-    updateBadge("prenotazioni", rows.length);
 
-    rows.forEach(b => {
-      const d = b.created_at ? new Date(b.created_at) : null;
-      const dateStr = d ? d.toLocaleString("it-IT", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "-";
-      const stato = b.stato || "Sconosciuto";
+    rows.forEach(r => {
+      const idSpazio = r.id_spazio ?? r.spazio_id ?? null;
+      const spazioNome = r?.spazio?.nome || r.spazio_nome || (idSpazio ? (spaziMap[String(idSpazio)] || `Spazio #${idSpazio}`) : "—");
+
+      const stato = r.stato || "—";
       const badge = getStatusBadge(stato);
-      const tot = (b.totale != null) ? parseFloat(b.totale).toFixed(2) : "0.00";
-      const sedeNome = b?.sede?.nome || b?.spazio_nome || "Sede";
+      const totale = (r.totale != null ? r.totale : r.importo != null ? r.importo : 0);
+      const totStr = isFinite(+totale) ? `€${Number(totale).toFixed(2)}` : "—";
 
-      $c.append(`
-        <div class="booking-item">
-          <div class="booking-header">
-            <div class="booking-id">Prenotazione #${String(b.id || "").slice(0, 8)}...</div>
-            <div class="booking-date">${dateStr}</div>
-            <div class="booking-status"><span class="badge ${badge}">${stato}</span></div>
-          </div>
-          <div class="booking-details">
-            <div class="booking-entry">
-              <img src="${b?.sede?.immagine || ""}" class="booking-image" alt="sede">
-              <div class="booking-info">
-                <h6>${escapeHtml(sedeNome)} - ${b?.tipo || "Postazione"}</h6>
-                <p class="text-muted mb-0">Durata: ${b?.durata || "N/D"} ore</p>
-              </div>
-            </div>
-          </div>
-          <div class="booking-footer">
-            <div class="booking-total">Totale: <span class="fw-bold text-primary">€${tot}</span></div>
-            <div class="booking-actions">
-              <a href="sede.html?id=${b.id_spazio || b.id_sede || ''}" class="btn btn-sm btn-outline-primary">Dettagli sede</a>
-            </div>
-          </div>
-        </div>
-      `);
+      const d = r.created_at
+        ? new Date(r.created_at)
+        : (r.data ? new Date(`${r.data}T${r.ora_inizio || "00:00"}`) : null);
+      const dataStr = d
+        ? d.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })
+        : "—";
+
+      const hrefDettagli = idSpazio ? `spazio.html?id=${idSpazio}` : "#";
+
+      $tb.append(`
+      <tr>
+        <td>${escapeHtml(spazioNome)}</td>
+        <td><span class="badge ${badge}">${escapeHtml(stato)}</span></td>
+        <td>${totStr}</td>
+        <td>${dataStr}</td>
+        <td class="text-end">
+          <a class="btn btn-sm btn-outline-primary" href="${hrefDettagli}">
+            <i class="fa-solid fa-circle-info me-1"></i> Dettagli
+          </a>
+        </td>
+      </tr>
+    `);
     });
   }
 
@@ -395,6 +419,32 @@ $(document).ready(function () {
   // ==========================================================
   // GESTORE/ADMIN: Prenotazioni ricevute
   // ==========================================================
+  async function getSpaziMap() {
+    try {
+      const spazi = await $.ajax({
+        url: `${API_SPAZI}/getSpazi`,
+        type: "GET",
+        headers: { Authorization: "Bearer " + token }
+      });
+      const map = {};
+      (spazi || []).forEach(sp => { if (sp?.id) map[String(sp.id)] = sp.nome || `Spazio #${sp.id}`; });
+      return map;
+    } catch { return {}; }
+  }
+
+  async function getSpaziIndex() {
+    try {
+      const spazi = await $.ajax({
+        url: `${API_SPAZI}/getSpazi`,
+        type: "GET",
+        headers: { Authorization: "Bearer " + token }
+      });
+      const byId = {};
+      (spazi || []).forEach(sp => { if (sp?.id) byId[String(sp.id)] = sp; });
+      return byId;
+    } catch { return {}; }
+  }
+
   function loadPrenGestore({ limit = 50, forDashboard = false } = {}) {
     const $tbl = $("#tab-pren-gestore tbody");
     if (!forDashboard) $tbl.html(`<tr><td colspan="7" class="text-muted">Caricamento...</td></tr>`);
@@ -553,34 +603,36 @@ $(document).ready(function () {
     if (!$("#disp-spazi-list").length) {
       $("#disponibilita .content-body").html(`<div class="row g-3" id="disp-spazi-list"></div>`);
     }
-    // (modali create/update/toggle già iniettate nel codice originale)
+
+    // Modal per generazione disponibilità standard
     if (!$("#modalDisp").length) {
       $("body").append(`
       <div class="modal fade" id="modalDisp" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
           <form class="modal-content" id="form-disp">
             <div class="modal-header">
-              <h5 class="modal-title" id="modalDispTitle">Nuova disponibilità</h5>
+              <h5 class="modal-title" id="modalDispTitle">Genera disponibilità</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             <div class="modal-body">
-              <input type="hidden" id="disp-id">
               <input type="hidden" id="disp-spazio-id">
-              <div class="mb-3"><label class="form-label">Data</label><input type="date" class="form-control" id="disp-data" required></div>
-              <div class="row g-2">
-                <div class="col"><label class="form-label">Ora inizio</label><input type="time" class="form-control" id="disp-ora-inizio" required></div>
-                <div class="col"><label class="form-label">Ora fine</label><input type="time" class="form-control" id="disp-ora-fine" required></div>
-              </div>
-              <div class="form-check mt-3"><input class="form-check-input" type="checkbox" id="disp-chiuso"><label class="form-check-label" for="disp-chiuso">Giorno chiuso (non prenotabile)</label></div>
+              <p>
+                Questa azione genererà disponibilità standard
+                <strong>08:00 – 17:00</strong> per i prossimi
+                <strong>10 giorni</strong>.<br>
+                Vuoi procedere?
+              </p>
             </div>
             <div class="modal-footer">
               <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Annulla</button>
-              <button class="btn btn-primary" type="submit" id="disp-submit">Salva</button>
+              <button class="btn btn-primary" type="submit" id="disp-submit">Conferma</button>
             </div>
           </form>
         </div>
       </div>`);
     }
+
+    // Se vuoi mantenere il modal toggle date (per eventuale blocco date), lo lasci
     if (!$("#modalToggleDate").length) {
       $("body").append(`
       <div class="modal fade" id="modalToggleDate" tabindex="-1" aria-hidden="true">
@@ -647,18 +699,12 @@ $(document).ready(function () {
               <button class="btn btn-sm btn-outline-dark btn-new-disp" data-spazio="${sp.id}">
                 <i class="fa-regular fa-plus me-1"></i> Nuova disponibilità
               </button>
-              <button class="btn btn-sm btn-outline-danger btn-close-date" data-spazio="${sp.id}">
-                <i class="fa-regular fa-calendar-xmark me-1"></i> Disattiva data
-              </button>
-              <button class="btn btn-sm btn-outline-success btn-open-date" data-spazio="${sp.id}">
-                <i class="fa-regular fa-calendar-check me-1"></i> Attiva data
-              </button>
             </div>
           </div>
           <div class="mt-3">
             <div class="table-responsive">
               <table class="table table-sm align-middle mb-0">
-                <thead><tr><th>Data</th><th>Inizio</th><th>Fine</th><th>Chiuso</th><th class="text-end">Azioni</th></tr></thead>
+                <thead><tr><th>Data</th><th>Inizio</th><th>Fine</th><th>Occupato</th><th class="text-end">Azioni</th></tr></thead>
                 <tbody id="disp-tbody-${sp.id}"><tr><td colspan="5" class="text-muted">Caricamento...</td></tr></tbody>
               </table>
             </div>
@@ -680,7 +726,7 @@ $(document).ready(function () {
     })
       .done(rows => {
         // Filtro solo disponibilità relative a questo spazio
-        const list = (rows || []).filter(
+        let list = (rows || []).filter(
           x => String(x.id_spazio) === String(spazioId)
         );
 
@@ -693,6 +739,15 @@ $(document).ready(function () {
         // Ordina per data inizio
         list.sort((a, b) => new Date(a.start_at) - new Date(b.start_at));
 
+        // ✅ Mostra solo le disponibilità future
+        const now = new Date();
+        list = list.filter(d => new Date(d.start_at) >= now);
+
+        if (!list.length) {
+          $tb.html(`<tr><td colspan="5" class="text-muted">Nessuna disponibilità futura.</td></tr>`);
+          return;
+        }
+
         list.forEach(d => {
           const id = d.id;
           const start = d.start_at ? new Date(d.start_at) : null;
@@ -700,16 +755,16 @@ $(document).ready(function () {
           const closed = d.disponibile === false; // se disponibile = false → chiuso
 
           $tb.append(`
-          <tr data-id="${id}">
+          <tr data-id="${id}" 
+              data-start="${d.start_at}" 
+              data-end="${d.end_at}" 
+              data-closed="${closed}">
             <td>${start ? start.toLocaleDateString("it-IT") : "-"}</td>
             <td>${start ? start.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }) : "-"}</td>
             <td>${end ? end.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }) : "-"}</td>
             <td>${closed ? '<span class="badge bg-danger">Sì</span>' : '<span class="badge bg-success">No</span>'}</td>
             <td class="text-end">
-              <button class="btn btn-sm btn-outline-dark btn-edit-disp" data-id="${id}" data-spazio="${spazioId}">
-                <i class="fa-regular fa-pen-to-square"></i>
-              </button>
-              <button class="btn btn-sm btn-outline-danger btn-del-disp ms-1" data-id="${id}" data-spazio="${spazioId}">
+              <button class="btn btn-sm btn-outline-danger btn-del-disp" data-id="${id}" data-spazio="${spazioId}">
                 <i class="fa-regular fa-trash-can"></i>
               </button>
             </td>
@@ -732,70 +787,77 @@ $(document).ready(function () {
   });
 
   $(document).on("click", ".btn-edit-disp", function () {
-    const id = $(this).data("id"); const spazioId = $(this).data("spazio");
+    const id = $(this).data("id");
+    const spazioId = $(this).data("spazio");
     const $tr = $(`#disp-tbody-${spazioId} tr[data-id="${id}"]`);
+
+    const startRaw = $tr.data("start"); // ISO
+    const endRaw = $tr.data("end");     // ISO
+    const closed = $tr.data("closed");
+
+    const startDate = startRaw ? new Date(startRaw) : null;
+    const endDate = endRaw ? new Date(endRaw) : null;
+
     $("#modalDispTitle").text("Modifica disponibilità");
-    $("#disp-id").val(id); $("#disp-spazio-id").val(spazioId);
-    $("#disp-data").val($tr.find("td").eq(0).text().trim());
-    $("#disp-ora-inizio").val($tr.find("td").eq(1).text().trim().replace("-", ""));
-    $("#disp-ora-fine").val($tr.find("td").eq(2).text().trim().replace("-", ""));
-    $("#disp-chiuso").prop("checked", $tr.find("td").eq(3).text().includes("Sì"));
+    $("#disp-id").val(id);
+    $("#disp-spazio-id").val(spazioId);
+    $("#disp-data").val(startDate ? startDate.toISOString().slice(0, 10) : "");
+    $("#disp-ora-inizio").val(startDate ? startDate.toISOString().slice(11, 16) : "");
+    $("#disp-ora-fine").val(endDate ? endDate.toISOString().slice(11, 16) : "");
+    $("#disp-chiuso").prop("checked", !!closed);
+
     new bootstrap.Modal(document.getElementById("modalDisp")).show();
   });
 
   $(document).on("submit", "#form-disp", function (e) {
     e.preventDefault();
-    const id = $("#disp-id").val();
     const spazioId = $("#disp-spazio-id").val();
-    const payload = {
-      id_spazio: Number(spazioId),
-      data: $("#disp-data").val(),
-      ora_inizio: $("#disp-ora-inizio").val(),
-      ora_fine: $("#disp-ora-fine").val(),
-      closed: $("#disp-chiuso").is(":checked")
-    };
-    if (!payload.data) { alert("Seleziona una data"); return; }
-    const opts = { headers: { Authorization: "Bearer " + token }, contentType: "application/json", data: JSON.stringify(payload) };
-    const req = id ? $.ajax({ url: `${API_DISP}/update/${id}`, type: "PUT", ...opts })
-      : $.ajax({ url: `${API_DISP}/create`, type: "POST", ...opts });
-    req.done(() => { toastOk("Salvato"); bootstrap.Modal.getInstance(document.getElementById("modalDisp"))?.hide(); loadDisponibilitaSpazio(spazioId); })
-      .fail(() => toastErr("Errore nel salvataggio"));
+
+    const payload = { id_spazio: Number(spazioId) };
+
+    $.ajax({
+      url: `${API_DISP}/create`,
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(payload),
+      headers: { Authorization: "Bearer " + token }
+    })
+      .done(() => {
+        // ✅ Chiudi subito il modal
+        bootstrap.Modal.getInstance(document.getElementById("modalDisp"))?.hide();
+        // ✅ Mostra popup
+        toastOk("Disponibilità generate (08–17 per 10 giorni)");
+        // Ricarica tabella spazi
+        loadDisponibilitaSpazio(spazioId);
+      })
+      .fail(() => {
+        bootstrap.Modal.getInstance(document.getElementById("modalDisp"))?.hide();
+        toastErr("Errore durante la creazione delle disponibilità");
+      });
   });
 
+  // Cancellazione disponibilità
   $(document).on("click", ".btn-del-disp", function () {
-    const id = $(this).data("id"); const spazioId = $(this).data("spazio");
-    if (!confirm("Eliminare questa disponibilità?")) return;
-    $.ajax({ url: `${API_DISP}/delete/${id}`, type: "DELETE", headers: { Authorization: "Bearer " + token } })
-      .done(() => { toastOk("Eliminata"); loadDisponibilitaSpazio(spazioId); })
-      .fail(() => toastErr("Errore nell'eliminazione"));
-  });
-
-  // ====== Attiva/Disattiva data ======
-  $(document).on("click", ".btn-close-date, .btn-open-date", function () {
+    const id = $(this).data("id");
     const spazioId = $(this).data("spazio");
-    const action = $(this).hasClass("btn-close-date") ? "close" : "open";
-    if (!$("#modalToggleDate").length) return;
-    $("#tg-spazio-id").val(spazioId);
-    $("#tg-action").val(action);
-    $("#tg-date").val("");
-    $("#toggleDateTitle").text(action === "close" ? "Disattiva data" : "Attiva data");
-    $("#tg-help").text(action === "close" ? "La data selezionata sarà non prenotabile." : "La data selezionata sarà resa prenotabile.");
-    new bootstrap.Modal(document.getElementById("modalToggleDate")).show();
+
+    if (!confirm("Eliminare questa disponibilità?")) return;
+
+    $.ajax({
+      url: `${API_DISP}/delete/${id}`,
+      type: "DELETE",
+      headers: { Authorization: "Bearer " + token }
+    })
+      .done(() => {
+        toastOk("Disponibilità eliminata");
+
+        loadDisponibilitaSpazio(spazioId);
+      })
+      .fail(() => {
+        toastErr("Errore nell'eliminazione");
+      });
   });
 
-  $(document).on("submit", "#form-toggle-date", async function (e) {
-    e.preventDefault();
-    const spazioId = $("#tg-spazio-id").val();
-    const action = $("#tg-action").val();
-    const date = $("#tg-date").val();
-    if (!date) { alert("Seleziona una data"); return; }
-    try {
-      await upsertToggleDate(spazioId, date, action === "close");
-      toastOk(action === "close" ? "Data disattivata" : "Data attivata");
-      bootstrap.Modal.getInstance(document.getElementById("modalToggleDate"))?.hide();
-      loadDisponibilitaSpazio(spazioId);
-    } catch { toastErr("Operazione non riuscita"); }
-  });
 
   async function upsertToggleDate(spazioId, date, closed) {
     const list = await $.ajax({ url: `${API_DISP}/list`, type: "GET", headers: { Authorization: "Bearer " + token } });
@@ -849,14 +911,27 @@ $(document).ready(function () {
     if (!$b.length) return;
     if (count > 0) $b.text(count).removeClass("d-none"); else $b.text("0").addClass("d-none");
   }
+
   function getStatusBadge(status) {
-    const s = String(status || "").toLowerCase().replace(/\s+/g, "_");
-    if (["pagato", "paid"].includes(s)) return "bg-success";
+    const s = String(status || "").toLowerCase();
+    if (s.includes("pagato") || s.includes("paid")) return "bg-success";
+    if (s.includes("annull")) return "bg-danger";
     return "bg-secondary";
   }
 
   function sameDate(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
   function escapeHtml(str) { return String(str ?? "").replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[s])); }
-  function toastOk(msg) { console.log(msg); }
-  function toastErr(msg) { console.error(msg); }
+  function toastOk(msg) {
+    $("#global-toast").removeClass("text-bg-danger").addClass("text-bg-success");
+    $("#global-toast-body").text(msg || "Operazione completata");
+    const t = new bootstrap.Toast(document.getElementById("global-toast"));
+    t.show();
+  }
+
+  function toastErr(msg) {
+    $("#global-toast").removeClass("text-bg-success").addClass("text-bg-danger");
+    $("#global-toast-body").text(msg || "Errore");
+    const t = new bootstrap.Toast(document.getElementById("global-toast"));
+    t.show();
+  }
 });

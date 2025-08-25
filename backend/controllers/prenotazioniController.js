@@ -17,11 +17,24 @@ const prenotazioniController = {
                 });
             }
 
+            // 1) Crea la prenotazione con stato già "pagato"
             const prenotazione = await prenotazioniModel.createPrenotazione({
                 ...req.body,
                 id_utente,
-                stato: "pagato"   // <-- qui forziamo sempre lo stato
+                stato: "pagato"
             });
+
+            // 2) Aggiorna disponibilità dello slot del giorno (08:00–17:00)
+            const { error: updErr } = await supabase
+                .from("disponibilita")
+                .update({ disponibile: false })
+                .eq("id_spazio", Number(id_spazio))
+                .gte("start_at", `${data}T00:00:00+02:00`)
+                .lte("end_at", `${data}T23:59:59+02:00`);
+
+            if (updErr) {
+                console.error("Errore aggiornamento disponibilità:", updErr);
+            }
 
             res.status(201).json({ message: "Prenotazione creata", prenotazione });
         } catch (error) {

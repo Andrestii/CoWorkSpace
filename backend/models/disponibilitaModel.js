@@ -30,14 +30,16 @@ const disponibilitaModel = {
         console.log("📝 Inserimento in disponibilita:", slot);
         const { data, error } = await supabase
             .from("disponibilita")
-            .insert([slot])
+            .insert([{
+                id_spazio: slot.id_spazio,
+                start_at: slot.start_at,
+                end_at: slot.end_at,
+                disponibile: true
+            }])
             .select()
             .single();
 
-        if (error) {
-            console.error("❌ Errore Supabase insert:", error);
-            throw error;
-        }
+        if (error) throw error;
         return data;
     },
 
@@ -74,7 +76,6 @@ const disponibilitaModel = {
     },
 
     async delete(id) {
-        // Recupera lo slot senza eccezione
         const { data: existing, error: e1 } = await supabase
             .from("disponibilita")
             .select("*")
@@ -84,7 +85,6 @@ const disponibilitaModel = {
         if (e1) throw e1;
         if (!existing) return null;
 
-        // Elimina
         const { error: e2 } = await supabase
             .from("disponibilita")
             .delete()
@@ -94,17 +94,31 @@ const disponibilitaModel = {
         return existing;
     },
 
-    async getBySpazioAndRange(id_spazio, from, to) {
-        let query = supabase
+    async creaDisponibilitaDefault(id_spazio, giorni = 10) {
+        const today = new Date();
+        const slots = [];
+
+        for (let i = 0; i < giorni; i++) {
+            const d = new Date(today);
+            d.setDate(today.getDate() + i);
+
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, "0");
+            const dd = String(d.getDate()).padStart(2, "0");
+            const dateStr = `${yyyy}-${mm}-${dd}`;
+
+            slots.push({
+                id_spazio,
+                start_at: `${dateStr}T08:00:00+02:00`,
+                end_at: `${dateStr}T17:00:00+02:00`,
+                disponibile: true
+            });
+        }
+
+        const { data, error } = await supabase
             .from("disponibilita")
-            .select("*")
-            .eq("id_spazio", id_spazio)
-            .order("start_at", { ascending: true });
+            .insert(slots);
 
-        if (from) query = query.gte("start_at", from);
-        if (to) query = query.lte("end_at", to);
-
-        const { data, error } = await query;
         if (error) throw error;
         return data;
     }

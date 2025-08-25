@@ -29,7 +29,6 @@ const userRoutes = require("./routes/userRoutes");
 const sediRoutes = require("./routes/sediRoutes");
 const spaziRoutes = require("./routes/spaziRoutes");
 const disponibilitaRoutes = require("./routes/disponibilitaRoutes");
-const pagamentiRoutes = require("./routes/pagamentiRoutes");
 const prenotazioniRoutes = require("./routes/prenotazioniRoutes");
 const serviziRoutes = require("./routes/serviziRoutes");
 
@@ -48,7 +47,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/sedi", sediRoutes);
 app.use("/api/spazi", spaziRoutes);
 app.use("/api/disponibilita", disponibilitaRoutes);
-app.use("/api/pagamenti", pagamentiRoutes);
 app.use("/api/prenotazioni", prenotazioniRoutes);
 app.use("/api/servizi", serviziRoutes);
 

@@ -15,7 +15,6 @@ class PrenotazioniModel {
             importo: payload.importo !== undefined ? Number(payload.importo) : null,
             stato: payload.stato || "pagato",
             id_transazione_pagamento: payload.id_transazione_pagamento || null,
-            data_creazione: new Date().toISOString(),
         };
 
         const { data, error } = await supabase

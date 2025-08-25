@@ -1,6 +1,4 @@
 const disponibilitaModel = require("../models/disponibilitaModel");
-const path = require("path");
-const supabase = require("../config/database");
 
 const disponibilitaController = {
     async list(req, res) {
@@ -23,49 +21,23 @@ const disponibilitaController = {
 
     async create(req, res) {
         try {
-            console.log("📩 BODY ricevuto:", req.body); // <-- DEBUG
-
-            const { id_spazio, start_at, end_at, disponibile = true, note = null } = req.body;
-
-            if (!id_spazio || !start_at || !end_at) {
-                console.warn("❌ Campi obbligatori mancanti");
-                return res.status(400).json({ error: "Campi obbligatori mancanti" });
+            const { id_spazio } = req.body;
+            if (!id_spazio) {
+                return res.status(400).json({ error: "id_spazio è obbligatorio" });
             }
 
-            if (new Date(start_at) >= new Date(end_at)) {
-                console.warn("❌ start_at >= end_at");
-                return res.status(400).json({ error: "start_at deve precedere end_at" });
-            }
+            // genera disponibilità per i prossimi 40 giorni, orario fisso 08–17
+            const created = await disponibilitaModel.creaDisponibilitaDefault(Number(id_spazio), 10);
 
-            console.log("🔍 Controllo sovrapposizioni...");
-            const overlap = await disponibilitaModel.hasOverlap({
-                id_spazio: Number(id_spazio),
-                start_at,
-                end_at
+            res.status(201).json({
+                message: "Disponibilità generate (08:00–17:00, 10 giorni)",
+                count: created.length
             });
-
-            console.log("Overlap result:", overlap);
-            if (overlap) {
-                return res.status(409).json({ error: "Slot sovrapposto" });
-            }
-
-            console.log("💾 Creazione record...");
-            const created = await disponibilitaModel.create({
-                id_spazio: Number(id_spazio),
-                start_at,
-                end_at,
-                disponibile,
-                note
-            });
-
-            console.log("✅ Creato:", created);
-            res.status(201).json({ message: "Disponibilità creata", disponibilita: created });
         } catch (err) {
-            console.error("❌ ERRORE in create disponibilita:", err);
-            res.status(500).json({ error: "Errore interno", details: err.message });
+            console.error("❌ ERRORE create disponibilita:", err);
+            res.status(500).json({ error: err.message });
         }
     },
-
 
     async update(req, res) {
         try {
@@ -75,33 +47,22 @@ const disponibilitaController = {
                 return res.status(404).json({ error: "Slot non trovato" });
             }
 
-            const start_at = req.body.start_at ?? current.start_at;
-            const end_at = req.body.end_at ?? current.end_at;
-            const disponibile = typeof req.body.disponibile === "boolean"
-                ? req.body.disponibile
-                : current.disponibile;
-            const note = req.body.note ?? current.note;
+            const ora_inizio = req.body.ora_inizio;
+            const ora_fine = req.body.ora_fine;
+
+            if (!ora_inizio || !ora_fine) {
+                return res.status(400).json({ error: "ora_inizio e ora_fine sono obbligatori" });
+            }
+
+            const date = current.start_at.slice(0, 10); // YYYY-MM-DD
+            const start_at = `${date}T${ora_inizio.length === 5 ? ora_inizio + ":00" : ora_inizio}+02:00`;
+            const end_at = `${date}T${ora_fine.length === 5 ? ora_fine + ":00" : ora_fine}+02:00`;
 
             if (new Date(start_at) >= new Date(end_at)) {
-                return res.status(400).json({ error: "start_at deve precedere end_at" });
+                return res.status(400).json({ error: "L'orario di inizio deve precedere l'orario di fine" });
             }
 
-            const overlap = await disponibilitaModel.hasOverlap({
-                id_spazio: current.id_spazio,
-                start_at,
-                end_at,
-                ignoreId: id
-            });
-            if (overlap) {
-                return res.status(409).json({ error: "Slot sovrapposto" });
-            }
-
-            const updated = await disponibilitaModel.update(id, {
-                start_at,
-                end_at,
-                disponibile,
-                note
-            });
+            const updated = await disponibilitaModel.update(id, { start_at, end_at });
 
             res.status(200).json({ message: "Disponibilità aggiornata", disponibilita: updated });
         } catch (err) {
