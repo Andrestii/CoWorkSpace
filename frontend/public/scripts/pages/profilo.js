@@ -54,6 +54,9 @@ $(document).ready(function () {
       // Menu per ruolo
       buildRoleMenu(ruolo);
 
+      // “Crea …” per il gestore
+      replaceCtaForGestore(ruolo);
+
       // Precarico sezioni base solo se NON admin
       if (ruolo !== "admin") {
         loadUserBookings();
@@ -888,6 +891,38 @@ $(document).ready(function () {
 
       // Nascondi anche le sezioni contenuto non necessarie
       $("#prenotazioni, #mie-sedi, #miei-spazi, #prenotazioni-gestore, #disponibilita, #dash-gestore").remove();
+    }
+  }
+
+  function replaceCtaForGestore(ruolo) {
+    if (ruolo !== "gestore") return;
+
+    // SEDI → Crea sede
+    const $hdrSedi = $("#mie-sedi .content-header");
+    if ($hdrSedi.length) {
+      const $btn = $hdrSedi.find("a.btn").first();
+      if ($btn.length) {
+        $btn.attr("href", "creaSedi.html")
+            .html('<i class="fa-solid fa-plus me-1"></i> Crea sede');
+      } else {
+        $hdrSedi.append(
+          '<a href="creaSedi.html" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-plus me-1"></i> Crea sede</a>'
+        );
+      }
+    }
+
+    // SPAZI → Crea spazio
+    const $hdrSpazi = $("#miei-spazi .content-header");
+    if ($hdrSpazi.length) {
+      const $btn2 = $hdrSpazi.find("a.btn").first();
+      if ($btn2.length) {
+        $btn2.attr("href", "creaSpazi.html")
+             .html('<i class="fa-solid fa-plus me-1"></i> Crea spazio');
+      } else {
+        $hdrSpazi.append(
+          '<a href="creaSpazio.html" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-plus me-1"></i> Crea spazio</a>'
+        );
+      }
     }
   }
 
