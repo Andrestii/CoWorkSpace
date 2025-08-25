@@ -25,11 +25,11 @@ const serviziController = {
                 return res.status(400).json({ error: "Il campo 'nome' è obbligatorio" });
             }
 
-            if (!TIPI_VALIDI.includes(String(nome))) {
+            /*if (!TIPI_VALIDI.includes(String(nome))) {
                 return res.status(400).json({
                     error: `Nome servizio non valido. Valori validi: ${TIPI_VALIDI.join(", ")}`
                 });
-            }
+            }*/
 
             const servizio = await serviziModel.createServizio({ nome });
             res.status(201).json({ message: "Servizio creato", servizio });
