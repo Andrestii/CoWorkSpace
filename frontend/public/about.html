@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chi Siamo - CoWorkSpace</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Stili di progetto -->
+  <link href="css/pagine/index.css" rel="stylesheet" />
+  <link href="css/pagine/about.css" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- HERO tipografico -->
+  <section class="about-hero gradient-ink py-5 mt-5">
+    <div class="container text-center">
+      <h1 class="display-4 fw-bold lh-1 mb-3">Work your way.</h1>
+      <p class="lead mx-auto mb-4 col-lg-8">
+        Spazi flessibili, team connessi, città vicine. <strong>Noi</strong> costruiamo i luoghi e i tempi
+        in cui il tuo lavoro scorre meglio—e tu ti senti a casa.
+      </p>
+
+      <div class="d-flex flex-wrap justify-content-center gap-2 marquee-skills">
+        <span class="pill"><i class="fa-regular fa-clock me-2"></i>Flessibilità</span>
+        <span class="pill"><i class="fa-solid fa-wifi me-2"></i>Connettività</span>
+        <span class="pill"><i class="fa-solid fa-mug-saucer me-2"></i>Comfort</span>
+        <span class="pill"><i class="fa-solid fa-users me-2"></i>Community</span>
+        <span class="pill"><i class="fa-solid fa-shield-check me-2"></i>Affidabilità</span>
+        <span class="pill"><i class="fa-solid fa-leaf me-2"></i>Sostenibilità</span>
+      </div>
+
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="sedi.html" class="btn btn-dark btn-lg">Scopri le sedi</a>
+        <a href="#stats" class="btn btn-outline-dark btn-lg" id="btn-manifesto"> Il nostro manifesto </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTERS (animati) -->
+  <section id="stats" class="about-stats py-5 bg-light">
+    <div class="container">
+      <div class="row text-center g-4">
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="h1 fw-bold mb-1"><span class="counter" data-target="120">0</span>+</div>
+            <p class="mb-0 text-muted">Città servite</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="h1 fw-bold mb-1"><span class="counter" data-target="800">0</span>+</div>
+            <p class="mb-0 text-muted">Spazi pronti</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="h1 fw-bold mb-1"><span class="counter" data-target="2500000">0</span>+</div>
+            <p class="mb-0 text-muted">Utenti nella community</p>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="h1 fw-bold mb-1"><span class="counter" data-target="30">0</span>+</div>
+            <p class="mb-0 text-muted">Partner</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section id="stats" class="about-stats py-5 bg-light">
+    <div class="container">
+      <div class="text-center mb-4">
+        <h2 class="fw-bold">Il nostro Manifesto</h2>
+        <p class="text-muted mb-0">Sei punti che guidano ogni nostra scelta.</p>
+      </div>
+      <div class="row g-3 manifesto-grid">
+        <div class="col-md-6 col-xl-4">
+          <div class="m-tile"><span>01</span> Le persone al centro, sempre.</div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+          <div class="m-tile"><span>02</span> Tempo flessibile, valore misurabile.</div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+          <div class="m-tile"><span>03</span> Spazi che ispirano, non distraggono.</div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+          <div class="m-tile"><span>04</span> Tecnologia semplice, che scompare.</div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+          <div class="m-tile"><span>05</span> Community aperta e inclusiva.</div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+          <div class="m-tile"><span>06</span> Impatto sostenibile e locale.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE interattiva (senza immagini) -->
+  <section class="about-timeline py-5 bg-light">
+    <div class="container">
+      <div class="text-center mb-4">
+        <h2 class="fw-bold">La nostra storia</h2>
+        <p class="text-muted mb-0">Crescere ascoltando i team che lavorano con noi.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="t-item active">
+          <div class="t-dot"></div>
+          <div class="t-content">
+            <h6>2018 • L’idea</h6>
+            <p>Un piccolo gruppo di professionisti immagina spazi più umani e flessibili.</p>
+          </div>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-content">
+            <h6>2020 • Le prime città</h6>
+            <p>Milano, Roma, Bologna: aprono le prime sedi con community dinamiche.</p>
+          </div>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-content">
+            <h6>2023 • La rete nazionale</h6>
+            <p>Integriamo prenotazioni smart e servizi on‑demand in tutta Italia.</p>
+          </div>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-content">
+            <h6>Oggi • Work your way</h6>
+            <p>Un ecosistema di spazi, persone e strumenti per lavorare al meglio.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-controls text-center mt-3">
+        <button class="btn btn-outline-dark btn-sm tl-prev"><i class="fa-solid fa-arrow-left"></i></button>
+        <button class="btn btn-dark btn-sm tl-next"><i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALORI (micro-animazioni) -->
+  <section class="about-values py-5">
+    <div class="container">
+      <div class="text-center mb-4">
+        <h2 class="fw-bold">I nostri valori</h2>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="v-card">
+            <i class="fa-regular fa-compass"></i>
+            <h5>Chiarezza</h5>
+            <p>Informazioni trasparenti, decisioni semplici. Sai sempre cosa aspettarti.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="v-card">
+            <i class="fa-regular fa-handshake"></i>
+            <h5>Fiducia</h5>
+            <p>Relazioni che durano: ci siamo quando serve e prima che serva.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="v-card">
+            <i class="fa-regular fa-lightbulb"></i>
+            <h5>Curiosità</h5>
+            <p>Iteriamo in fretta: ascoltiamo, sperimentiamo, miglioriamo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ / Perché noi -->
+  <section class="about-faq py-5 bg-light">
+    <div class="container">
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-5">
+          <h2 class="fw-bold mb-3">Perché scegliere CoWorkSpace</h2>
+          <p class="text-muted mb-4">Prenoti per ore, giorni o mesi. Paghi solo ciò che usi. Servizi inclusi.</p>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="chip"><i class="fa-solid fa-check me-2"></i>Spazi pronti</span>
+            <span class="chip"><i class="fa-solid fa-check me-2"></i>Assistenza reale</span>
+            <span class="chip"><i class="fa-solid fa-check me-2"></i>Pagamenti semplici</span>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="accordion" id="faq">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="q1">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="true" aria-controls="a1">
+                  Come funziona la prenotazione?
+                </button>
+              </h2>
+              <div id="a1" class="accordion-collapse collapse show" aria-labelledby="q1" data-bs-parent="#faq">
+                <div class="accordion-body">
+                  Scegli sede, spazio e fascia oraria. Conferma: ricevi riepilogo e accessi. Facile e veloce.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="q2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a2" aria-expanded="false" aria-controls="a2">
+                  Posso cambiare o cancellare?
+                </button>
+              </h2>
+              <div id="a2" class="accordion-collapse collapse" aria-labelledby="q2" data-bs-parent="#faq">
+                <div class="accordion-body">
+                  Certo, in base alle policy della sede selezionata. Gestisci tutto dal tuo profilo.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="q3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a3" aria-expanded="false" aria-controls="a3">
+                  Quali servizi sono inclusi?
+                </button>
+              </h2>
+              <div id="a3" class="accordion-collapse collapse" aria-labelledby="q3" data-bs-parent="#faq">
+                <div class="accordion-body">
+                  Wi‑Fi veloce, aree relax, reception (dove disponibile), meeting tech. Dettagli nella pagina della sede.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="about-cta py-5">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-3">Pronto a lavorare meglio?</h2>
+      <p class="lead text-muted mb-4">Trova il tuo spazio ideale nella città che preferisci.</p>
+      <a href="sedi.html" class="btn btn-dark btn-lg">Prenota ora</a>
+    </div>
+  </section>
+
+  <!-- Footer (coerente con il progetto) -->
+  <footer class="bg-dark text-white py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <h5 class="mb-3 text-uppercase">CoWorkSpace</h5>
+          <p>Valorizziamo il coworking in Italia, con spazi e servizi pensati per te.</p>
+          <div class="social-icons mt-3">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-pinterest"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+          <h5 class="mb-3 text-uppercase">Naviga</h5>
+          <ul class="list-unstyled">
+            <li><a href="index.html" class="text-white-50">Home</a></li>
+            <li><a href="sedi.html" class="text-white-50">Sedi</a></li>
+            <li><a href="spazi.html" class="text-white-50">Spazi</a></li>
+            <li><a href="about.html" class="text-white-50">Chi siamo</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+          <h5 class="mb-3 text-uppercase">Account</h5>
+          <ul class="list-unstyled">
+            <li><a href="profilo.html" class="text-white-50">Il mio account</a></li>
+            <li><a href="prenotazione.html" class="text-white-50">Prenotazioni</a></li>
+            <li><a href="#" class="text-white-50">Recensioni</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-4">
+          <h5 class="mb-3 text-uppercase">Newsletter</h5>
+          <p class="text-white-50">Novità su sedi e servizi</p>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="La tua email" aria-label="Email">
+            <button class="btn btn-primary" type="button">Iscriviti</button>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <p class="mb-md-0">&copy; 2025 CoWorkSpace. Tutti i diritti riservati.</p>
+        <div>
+          <a href="#" class="text-white-50 me-3">Privacy Policy</a>
+          <a href="#" class="text-white-50">Termini di Servizio</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./scripts/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="./scripts/partials/navbar.js"></script>
+
+  <script>
+  window.addEventListener("scroll", () => {
+    const hero = document.querySelector(".about-hero");
+    if (!hero) return;
+
+    const scrollY = window.scrollY;
+    const maxScroll = window.innerHeight * 0.7; // punto in cui scompare quasi del tutto
+    const progress = Math.min(scrollY / maxScroll, 1);
+
+    hero.style.opacity = 1 - progress;
+    hero.style.transform = `translateY(${progress * 50}px)`; // scende un po' mentre svanisce
+  });
+</script>
+
+<script>
+  document.getElementById("btn-manifesto")?.addEventListener("click", function (e) {
+    e.preventDefault();
+    const target = document.getElementById("stats");
+    if (!target) return;
+
+    const targetTop = target.getBoundingClientRect().top + window.scrollY;
+    const offset = window.innerHeight / 2 - target.offsetHeight / 2; // centra la sezione
+
+    window.scrollTo({
+      top: targetTop - offset,
+      behavior: "smooth"
+    });
+  });
+</script>
+
+
+  <!-- Micro‑interazioni (contatori + timeline) -->
+  <script>
+    // Contatori
+    document.querySelectorAll('.counter').forEach(el => {
+      const target = +el.dataset.target;
+      const dur = 1200, start = performance.now();
+      const step = now => {
+        const p = Math.min(1, (now - start) / dur);
+        el.textContent = Math.floor(target * p).toLocaleString('it-IT');
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+
+    // Timeline next/prev
+    const items = [...document.querySelectorAll('.timeline .t-item')];
+    let idx = items.findIndex(i => i.classList.contains('active'));
+    const show = i => {
+      items.forEach(n => n.classList.remove('active'));
+      items[i].classList.add('active');
+    };
+    document.querySelector('.tl-next')?.addEventListener('click', () => { idx = (idx + 1) % items.length; show(idx); });
+    document.querySelector('.tl-prev')?.addEventListener('click', () => { idx = (idx - 1 + items.length) % items.length; show(idx); });
+  </script>
+</body>
+</html>
