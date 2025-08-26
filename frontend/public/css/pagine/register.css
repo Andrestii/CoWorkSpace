@@ -2,6 +2,11 @@ body {
     background: #4A4A49;
     font-family: 'Poppins', 'Playfair Display', Arial, sans-serif;
     min-height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url('../../assets/sfondo-login.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     letter-spacing: 0.01em;
     display: flex;
     flex-direction: column;
@@ -105,8 +110,8 @@ body {
 }
 
 .login-side-art {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-        url('../../assets/register-image.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+        url('../../assets/login-image.jpg');
     background-size: cover;
     background-position: center;
     height: 100%;
@@ -115,7 +120,6 @@ body {
     display: flex;
     align-items: flex-end;
     justify-content: flex-start;
-    border-left: 1.5px solid #e8ded5;
 }
 
 .text-overlay {
