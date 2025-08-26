@@ -8,10 +8,10 @@ $(async function () {
   // API roots
   const API_ROOT = apiConfig.apiUrl;
   const API_USERS = `${API_ROOT}/users`;
-  const API_SEDI  = `${API_ROOT}/sedi`;
+  const API_SEDI = `${API_ROOT}/sedi`;
   const API_SPAZI = `${API_ROOT}/spazi`;
-  const API_PREN  = `${API_ROOT}/prenotazioni`;
-  const API_DISP  = `${API_ROOT}/disponibilita`; // usato solo per eventuali estensioni
+  const API_PREN = `${API_ROOT}/prenotazioni`;
+  const API_DISP = `${API_ROOT}/disponibilita`; // usato solo per eventuali estensioni
 
   //  Supabase (avatar) 
   const SUPABASE_URL = apiConfig.supabaseUrl;
@@ -34,12 +34,12 @@ $(async function () {
   function errorRow(cols, txt = "Errore nel caricamento.") {
     return `<tr><td colspan="${cols}" class="text-danger text-center">${txt}</td></tr>`;
   }
-  function escapeHtml(str) { return String(str ?? "").replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s])); }
+  function escapeHtml(str) { return String(str ?? "").replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[s])); }
   function getStatusBadge(status) {
     const s = String(status || "").toLowerCase();
-    if (["pagato","paid","confermato"].includes(s)) return "bg-success";
-    if (["annullato","cancellato","rifiutato"].includes(s)) return "bg-danger";
-    if (["in_attesa","pending"].includes(s)) return "bg-warning text-dark";
+    if (["pagato", "paid", "confermato"].includes(s)) return "bg-success";
+    if (["annullato", "cancellato", "rifiutato"].includes(s)) return "bg-danger";
+    if (["in_attesa", "pending"].includes(s)) return "bg-warning text-dark";
     return "bg-secondary";
   }
   function toast(msg, ok = true) {
@@ -108,11 +108,11 @@ $(async function () {
     if (!target) return;
 
     switch (target) {
-      case "dashboard-section":     loadDashboard(); break;
-      case "users-section":         loadUsers();     break;
-      case "sedi-section":          loadSedi();      break;
-      case "spazi-section":         loadSpazi();     break;
-      case "prenotazioni-section":  loadPrenotazioni(); break;
+      case "dashboard-section": loadDashboard(); break;
+      case "users-section": loadUsers(); break;
+      case "sedi-section": loadSedi(); break;
+      case "spazi-section": loadSpazi(); break;
+      case "prenotazioni-section": loadPrenotazioni(); break;
     }
   });
 
@@ -123,14 +123,31 @@ $(async function () {
 
     try {
       // Sedi (per contare attive e ricavare potenziali gestori)
-      const sedi = (await get(`${API_SEDI}/getSedi`)) || [];
+      const sedi = (await get(`${API_SEDI}/getAllSedi`)) || [];
       const sediAttive = sedi.filter(s => s.attiva === true || s.attiva === 1 || String(s.attiva) === "true");
       $("#kpi-sedi-attive").text(sediAttive.length);
 
-      // Gestori attivi (se la sede espone id_gestore; altrimenti "—")
+      // Gestori attivi
+      let gestoriCount = "—";
+
+      // 1) Se qualche endpoint delle sedi restituisce un id_gestore, usalo (compatibile con eventuali API future)
       const gestoriSet = new Set();
       sedi.forEach(s => { if (s.id_gestore != null) gestoriSet.add(String(s.id_gestore)); });
-      $("#kpi-gestori-attivi").text(gestoriSet.size || "—");
+      if (gestoriSet.size > 0) {
+        gestoriCount = gestoriSet.size;
+      } else {
+        // 2) Fallback robusto: conta gli utenti con ruolo "gestore" e non bannati
+        try {
+          const allUsers = await get(`${API_USERS}/getAllUsers`);
+          gestoriCount = (allUsers || []).filter(u =>
+            String(u.ruolo || "").toLowerCase() === "gestore" && !u.isBanned
+          ).length;
+        } catch (e) {
+          console.warn("Impossibile caricare gli utenti per il conteggio gestori.", e);
+        }
+      }
+
+      $("#kpi-gestori-attivi").text(gestoriCount);
 
       // Prenotazioni (aggrego da tutti gli spazi)
       const pren = await getAllPrenotazioni();
@@ -169,7 +186,7 @@ $(async function () {
     if (p.created_at) return new Date(p.created_at);
     return null;
   }
-  function sameDate(a, b) { return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+  function sameDate(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
 
   let ordersChart;
   function drawOrdersChart(seriesObj) {
@@ -182,8 +199,8 @@ $(async function () {
     const data = [];
     for (let i = 29; i >= 0; i--) {
       const d = new Date(today); d.setDate(today.getDate() - i);
-      const key = d.toISOString().slice(0,10);
-      labels.push(d.toLocaleDateString("it-IT", { day:"2-digit", month:"2-digit" }));
+      const key = d.toISOString().slice(0, 10);
+      labels.push(d.toLocaleDateString("it-IT", { day: "2-digit", month: "2-digit" }));
       data.push(seriesObj[key] || 0);
     }
 
@@ -204,63 +221,74 @@ $(async function () {
 
   // UTENTI 
 
-let __usersCache = new Map(); // cache per aprire il modal senza rifare chiamate
+  let __usersCache = new Map(); // cache per aprire il modal senza rifare chiamate
 
-async function loadUsers() {
-  ensureUserEditModal(); // assicura che il modal esista
+  async function loadUsers() {
+    ensureUserEditModal(); // assicura che il modal esista
 
-  const $tb = $("#tbl-users tbody").html(loadingRow(6));
-  try {
-    // prova in ordine le rotte che hai nel backend
-    const probe = await tryFirstOk([
-      `${API_USERS}/getAllUsers`,
-      `${API_USERS}/list`,
-      `${API_USERS}/getUsers`,
-    ]);
+    const $tb = $("#tbl-users tbody").html(loadingRow(6));
+    try {
+      // prova in ordine le rotte che hai nel backend
+      const probe = await tryFirstOk([
+        `${API_USERS}/getAllUsers`,
+        `${API_USERS}/list`,
+        `${API_USERS}/getUsers`,
+      ]);
 
-    const users = Array.isArray(probe.data) ? probe.data : (probe.data?.rows || []);
-    if (!users?.length) {
-      $tb.html(`<tr><td colspan="6" class="text-muted text-center">Nessun utente trovato.</td></tr>`);
-      return;
+      const users = Array.isArray(probe.data) ? probe.data : (probe.data?.rows || []);
+      if (!users?.length) {
+        $tb.html(`<tr><td colspan="6" class="text-muted text-center">Nessun utente trovato.</td></tr>`);
+        return;
+      }
+
+      // cache
+      __usersCache.clear();
+      users.forEach(u => __usersCache.set(String(u.id), u));
+
+      // render
+      $tb.empty();
+      users.forEach(u => {
+        const ruolo = (u.ruolo || u.role || "").toString();
+        const creato = u.created_at || u.createdAt || u.data_creazione;
+        const dateStr = creato ? new Date(creato).toLocaleString("it-IT") : "—";
+
+        $tb.append(`
+            <tr data-id="${u.id ?? ""}">
+              <td>${u.id ?? "—"}</td>
+              <td>
+                ${escapeHtml(u.nome || `${u.first_name || ""} ${u.last_name || ""}`.trim() || "—")}
+                ${u.isBanned ? ' <span class="badge bg-danger ms-2">BANNATO</span>' : ""}
+              </td>
+              <td>${escapeHtml(u.email || "—")}</td>
+              <td>${escapeHtml(ruolo || "—")}</td>
+              <td>${dateStr}</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-primary btn-edit-user me-1" data-id="${u.id ?? ""}" title="Modifica">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </button>
+                ${u.isBanned
+            ? `<button class="btn btn-sm btn-success btn-unban-user" data-id="${u.id ?? ""}" title="Sblocca">
+                        <i class="fa-solid fa-unlock"></i>
+                      </button>`
+            : `<button class="btn btn-sm btn-danger btn-ban-user" data-id="${u.id ?? ""}" title="Blocca">
+                        <i class="fa-solid fa-ban"></i>
+                      </button>`
+          }
+              </td>
+            </tr>
+          `);
+      });
+    } catch (e) {
+      console.error("users load error", e);
+      $tb.html(errorRow(6, "Endpoint utenti non disponibile."));
     }
-
-    // cache
-    __usersCache.clear();
-    users.forEach(u => __usersCache.set(String(u.id), u));
-
-    // render
-    $tb.empty();
-    users.forEach(u => {
-      const ruolo  = (u.ruolo || u.role || "").toString();
-      const creato = u.created_at || u.createdAt || u.data_creazione;
-      const dateStr = creato ? new Date(creato).toLocaleString("it-IT") : "—";
-
-      $tb.append(`
-        <tr data-id="${u.id ?? ""}">
-          <td>${u.id ?? "—"}</td>
-          <td>${escapeHtml(u.nome || `${u.first_name || ""} ${u.last_name || ""}`.trim() || "—")}</td>
-          <td>${escapeHtml(u.email || "—")}</td>
-          <td>${escapeHtml(ruolo || "—")}</td>
-          <td>${dateStr}</td>
-          <td class="text-end">
-            <button class="btn btn-sm btn-outline-primary btn-edit-user" data-id="${u.id ?? ""}" title="Modifica">
-              <i class="fa-regular fa-pen-to-square"></i>
-            </button>
-          </td>
-        </tr>
-      `);
-    });
-  } catch (e) {
-    console.error("users load error", e);
-    $tb.html(errorRow(6, "Endpoint utenti non disponibile."));
   }
-}
 
-// === MODAL MODIFICA UTENTE ================================================
-function ensureUserEditModal() {
-  if ($("#modalUserEdit").length) return;
+  // === MODAL MODIFICA UTENTE ================================================
+  function ensureUserEditModal() {
+    if ($("#modalUserEdit").length) return;
 
-  $("body").append(`
+    $("body").append(`
     <div class="modal fade" id="modalUserEdit" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <form class="modal-content" id="form-user-edit">
@@ -271,12 +299,8 @@ function ensureUserEditModal() {
           <div class="modal-body">
             <input type="hidden" id="ue-id">
             <div class="mb-3">
-              <label class="form-label">Nome</label>
+              <label class="form-label">Nome e Cognome</label>
               <input type="text" class="form-control" id="ue-nome" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Cognome</label>
-              <input type="text" class="form-control" id="ue-cognome">
             </div>
             <div class="mb-3">
               <label class="form-label">Email</label>
@@ -290,7 +314,6 @@ function ensureUserEditModal() {
               <label class="form-label">Data di nascita</label>
               <input type="date" class="form-control" id="ue-dob">
             </div>
-            <p class="small text-muted mb-0">Il ruolo non si cambia da qui.</p>
           </div>
           <div class="modal-footer">
             <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Annulla</button>
@@ -300,111 +323,234 @@ function ensureUserEditModal() {
       </div>
     </div>
   `);
-}
-
-// Apri modal su click "Modifica"
-$(document).on("click", ".btn-edit-user", function () {
-  const id = String($(this).data("id") || "");
-  const u  = __usersCache.get(id);
-  if (!u) return;
-
-  $("#ue-id").val(id);
-  $("#ue-nome").val(u.nome || u.first_name || "");
-  $("#ue-cognome").val(u.cognome || u.last_name || "");
-  $("#ue-email").val(u.email || "");
-  $("#ue-telefono").val(u.telefono || u.numero_telefono || "");
-  const dob = u.data_nascita ? String(u.data_nascita).slice(0,10) : (u.dob ? String(u.dob).slice(0,10) : "");
-  $("#ue-dob").val(dob);
-
-  new bootstrap.Modal(document.getElementById("modalUserEdit")).show();
-});
-
-// Submit modifica → PUT /users/updateInfo/:id
-$(document).on("submit", "#form-user-edit", async function (e) {
-  e.preventDefault();
-  const id = $("#ue-id").val();
-  const payload = {
-    nome: $("#ue-nome").val().trim(),
-    cognome: $("#ue-cognome").val().trim(),
-    email: $("#ue-email").val().trim(),
-    telefono: $("#ue-telefono").val().trim(),
-    data_nascita: $("#ue-dob").val() || null
-  };
-
-  try {
-    await $.ajax({
-      url: `${API_USERS}/updateInfo/${encodeURIComponent(id)}`,
-      type: "PUT",
-      contentType: "application/json",
-      data: JSON.stringify(payload),
-      headers: { Authorization: "Bearer " + token }
-    });
-
-    // chiudi modal + feedback + ricarica lista
-    bootstrap.Modal.getInstance(document.getElementById("modalUserEdit"))?.hide();
-    toast("Utente aggiornato");
-    loadUsers();
-  } catch (err) {
-    console.error(err);
-    const msg = err?.responseJSON?.error || err?.responseJSON?.message || "Errore nell'aggiornamento";
-    toast(msg, false);
   }
-});
 
-  // SEDI 
+  // Apri modal su click "Modifica"
+  $(document).on("click", ".btn-edit-user", function () {
+    const id = String($(this).data("id") || "");
+    const u = __usersCache.get(id);
+    if (!u) return;
+
+    $("#ue-id").val(id);
+    $("#ue-nome").val(u.nome || u.first_name || "");
+    $("#ue-email").val(u.email || "");
+    $("#ue-telefono").val(u.telefono || u.numero_telefono || "");
+    const dob = u.data_nascita ? String(u.data_nascita).slice(0, 10) : (u.dob ? String(u.dob).slice(0, 10) : "");
+    $("#ue-dob").val(dob);
+
+    new bootstrap.Modal(document.getElementById("modalUserEdit")).show();
+  });
+
+  // Submit modifica → PUT /users/updateInfo/:id
+  $(document).on("submit", "#form-user-edit", async function (e) {
+    e.preventDefault();
+    const id = $("#ue-id").val();
+    const payload = {
+      nome: $("#ue-nome").val().trim(),
+      email: $("#ue-email").val().trim(),
+      telefono: $("#ue-telefono").val().trim(),
+      data_nascita: $("#ue-dob").val() || null
+    };
+
+    try {
+      await $.ajax({
+        url: `${API_USERS}/updateInfo/${encodeURIComponent(id)}`,
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify(payload),
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      // chiudi modal + feedback + ricarica lista
+      bootstrap.Modal.getInstance(document.getElementById("modalUserEdit"))?.hide();
+      toast("Utente aggiornato");
+      loadUsers();
+    } catch (err) {
+      console.error(err);
+      const msg = err?.responseJSON?.error || err?.responseJSON?.message || "Errore nell'aggiornamento";
+      toast(msg, false);
+    }
+  });
+
+  // BAN
+  $(document).on("click", ".btn-ban-user", async function () {
+    const id = String($(this).data("id") || "");
+    if (!id) return;
+    if (!confirm("Sei sicuro di voler BANNARE questo utente?")) return;
+
+    try {
+      await $.ajax({
+        url: `${API_USERS}/ban/${encodeURIComponent(id)}`,
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({ reason: "Violazione termini" }), // opzionale
+        headers: { Authorization: "Bearer " + token }
+      });
+      toast("Utente bannato");
+      loadUsers();
+    } catch (err) {
+      console.error(err);
+      const msg = err?.responseJSON?.error || err?.responseJSON?.message || "Errore nel ban";
+      toast(msg, false);
+    }
+  });
+
+  // UNBAN
+  $(document).on("click", ".btn-unban-user", async function () {
+    const id = String($(this).data("id") || "");
+    if (!id) return;
+    if (!confirm("Sbloccare questo utente?")) return;
+
+    try {
+      await $.ajax({
+        url: `${API_USERS}/unban/${encodeURIComponent(id)}`,
+        type: "PUT",
+        headers: { Authorization: "Bearer " + token }
+      });
+      toast("Utente sbloccato");
+      loadUsers();
+    } catch (err) {
+      console.error(err);
+      const msg = err?.responseJSON?.error || err?.responseJSON?.message || "Errore nello sblocco";
+      toast(msg, false);
+    }
+  });
+
+
+  // SOFT DELETE sede
+  $(document).on("click", ".btn-del-sede", async function () {
+    const id = String($(this).data("id") || "");
+    if (!id) return;
+
+    if (!confirm("Eliminare questa sede? (soft delete)")) return;
+
+    const $btn = $(this);
+    const oldHtml = $btn.html();
+    $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm"></span>');
+
+    try {
+      await $.ajax({
+        url: `${API_SEDI}/deleteSede/${encodeURIComponent(id)}`, // backend fa soft delete
+        type: "DELETE",
+        headers: { Authorization: "Bearer " + token }
+      });
+      toast("Sede eliminata");
+      loadSedi();            // ricarica la lista (sparirà subito)
+      loadDashboard?.();     // opzionale: aggiorna i KPI se vuoi
+    } catch (err) {
+      console.error(err);
+      const msg = err?.responseJSON?.error || err?.responseJSON?.message || "Errore nell'eliminazione";
+      toast(msg, false);
+      $btn.prop("disabled", false).html(oldHtml);
+    }
+  });
+
+  // SOFT DELETE spazio (attivo = false)
+  $(document).on("click", ".btn-del-spazio", async function () {
+    const id = String($(this).data("id") || "");
+    if (!id) return;
+    if (!confirm("Eliminare questo spazio? (soft delete)")) return;
+
+    const $btn = $(this);
+    const oldHtml = $btn.html();
+    $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm"></span>');
+
+    try {
+      await $.ajax({
+        url: `${API_SPAZI}/deleteSpazio/${encodeURIComponent(id)}`,
+        type: "DELETE",
+        headers: { Authorization: "Bearer " + token }
+      });
+      toast("Spazio disattivato");
+      loadSpazi();
+    } catch (err) {
+      console.error(err);
+      const msg = err?.responseJSON?.error || err?.responseJSON?.message || "Errore eliminazione spazio";
+      toast(msg, false);
+      $btn.prop("disabled", false).html(oldHtml);
+    }
+  });
+
+
+  // SEDI (mostra attive + disattivate, con bottone Ripristina)
   async function loadSedi() {
-    const $tb = $("#tbl-sedi tbody").html(loadingRow(6));
+    const $tb = $("#tbl-sedi tbody").html(loadingRow(5));
     try {
       const sedi = (await get(`${API_SEDI}/getAllSedi`)) || [];
-      if (!sedi.length) { $tb.html(`<tr><td colspan="6" class="text-muted text-center">Nessuna sede trovata.</td></tr>`); return; }
+      if (!sedi.length) {
+        $tb.html(`<tr><td colspan="5" class="text-muted text-center">Nessuna sede trovata.</td></tr>`);
+        return;
+      }
 
       $tb.empty();
       sedi.forEach(s => {
-        const stato = (s.attiva === true || s.attiva === 1 || String(s.attiva) === "true") ? "Attiva" : "Non attiva";
-        const badge = (stato === "Attiva") ? "bg-success" : "bg-secondary";
+        const isActive = (s.attiva === true || s.attiva === 1 || String(s.attiva) === "true");
+        const statoTxt = isActive ? "Attiva" : "Disattivata";
+        const badgeCls = isActive ? "bg-success" : "bg-secondary";
+
         $tb.append(`
           <tr>
             <td>${s.id ?? "—"}</td>
             <td>${escapeHtml(s.nome || "—")}</td>
             <td>${escapeHtml([s.indirizzo, s.citta].filter(Boolean).join(", ") || "—")}</td>
-            <td><span class="badge ${badge}">${stato}</span></td>
-            <td>${s.id_gestore ?? "—"}</td>
+            <td><span class="badge ${badgeCls}">${statoTxt}</span></td>
             <td class="text-end">
-              <a class="btn btn-sm btn-outline-primary" href="sede.html?id=${s.id ?? ""}">
-                <i class="fa-solid fa-circle-info"></i>
-              </a>
+              ${isActive
+            ? `
+                    <button class="btn btn-sm btn-danger btn-del-sede" data-id="${s.id}" title="Elimina (soft)">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  `
+            : `
+                    <button class="btn btn-sm btn-success btn-restore-sede" data-id="${s.id}" title="Ripristina">
+                      <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                  `
+          }
             </td>
           </tr>
         `);
       });
-    } catch {
-      $tb.html(errorRow(6));
+    } catch (e) {
+      console.error(e);
+      $tb.html(errorRow(5));
     }
   }
 
-  // SPAZI 
+  // SPAZI (attivi + disattivati) con bottone Attiva/Disattiva
   async function loadSpazi() {
     const $tb = $("#tbl-spazi tbody").html(loadingRow(6));
     try {
-      const spazi = (await get(`${API_SPAZI}/getSpazi`)) || [];
-      if (!spazi.length) { $tb.html(`<tr><td colspan="6" class="text-muted text-center">Nessuno spazio trovato.</td></tr>`); return; }
+      // prendi tutti (se il backend supporta ?all=1)
+      const spazi = (await get(`${API_SPAZI}/getSpazi?all=1`)) || [];
+      if (!spazi.length) {
+        $tb.html(`<tr><td colspan="6" class="text-muted text-center">Nessuno spazio trovato.</td></tr>`);
+        return;
+      }
 
       $tb.empty();
       spazi.forEach(sp => {
-        const tipologia = (sp.tipologia || "").replaceAll("_"," ").replace(/^\w/, c => c.toUpperCase());
-        const stato = (sp.attivo === true || sp.attivo === 1 || String(sp.attivo) === "true") ? "Attivo" : "Non attivo";
-        const badge = (stato === "Attivo") ? "bg-success" : "bg-secondary";
+        const isActive = (sp.attivo === true || sp.attivo === 1 || String(sp.attivo) === "true");
+        const statoTxt = isActive ? "Attivo" : "Disattivato";
+        const badgeCls = isActive ? "bg-success" : "bg-secondary";
+        const tipologia = (sp.tipologia || "").replaceAll("_", " ").replace(/^\w/, c => c.toUpperCase());
+
         $tb.append(`
           <tr>
             <td>${sp.id ?? "—"}</td>
             <td>${escapeHtml(sp.nome || "—")}</td>
             <td>${escapeHtml(tipologia || "—")}</td>
             <td>${sp.id_sede ?? "—"}</td>
-            <td><span class="badge ${badge}">${stato}</span></td>
+            <td><span class="badge ${badgeCls}">${statoTxt}</span></td>
             <td class="text-end">
-              <a class="btn btn-sm btn-outline-primary" href="spazio.html?id=${sp.id ?? ""}">
-                <i class="fa-solid fa-circle-info"></i>
-              </a>
+              <div class="btn-group">
+                <a class="btn btn-sm btn-outline-primary" href="spazio.html?id=${sp.id ?? ""}" title="Dettagli">
+                  <i class="fa-solid fa-circle-info"></i>
+                </a>
+                <button class="btn btn-sm btn-danger btn-del-spazio" data-id="${sp.id}" title="Elimina (soft)">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
             </td>
           </tr>
         `);
@@ -423,58 +569,46 @@ $(document).on("submit", "#form-user-edit", async function (e) {
   async function loadPrenotazioni(sedeId = null) {
     const $tb = $("#tbl-pren tbody").html(loadingRow(8, "Caricamento prenotazioni..."));
     try {
-      let spazi = [];
-      if (sedeId) {
-        spazi = (await get(`${API_SPAZI}/getSpazi?sede=${encodeURIComponent(sedeId)}`)) || [];
-      } else {
-        spazi = (await get(`${API_SPAZI}/getSpazi`)) || [];
+      const url = sedeId
+        ? `${API_PREN}/getAllPrenotazioni?sede=${encodeURIComponent(sedeId)}`
+        : `${API_PREN}/getAllPrenotazioni`;
+
+      const pren = await get(url);
+
+      if (!pren?.length) {
+        $tb.html(`<tr><td colspan="8" class="text-muted text-center">Nessuna prenotazione.</td></tr>`);
+        return;
       }
-      if (!spazi.length) { $tb.html(`<tr><td colspan="8" class="text-muted text-center">Nessuna prenotazione.</td></tr>`); return; }
 
-      // Per ciascuno spazio → prenotazioni
-      const promises = spazi.map(sp =>
-        get(`${API_PREN}/getPrenotazioniSpazio/${sp.id}`)
-          .then(rows => (rows || []).map(p => ({ ...p, _spazio: sp })))
-          .catch(() => [])
-      );
-      const nested = await Promise.all(promises);
-      let pren = nested.flat();
-
-      // Ordina per data desc
-      pren.sort((a,b) => {
-        const da = pickPrenDate(a)?.getTime() || 0;
-        const db = pickPrenDate(b)?.getTime() || 0;
-        return db - da;
-      });
-
-      if (!pren.length) { $tb.html(`<tr><td colspan="8" class="text-muted text-center">Nessuna prenotazione.</td></tr>`); return; }
+      // ordina per data/creazione desc
+      pren.sort((a, b) => (new Date(pickPrenDate(b) || 0)) - (new Date(pickPrenDate(a) || 0)));
 
       $tb.empty();
       pren.forEach(p => {
-        const sedeName  = p._spazio?.sede_nome || p._spazio?.sede || p.sede?.nome || `Sede #${p._spazio?.id_sede ?? "—"}`;
-        const cliente   = p.utente?.nome || p.cliente?.nome || `Utente #${p.id_utente ?? "—"}`;
-        const stato     = p.stato || "—";
-        const badge     = getStatusBadge(stato);
-        const totale    = (p.importo ?? p.totale) != null ? parseFloat(p.importo ?? p.totale).toFixed(2) : "—";
-        const d         = pickPrenDate(p);
-        const dateStr   = d ? d.toLocaleString("it-IT", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" }) : "—";
+        const sedeName = p.sede_nome || `Sede #${p.id_sede ?? "—"}`;
+        const cliente = p.utente_nome || `Utente #${p.id_utente ?? "—"}`;
+        const stato = p.stato || "—";
+        const badge = getStatusBadge(stato);
+        const totale = (p.importo ?? p.totale) != null ? parseFloat(p.importo ?? p.totale).toFixed(2) : "—";
+        const d = pickPrenDate(p);
+        const dateStr = d ? d.toLocaleString("it-IT", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
 
         $tb.append(`
-          <tr>
-            <td>${p.id ?? "—"}</td>
-            <td>${p._spazio?.id_sede ?? "—"}</td>
-            <td>${escapeHtml(sedeName)}</td>
-            <td>${escapeHtml(cliente)}</td>
-            <td><span class="badge ${badge}">${escapeHtml(stato)}</span></td>
-            <td>€${totale}</td>
-            <td>${dateStr}</td>
-            <td class="text-end">
-              <a class="btn btn-sm btn-outline-primary" href="spazio.html?id=${p._spazio?.id ?? ""}" title="Vai allo spazio">
-                <i class="fa-solid fa-circle-info"></i>
-              </a>
-            </td>
-          </tr>
-        `);
+        <tr>
+          <td>${p.id ?? "—"}</td>
+          <td>${p.id_sede ?? "—"}</td>
+          <td>${escapeHtml(sedeName)}</td>
+          <td>${escapeHtml(cliente)}</td>
+          <td><span class="badge ${badge}">${escapeHtml(stato)}</span></td>
+          <td>€${totale}</td>
+          <td>${dateStr}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary" href="spazio.html?id=${p.spazio_id ?? ""}" title="Vai allo spazio">
+              <i class="fa-solid fa-circle-info"></i>
+            </a>
+          </td>
+        </tr>
+      `);
       });
     } catch (e) {
       console.error(e);
@@ -483,17 +617,11 @@ $(document).on("submit", "#form-user-edit", async function (e) {
   }
 
   async function getAllPrenotazioni() {
-    // helper per dashboard: prende TUTTE le prenotazioni iterando gli spazi
-    const spazi = (await get(`${API_SPAZI}/getSpazi`)) || [];
-    if (!spazi.length) return [];
-    const batches = await Promise.all(
-      spazi.map(sp =>
-        get(`${API_PREN}/getPrenotazioniSpazio/${sp.id}`)
-          .then(rows => (rows || []).map(p => ({ ...p, _spazio: sp })))
-          .catch(() => [])
-      )
-    );
-    return batches.flat();
+    try {
+      return await get(`${API_PREN}/getAllPrenotazioni`);
+    } catch {
+      return [];
+    }
   }
 
   // Avvii iniziali 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,7 +9,9 @@
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="icon" href="favicon.ico">
@@ -18,6 +21,7 @@
   <link href="css/pagine/profilo.css" rel="stylesheet" />
   <link href="css/pagine/adminPanel.css" rel="stylesheet" />
 </head>
+
 <body>
 
   <!-- Navbar -->
@@ -41,7 +45,8 @@
         <div class="profile-sidebar p-3 rounded shadow-sm">
           <div class="user-info text-center mb-4">
             <div class="avatar-container mb-3 position-relative">
-              <img src="https://via.placeholder.com/120" alt="Avatar" class="rounded-circle user-avatar" id="admin-avatar">
+              <img src="https://via.placeholder.com/120" alt="Avatar" class="rounded-circle user-avatar"
+                id="admin-avatar">
             </div>
             <h5 id="admin-name">Admin</h5>
             <p class="text-muted" id="admin-email">admin@email.com</p>
@@ -140,7 +145,7 @@
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>Nome</th>
+                      <th>Nome e Cognome</th>
                       <th>Email</th>
                       <th>Ruolo</th>
                       <th>Creato</th>
@@ -148,7 +153,9 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr><td colspan="6" class="text-center text-muted">Caricamento...</td></tr>
+                    <tr>
+                      <td colspan="6" class="text-center text-muted">Caricamento...</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -169,12 +176,13 @@
                       <th>Nome</th>
                       <th>Indirizzo</th>
                       <th>Stato</th>
-                      <th>Gestore</th>
                       <th class="text-end">Azioni</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr><td colspan="6" class="text-center text-muted">Caricamento...</td></tr>
+                    <tr>
+                      <td colspan="6" class="text-center text-muted">Caricamento...</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -200,7 +208,9 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr><td colspan="6" class="text-center text-muted">Caricamento...</td></tr>
+                    <tr>
+                      <td colspan="6" class="text-center text-muted">Caricamento...</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -211,12 +221,6 @@
           <div class="content-section" id="prenotazioni-section" style="display:none;">
             <div class="content-header">
               <h4>Tutte le Prenotazioni</h4>
-              <div class="d-flex gap-2">
-                <input id="f-pren-sede" class="form-control form-control-sm" placeholder="Filtra per ID sede">
-                <button class="btn btn-sm btn-outline-primary" id="btn-filter-pren">
-                  <i class="fa-solid fa-filter me-1"></i> Filtra
-                </button>
-              </div>
             </div>
             <div class="content-body">
               <div class="table-responsive">
@@ -234,7 +238,9 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr><td colspan="8" class="text-center text-muted">Caricamento...</td></tr>
+                    <tr>
+                      <td colspan="8" class="text-center text-muted">Caricamento...</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -246,17 +252,66 @@
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="bg-dark text-white py-4 text-center">
-    <p>&copy; 2025 CoWorkSpace. Tutti i diritti riservati.</p>
+  <!-- footer -->
+  <footer class="bg-dark text-white py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <h5 class="mb-3 text-uppercase">CoWorkSpace</h5>
+          <p>
+            La piattaforma che valorizza il coworking in Italia, mettendo in contatto
+            professionisti, aziende e creativi alla ricerca di spazi unici dove lavorare e collaborare.
+          </p>
+          <div class="social-icons mt-3">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-pinterest"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+          <h5 class="mb-3 text-uppercase">Naviga</h5>
+          <ul class="list-unstyled">
+            <li><a href="index.html" class="text-white-50">Home</a></li>
+            <li><a href="sedi.html" class="text-white-50">Sedi</a></li>
+            <li><a href="spazi.html" class="text-white-50">Spazi</a></li>
+            <li><a href="about.html" class="text-white-50">Chi siamo</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+          <h5 class="mb-3 text-uppercase">Account</h5>
+          <ul class="list-unstyled">
+            <li><a href="profilo.html" class="text-white-50">Il mio account</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-4">
+          <h5 class="mb-3 text-uppercase">Newsletter</h5>
+          <p class="text-white-50">Iscriviti per ricevere novità su sedi e servizi</p>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="La tua email" aria-label="Email">
+            <button class="btn btn-primary" type="button">Iscriviti</button>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <p class="mb-md-0">&copy; 2025 CoWorkSpace. Tutti i diritti riservati.</p>
+        <div>
+          <a href="#" class="text-white-50 me-3">Privacy Policy</a>
+          <a href="#" class="text-white-50">Termini di Servizio</a>
+        </div>
+      </div>
+    </div>
   </footer>
 
   <!-- Toast -->
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
-    <div id="admin-toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="admin-toast" class="toast align-items-center text-white bg-success border-0" role="alert"
+      aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
         <div class="toast-body">Operazione completata</div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Chiudi"></button>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+          aria-label="Chiudi"></button>
       </div>
     </div>
   </div>
@@ -288,7 +343,8 @@
     });
 
     // filtro prenotazioni 
-    $("#btn-filter-pren").on("click", function(){ return false; });
+    $("#btn-filter-pren").on("click", function () { return false; });
   </script>
 </body>
+
 </html>

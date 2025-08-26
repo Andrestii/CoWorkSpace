@@ -4,6 +4,7 @@ const router = express.Router();
 const prenotazioniController = require("../controllers/prenotazioniController");
 const authMiddleware = require("../middleware/auth");
 const isGestore = require("../middleware/isGestore");
+const isAdmin = require("../middleware/isAdmin");
 
 /**
  * @swagger
@@ -123,5 +124,31 @@ router.put("/updateStatoPrenotazione/:id", authMiddleware, isGestore, prenotazio
  *         description: Spazio non trovato
  */
 router.get("/getPrenotazioniSpazio/:id", prenotazioniController.getPrenotazioniSpazio);
+
+/**
+ * @swagger
+ * /prenotazioni/getAllPrenotazioni:
+ *   get:
+ *     summary: Ottiene tutte le prenotazioni (filtro opzionale per sede)
+ *     tags: [Prenotazioni]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: sede
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: ID della sede per filtrare
+ *     responses:
+ *       200:
+ *         description: Lista delle prenotazioni
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ */
+router.get("/getAllPrenotazioni", authMiddleware, isAdmin, prenotazioniController.getAllPrenotazioni
+);
 
 module.exports = router;

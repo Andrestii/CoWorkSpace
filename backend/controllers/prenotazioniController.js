@@ -88,6 +88,27 @@ const prenotazioniController = {
             res.status(500).json({ error: error.message });
         }
     },
+
+    async getAllPrenotazioni(req, res) {
+        try {
+            const sede = req.query?.sede ? Number(req.query.sede) : null;
+            const rows = await prenotazioniModel.listAll({ idSede: sede });
+            // uniformiamo un paio di alias utili al frontend admin
+            const mapped = rows.map(p => ({
+                ...p,
+                spazio_id: p.spazio?.id ?? p.id_spazio ?? null,
+                sede_nome: p.spazio?.sede?.nome ?? null,
+                id_sede: p.spazio?.id_sede ?? null,
+                utente_nome: p.utente?.nome ?? null,
+                utente_email: p.utente?.email ?? null,
+            }));
+
+            return res.status(200).json(mapped);
+        } catch (error) {
+            console.error("Errore getAllPrenotazioni:", error);
+            return res.status(500).json({ error: error.message });
+        }
+    },
 };
 
 module.exports = prenotazioniController;

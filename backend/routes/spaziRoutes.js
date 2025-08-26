@@ -67,12 +67,7 @@ router.get("/getSpazi", spaziController.getSpazi);
  *       400:
  *         description: Dati non validi
  */
-router.post(
-  "/createSpazio",
-  authMiddleware,
-  isGestore,
-  upload.single("immagine"),
-  spaziController.createSpazio
+router.post("/createSpazio", authMiddleware, isGestore, upload.single("immagine"), spaziController.createSpazio
 );
 
 /**

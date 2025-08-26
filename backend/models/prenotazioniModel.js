@@ -68,6 +68,34 @@ class PrenotazioniModel {
         if (error) throw error;
         return data;
     }
+
+    async listAll({ idSede = null } = {}) {
+        let query = supabase
+            .from(TABLE_PRENOTAZIONI)
+            .select(`
+                        *,
+                        utente:utenti ( id, nome, email ),
+                        spazio:spazi (
+                        id, nome, id_sede, tipologia,
+                        sede:sedi ( id, nome )
+                        )
+                    `)
+            .order("data_creazione", { ascending: false });
+
+        // filtro per sede (se presente)
+        if (idSede) {
+            query = query.eq("spazio.id_sede", Number(idSede));
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+        return data || [];
+    }
+
+    // opzionale, alias più esplicito
+    async listAllBySede(idSede) {
+        return this.listAll({ idSede });
+    }
 }
 
 module.exports = new PrenotazioniModel();
