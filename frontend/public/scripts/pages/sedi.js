@@ -3,21 +3,35 @@ $(function () {
   const API = apiConfig.apiUrl;
   const token = localStorage.getItem("authToken");
 
-  // Cache
-  let tutteLeSedi = [];     // sedi base
-  let tuttiGliSpazi = [];   // spazi di tutte le sedi
-  let serviziCatalogo = []; // lista servizi (catalogo)
-  let spaziDisponibiliInData = new Set(); // id_spazio con slot disponibili nel giorno selezionato
+  // ---- Stato ----
+  let tutteLeSedi = [];
+  let tuttiGliSpazi = [];
+  let serviziCatalogo = [];
+  let spaziDisponibiliInData = new Set(); // id_spazio con almeno 1 slot disponibile nel giorno
+  const cacheDisponibilitaPerGiorno = new Map(); // 'YYYY-MM-DD' -> Set(ids)
+  let DATE_SELECTED = ""; // stringa 'YYYY-MM-DD' se l'utente ha scelto una data
 
-  // UI init
+  // ---- UI init ----
   $("#errore").addClass("d-none");
   $("#sedi-container").empty();
   $("#loading").show();
 
-  // Carico sedi, spazi, servizi in parallelo
-  const ajaxSedi = $.ajax({ url: `${API}/sedi/getAllSedi`, method: "GET", headers: { Authorization: "Bearer " + token } });
-  const ajaxSpazi = $.ajax({ url: `${API}/spazi/getSpazi`, method: "GET", headers: { Authorization: "Bearer " + token } });
-  const ajaxServizi = $.ajax({ url: `${API}/servizi/getServizi`, method: "GET", headers: { Authorization: "Bearer " + token } });
+  // ---- Fetch iniziali ----
+  const ajaxSedi = $.ajax({
+    url: `${API}/sedi/getAllSedi`,
+    method: "GET",
+    headers: { Authorization: "Bearer " + token }
+  });
+  const ajaxSpazi = $.ajax({
+    url: `${API}/spazi/getSpazi`,
+    method: "GET",
+    headers: { Authorization: "Bearer " + token }
+  });
+  const ajaxServizi = $.ajax({
+    url: `${API}/servizi/getServizi`,
+    method: "GET",
+    headers: { Authorization: "Bearer " + token }
+  });
 
   $.when(ajaxSedi, ajaxSpazi, ajaxServizi)
     .done((resSedi, resSpazi, resServizi) => {
@@ -28,15 +42,14 @@ $(function () {
       popolaFiltroCitta(tutteLeSedi);
       popolaFiltroServizi(serviziCatalogo);
 
-      // abilita/disabilita filtro servizi in base al fatto che gli spazi abbiano già un array "servizi"
       const serviziInSpazi = tuttiGliSpazi.some(sp => Array.isArray(sp.servizi) && sp.servizi.length);
       $("#filtroServizi").prop("disabled", !serviziInSpazi);
       $("#noteServizi")[serviziInSpazi ? "addClass" : "removeClass"]("d-none");
 
       renderSedi(tutteLeSedi);
 
-      // bind filtri (inclusa la Data)
-      $("#filtroData, #filtroCitta, #filtroTipologia, #filtroServizi, #filtroDisponibilita").on("change", onFiltersChange);
+      $("#filtroData, #filtroCitta, #filtroTipologia, #filtroServizi, #filtroDisponibilita")
+        .on("change", onFiltersChange);
     })
     .fail((xhr) => {
       const msg = xhr?.responseJSON?.error || xhr?.responseJSON?.message || "Errore nel caricamento dei dati.";
@@ -44,80 +57,118 @@ $(function () {
     })
     .always(() => $("#loading").hide());
 
-  // Quando cambia un filtro:
+  // ---- Cambio filtri ----
   function onFiltersChange() {
     const dataSelezionata = $("#filtroData").val(); // YYYY-MM-DD
-    if (dataSelezionata) {
-      // Scarico gli slot disponibili per quel giorno [data,data]
-      caricaDisponibilitaPerGiorno(dataSelezionata).then(applicaFiltri);
+    DATE_SELECTED = dataSelezionata || "";
+
+    if (DATE_SELECTED) {
+      caricaDisponibilitaPerGiorno(DATE_SELECTED).then(applicaFiltri);
     } else {
-      // nessuna data: svuoto set e filtro normal
       spaziDisponibiliInData = new Set();
       applicaFiltri();
     }
   }
 
-  // Chiama /disponibilita/range?start=YYYY-MM-DD&end=YYYY-MM-DD
-  async function caricaDisponibilitaPerGiorno(yyyy_mm_dd) {
+  // --------- CORE: disponibilità per giorno ----------
+  // Batch helper per limitare il parallelismo
+  async function inBatches(items, size, worker) {
+    const out = [];
+    for (let i = 0; i < items.length; i += size) {
+      const chunk = items.slice(i, i + size).map(worker);
+      const res = await Promise.allSettled(chunk);
+      out.push(...res);
+    }
+    return out;
+  }
+
+  // Chiede le disponibilità di UNO spazio
+  async function fetchDispSpazio(spazioId) {
     try {
-      const res = await $.ajax({
-        url: `${API}/disponibilita/range`,
+      const rows = await $.ajax({
+        url: `${API}/disponibilita/list`,
         method: "GET",
-        data: { start: yyyy_mm_dd, end: yyyy_mm_dd }, // stesso giorno
-        // NB: in routes non è richiesto auth per /range
+        data: { id_spazio: spazioId },
+        headers: { Authorization: "Bearer " + token }
       });
-      // Costruisco il set di id_spazio con almeno uno slot disponibile (disponibile=true)
-      const slots = Array.isArray(res) ? res : [];
-      const ok = new Set();
-      slots.forEach(sl => {
-        if (sl && sl.disponibile && typeof sl.id_spazio !== "undefined") {
-          ok.add(sl.id_spazio);
-        }
-      });
-      spaziDisponibiliInData = ok;
-    } catch (e) {
-      console.error("Errore caricamento disponibilità:", e);
-      spaziDisponibiliInData = new Set(); // fallback: nessuna info
+      return Array.isArray(rows) ? rows : [];
+    } catch {
+      return [];
     }
   }
 
-  // Applica TUTTI i filtri correnti
+  // Almeno uno slot disponibile in quel giorno?
+  function hasSlotThatDay(rows, yyyy_mm_dd) {
+    const sameDay = (iso) => String(iso || "").slice(0, 10) === yyyy_mm_dd;
+    for (const r of rows) {
+      const disponibile = (r?.disponibile !== false); // true se mancante
+      if (disponibile && sameDay(r?.start_at)) return true;
+    }
+    return false;
+  }
+
+  // Interroga /disponibilita/list per OGNI spazio (batch)
+  async function caricaDisponibilitaPerGiorno(yyyy_mm_dd) {
+    if (cacheDisponibilitaPerGiorno.has(yyyy_mm_dd)) {
+      spaziDisponibiliInData = cacheDisponibilitaPerGiorno.get(yyyy_mm_dd);
+      return;
+    }
+
+    const idsSpazi = (tuttiGliSpazi || []).map(sp => Number(sp.id)).filter(Number.isFinite);
+    const ok = new Set();
+
+    // batch di 8 richieste per volta
+    await inBatches(idsSpazi, 8, async (sid) => {
+      const rows = await fetchDispSpazio(sid);
+      if (hasSlotThatDay(rows, yyyy_mm_dd)) ok.add(sid);
+    });
+
+    spaziDisponibiliInData = ok;
+    cacheDisponibilitaPerGiorno.set(yyyy_mm_dd, ok);
+  }
+
+  // ---- Applica filtri ----
   function applicaFiltri() {
     const citta = $("#filtroCitta").val();
     const tipologia = $("#filtroTipologia").val();
     const servizio = $("#filtroServizi").val();
-    const dispSede = $("#filtroDisponibilita").val(); // attiva|non_attiva|""
+    const $dispSel = $("#filtroDisponibilita");
+    const dispSede = $dispSel.length ? $dispSel.val() : ""; // attiva | non_attiva | ""
 
     let filtrate = [...tutteLeSedi];
 
-    // 1) CITTÀ
+    // Città
     if (citta) {
       filtrate = filtrate.filter(s => (s.citta || "").toLowerCase() === citta.toLowerCase());
     }
 
-    // 2) DISPONIBILITÀ sede (flag attiva della sede)
+    // Stato sede
     if (dispSede === "attiva") filtrate = filtrate.filter(s => !!s.attiva);
     if (dispSede === "non_attiva") filtrate = filtrate.filter(s => !s.attiva);
 
-    // 3) TIPOLGIA / SERVIZI / DATA: richiedono join con spazi
+    // Join con spazi
     const spaziBySede = groupBy(tuttiGliSpazi, "id_sede");
 
     filtrate = filtrate.filter(sede => {
       let spazi = spaziBySede.get(sede.id) || [];
 
-      // tipologia (postazione|ufficio|sala_riunioni)
       if (tipologia) {
         spazi = spazi.filter(sp => (sp.tipologia || "").toLowerCase() === tipologia.toLowerCase());
       }
 
-      // servizi (se gli spazi hanno già un array "servizi")
       if (servizio) {
-        spazi = spazi.filter(sp => Array.isArray(sp.servizi) && sp.servizi.map(x => String(x).toLowerCase()).includes(servizio.toLowerCase()));
+        spazi = spazi.filter(sp =>
+          Array.isArray(sp.servizi) &&
+          sp.servizi.map(x => String(x).toLowerCase()).includes(servizio.toLowerCase())
+        );
       }
 
-      // data: la sede è valida se ha ALMENO UNO spazio con disponibilità quel giorno
-      if (spaziDisponibiliInData.size > 0) {
-        spazi = spazi.filter(sp => spaziDisponibiliInData.has(sp.id));
+      // Data → se una data è selezionata, filtra SEMPRE contro il Set
+      if (DATE_SELECTED) {
+        spazi = spazi.filter(sp => {
+          const idNorm = Number(sp.id ?? sp.ID ?? sp.id_spazio ?? sp.spazio_id ?? sp.idSpazio);
+          return spaziDisponibiliInData.has(idNorm);
+        });
       }
 
       return spazi.length > 0;
@@ -126,13 +177,18 @@ $(function () {
     renderSedi(filtrate);
   }
 
-  // --- Render carte sedi
+  // ---- Render ----
   function renderSedi(lista) {
     const $wrap = $("#sedi-container");
     $wrap.empty();
 
     if (!Array.isArray(lista) || lista.length === 0) {
-      $wrap.html('<p class="text-center">Nessuna sede trovata con i filtri selezionati.</p>');
+      const extra = DATE_SELECTED
+        ? `<div class="alert alert-warning" role="alert">
+             Nessuna sede con spazi disponibili per la data selezionata.
+           </div>`
+        : "";
+      $wrap.html(`${extra}<p class="text-center">Nessuna sede trovata con i filtri selezionati.</p>`);
       return;
     }
 
@@ -164,7 +220,7 @@ $(function () {
     });
   }
 
-  // --- Popola select
+  // ---- Select helper ----
   function popolaFiltroCitta(sedi) {
     const $sel = $("#filtroCitta");
     $sel.empty().append('<option value="">Tutte</option>');
@@ -187,7 +243,7 @@ $(function () {
       });
   }
 
-  // --- Helpers
+  // ---- Helpers ----
   function groupBy(arr, key) {
     const map = new Map();
     (arr || []).forEach(item => {
@@ -197,8 +253,11 @@ $(function () {
     });
     return map;
   }
+
   function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+    return String(s).replace(/[&<>"']/g, (m) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[m]));
   }
   function escapeAttr(s) { return escapeHtml(s).replace(/"/g, "&quot;"); }
 });
