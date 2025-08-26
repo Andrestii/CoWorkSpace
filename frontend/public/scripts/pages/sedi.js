@@ -3,12 +3,6 @@ $(function () {
   const API = apiConfig.apiUrl;
   const token = localStorage.getItem("authToken");
 
-  if (!token) {
-    alert("Devi effettuare il login per vedere le sedi.");
-    window.location.href = "login.html";
-    return;
-  }
-
   // Cache
   let tutteLeSedi = [];     // sedi base
   let tuttiGliSpazi = [];   // spazi di tutte le sedi

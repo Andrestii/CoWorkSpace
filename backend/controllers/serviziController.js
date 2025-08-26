@@ -3,8 +3,6 @@ const serviziModel = require("../models/serviziModel");
 const path = require("path");
 const supabase = require("../config/database");
 
-const TIPI_VALIDI = ["wifi", "aria_condizionata", "parcheggio", "caffè", "stampa"];
-
 const serviziController = {
     async getServizi(req, res) {
         try {

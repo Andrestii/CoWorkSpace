@@ -1,14 +1,8 @@
 // frontend/public/scripts/pages/spazio.js
 $(document).ready(function () {
   const API_SPAZI = `${apiConfig.apiUrl}/spazi`;
-  const API_SEDI  = `${apiConfig.apiUrl}/sedi`;
+  const API_SEDI = `${apiConfig.apiUrl}/sedi`;
   const token = localStorage.getItem("authToken");
-
-  if (!token) {
-    alert("Devi effettuare il login per vedere il dettaglio dello spazio.");
-    window.location.href = "login.html";
-    return;
-  }
 
   const params = new URLSearchParams(window.location.search);
   const spazioId = Number(params.get("id"));
@@ -38,49 +32,49 @@ $(document).ready(function () {
     type: "GET",
     headers: { Authorization: "Bearer " + token },
   })
-  .done(function (spazi) {
-    const spazio = (Array.isArray(spazi) ? spazi : []).find(s => Number(s.id) === spazioId);
-    if (!spazio) {
+    .done(function (spazi) {
+      const spazio = (Array.isArray(spazi) ? spazi : []).find(s => Number(s.id) === spazioId);
+      if (!spazio) {
+        $("#loading").hide();
+        $("#errore").removeClass("d-none").text("Spazio non trovato.");
+        return;
+      }
+
+      // Aggiorna hero
+      $("#spazioNome").text(spazio.nome || "Spazio");
+
+      // Se disponibile, carica dati della sede per mostrare indirizzo come in sede.html
+      if (spazio.id_sede) {
+        $.ajax({
+          url: `${API_SEDI}/getAllSedi/${spazio.id_sede}`,
+          type: "GET",
+          headers: { Authorization: "Bearer " + token },
+        })
+          .done((sede) => renderDettaglio(spazio, sede || null))
+          .fail(() => renderDettaglio(spazio, null));
+      } else {
+        renderDettaglio(spazio, null);
+      }
+    })
+    .fail(function (xhr) {
       $("#loading").hide();
-      $("#errore").removeClass("d-none").text("Spazio non trovato.");
-      return;
-    }
-
-    // Aggiorna hero
-    $("#spazioNome").text(spazio.nome || "Spazio");
-
-    // Se disponibile, carica dati della sede per mostrare indirizzo come in sede.html
-    if (spazio.id_sede) {
-      $.ajax({
-        url: `${API_SEDI}/getAllSedi/${spazio.id_sede}`,
-        type: "GET",
-        headers: { Authorization: "Bearer " + token },
-      })
-      .done((sede) => renderDettaglio(spazio, sede || null))
-      .fail(() => renderDettaglio(spazio, null));
-    } else {
-      renderDettaglio(spazio, null);
-    }
-  })
-  .fail(function (xhr) {
-    $("#loading").hide();
-    let msg = "Errore nel caricamento dei dati.";
-    if (xhr.responseJSON && (xhr.responseJSON.error || xhr.responseJSON.message)) {
-      msg = xhr.responseJSON.error || xhr.responseJSON.message;
-    }
-    $("#errore").removeClass("d-none").text(msg);
-  });
+      let msg = "Errore nel caricamento dei dati.";
+      if (xhr.responseJSON && (xhr.responseJSON.error || xhr.responseJSON.message)) {
+        msg = xhr.responseJSON.error || xhr.responseJSON.message;
+      }
+      $("#errore").removeClass("d-none").text(msg);
+    });
 
   function renderDettaglio(spazio, sede) {
-  $("#loading").hide();
+    $("#loading").hide();
 
-  const imgSrc = spazio.immagine || "https://via.placeholder.com/1200x600?text=Spazio";
-  const tip = capTipologia(spazio.tipologia);
-  const cap = Number.isFinite(spazio.capienza) ? `${spazio.capienza} posti` : "-";
-  const prezzo = (spazio.prezzo_orario != null) ? `${Number(spazio.prezzo_orario).toFixed(2)} € / h` : "-";
+    const imgSrc = spazio.immagine || "https://via.placeholder.com/1200x600?text=Spazio";
+    const tip = capTipologia(spazio.tipologia);
+    const cap = Number.isFinite(spazio.capienza) ? `${spazio.capienza} posti` : "-";
+    const prezzo = (spazio.prezzo_orario != null) ? `${Number(spazio.prezzo_orario).toFixed(2)} € / h` : "-";
 
-  // Riga sede (nome + indirizzo)
-  const sedeRiga = sede ? `
+    // Riga sede (nome + indirizzo)
+    const sedeRiga = sede ? `
     <li>
       <i class="fa-solid fa-building me-2"></i>
       <a href="sede.html?id=${sede.id}">${escapeHtml(sede.nome || "Sede")}</a>
@@ -92,13 +86,13 @@ $(document).ready(function () {
     </li>
   ` : "";
 
-  // Riga tipologia (subito sotto indirizzo)
-  const tipologiaRiga = tip ? `
+    // Riga tipologia (subito sotto indirizzo)
+    const tipologiaRiga = tip ? `
     <li>
       <strong>Tipologia:</strong> ${tip}
     </li>` : "";
 
-  const html = `
+    const html = `
     <div class="row g-4">
       <div class="col-lg-6">
         <img src="${imgSrc}" class="img-fluid rounded shadow-sm" alt="${escapeHtml(spazio.nome || "Spazio")}">
@@ -120,7 +114,7 @@ $(document).ready(function () {
     </div>
   `;
 
-  $("#dettaglioSpazio").html(html);
-}
+    $("#dettaglioSpazio").html(html);
+  }
 
 });

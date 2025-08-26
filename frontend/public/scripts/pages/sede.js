@@ -4,12 +4,6 @@ $(document).ready(function () {
   const API_SPAZI = `${apiConfig.apiUrl}/spazi`;
   const token = localStorage.getItem("authToken");
 
-  if (!token) {
-    alert("Devi effettuare il login per vedere i dettagli della sede.");
-    window.location.href = "login.html";
-    return;
-  }
-
   const params = new URLSearchParams(window.location.search);
   const sedeId = params.get("id");
 
