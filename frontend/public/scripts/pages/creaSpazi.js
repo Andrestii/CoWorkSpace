@@ -102,7 +102,7 @@ $(async function () {
 
     try {
       await $.ajax({
-        url: `${API_SPAZI}/createSpazio`,     // <-- route backend attuale
+        url: `${API_SPAZI}/createSpazio`,
         type: "POST",
         data: fd,
         processData: false,

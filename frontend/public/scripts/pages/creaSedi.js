@@ -5,18 +5,7 @@ $(async function () {
 
   const API_ROOT = apiConfig.apiUrl;
   const API_USERS = `${API_ROOT}/users`;
-  const API_SEDI  = `${API_ROOT}/sedi`;
-
-  // Solo gestore o admin
-  try {
-    const me = await $.ajax({ url: `${API_USERS}/me`, headers: { Authorization: "Bearer " + token } });
-    const ruolo = String(me?.ruolo || "").toLowerCase();
-    if (!["gestore","admin"].includes(ruolo)) {
-      window.location.href = "profilo.html"; return;
-    }
-  } catch {
-    window.location.href = "login.html"; return;
-  }
+  const API_SEDI = `${API_ROOT}/sedi`;
 
   // Helpers toast
   function toastOk(msg) {
@@ -32,12 +21,12 @@ $(async function () {
 
   // Normalizza sigla provincia
   $("#provincia").on("input", function () {
-    this.value = this.value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0,2);
+    this.value = this.value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 2);
   });
 
   // Validazioni base CAP e numeri
   $("#cap").on("input", function () {
-    this.value = this.value.replace(/\D/g, "").slice(0,5);
+    this.value = this.value.replace(/\D/g, "").slice(0, 5);
   });
 
   // Submit
@@ -52,13 +41,13 @@ $(async function () {
     }
 
     const fd = new FormData();
-    fd.append("nome",        $("#nome").val().trim());
+    fd.append("nome", $("#nome").val().trim());
     fd.append("descrizione", $("#descrizione").val().trim());
-    fd.append("indirizzo",   $("#indirizzo").val().trim());
-    fd.append("citta",       $("#citta").val().trim());
-    fd.append("provincia",   $("#provincia").val().trim());
-    fd.append("cap",         $("#cap").val().trim());
-    fd.append("regione",     $("#regione").val().trim());
+    fd.append("indirizzo", $("#indirizzo").val().trim());
+    fd.append("citta", $("#citta").val().trim());
+    fd.append("provincia", $("#provincia").val().trim());
+    fd.append("cap", $("#cap").val().trim());
+    fd.append("regione", $("#regione").val().trim());
 
     // opzionali numerici
     const lat = $("#latitudine").val();
@@ -75,7 +64,7 @@ $(async function () {
 
     try {
       await $.ajax({
-        url: `${API_SEDI}/create`,
+        url: `${API_SEDI}/createSede`,
         type: "POST",
         data: fd,
         processData: false,

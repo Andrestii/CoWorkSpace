@@ -77,7 +77,7 @@
 
           <div class="col-md-3">
             <label class="form-label">CAP *</label>
-            <input type="text" class="form-control" id="cap" inputmode="numeric" pattern="^\\d{5}$" maxlength="5"
+            <input type="text" class="form-control" id="cap" inputmode="numeric" pattern="^[0-9]{5}$" maxlength="5"
               required>
             <div class="invalid-feedback">Inserisci 5 cifre.</div>
           </div>
@@ -97,13 +97,6 @@
           <div class="col-md-6">
             <label class="form-label">Immagine</label>
             <input class="form-control" type="file" id="immagine" accept="image/*">
-          </div>
-
-          <div class="col-md-6 d-flex align-items-end">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="attiva" checked>
-              <label class="form-check-label" for="attiva">Sede attiva</label>
-            </div>
           </div>
         </div>
 
@@ -176,8 +169,8 @@
           <a href="privacy.html" class="text-white-50 me-3">Privacy Policy</a>
           <a href="termini.html" class="text-white-50">Termini di Servizio</a>
         </div>
-        </div>
       </div>
+    </div>
     </div>
   </footer>
 
