@@ -1,79 +1,375 @@
-/* Eredita lo stile base da index.css */
+:root {
+    --bg: #f3f1ed;
+    --paper: #ffffff;
+    --ink: #232220;
+    --muted: #6f6a63;
+    --line: #e3dfd9;
+    --accent: #47685b;
+    --accent-2: #88a093;
+}
 
-/* Hero della pagina sedi */
+body {
+    background:
+        repeating-linear-gradient(90deg, var(--bg) 0, var(--bg) 22px, #efece7 22px, #efece7 23px);
+    color: var(--ink);
+    font-family: 'Poppins', 'Playfair Display', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* ===== HERO ===== */
 .hero {
-    background-size: cover;
-    background-position: center;
-    height: 50vh;
-    position: relative;
+    margin-top: 76px;
+    height: auto !important;
+    padding: clamp(26px, 6vw, 64px) 0;
+    border-bottom: 1px solid var(--line);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, .94), rgba(255, 255, 255, .94)),
+        repeating-linear-gradient(90deg, var(--bg) 0, var(--bg) 22px, #efece7 22px, #efece7 23px);
+    color: var(--ink);
 }
-.hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-}
+
 .hero .container {
     position: relative;
-    z-index: 2;
+    z-index: 1;
 }
 
-/* Card sede */
-.card.prodotto-card {
-    transition: all 0.3s ease;
-    border-radius: 12px;
-    border: none;
-    overflow: hidden;
+.hero h1 {
+    font-family: "Playfair Display", serif;
+    font-weight: 800;
+    letter-spacing: -.5px;
+    color: var(--ink);
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+    margin: 0;
+    line-height: 1.15;
+    display: inline-block;
+    position: relative;
 }
+
+.hero h1::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: .12em;
+    width: 100%;
+    height: .55em;
+    transform: translateY(35%);
+    background: linear-gradient(120deg, rgba(136, 160, 147, .35) 0%, rgba(71, 104, 91, .35) 100%);
+    border-radius: 6px;
+    z-index: -1;
+}
+
+.hero p.lead {
+    color: var(--muted);
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-size: clamp(1rem, .95rem + .25vw, 1.15rem);
+}
+
+#sedi-filters .form-label {
+    color: var(--ink);
+    font-weight: 700;
+}
+
+#sedi-filters .form-control,
+#sedi-filters .form-select {
+    background: #fbfaf8;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: .8rem 1rem;
+    box-shadow: none;
+    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+#sedi-filters .form-control:focus,
+#sedi-filters .form-select:focus {
+    background: #fff;
+    border-color: #d7d2ca;
+    box-shadow: 0 0 0 .16rem rgba(71, 104, 91, .12);
+}
+
+#loading p {
+    color: var(--muted);
+    margin-top: 8px;
+}
+
+#errore {
+    font-weight: 600;
+}
+
+/* ===== Card Sede ===== */
+.card.prodotto-card {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--paper);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.card.prodotto-card:hover {
+    transform: translateY(-6px);
+    border-color: #d7d2ca;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, .08);
+}
+
 .card.prodotto-card img {
     height: 220px;
     object-fit: cover;
-    transition: all 0.5s ease;
-}
-.card.prodotto-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-}
-.card.prodotto-card:hover img {
-    transform: scale(1.05);
-}
-.card-body {
-    text-align: center;
-}
-.card-title {
-    font-weight: 600;
-    color: #5c3c2c;
-}
-.card-text {
-    font-size: 0.9rem;
-    color: #777;
-}
-.card .btn {
-    margin-top: 10px;
-    padding: 10px 20px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-.card .btn:hover {
-    background-color: #5c3c2c;
-    color: #fff;
-    transform: scale(1.05);
+    transition: transform .5s ease;
 }
 
-/* Dettaglio sede */
+.card.prodotto-card:hover img {
+    transform: scale(1.04);
+}
+
+.card.prodotto-card .card-body {
+    text-align: center;
+    background: #fff;
+}
+
+.card.prodotto-card .card-title {
+    font-weight: 800;
+    color: var(--ink);
+    font-family: "Playfair Display", serif;
+}
+
+.card.prodotto-card .card-text {
+    color: var(--muted);
+}
+
+.badge-tipologia {
+    background: #e8efe9;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.card .btn {
+    margin-top: 10px;
+    border-radius: 12px;
+    padding: .8rem 1.1rem;
+    font-weight: 700;
+    transition: transform .08s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.card .btn-primary {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    border: 0;
+}
+
+.card .btn-primary:hover {
+    transform: translateY(-1px);
+    filter: saturate(1.03);
+    box-shadow: 0 12px 18px rgba(71, 104, 91, .22);
+}
+
+/* ===== Dettaglio sede ===== */
 #dettaglioSede img {
     max-height: 350px;
     object-fit: cover;
     border-radius: 12px;
 }
+
 #dettaglioSede h2 {
-    color: #5c3c2c;
-    font-weight: 600;
-    margin-bottom: 15px;
+    color: var(--ink);
+    font-weight: 800;
+    margin-bottom: 12px;
+    font-family: "Playfair Display", serif;
 }
+
 #dettaglioSede .btn {
-    transition: all 0.3s ease;
+    border-radius: 12px;
 }
-#dettaglioSede .btn:hover {
-    transform: scale(1.05);
+
+/* ===== Titoli di sezione generici ===== */
+.section-title {
+    font-family: "Playfair Display", serif;
+    font-weight: 800;
+    color: var(--ink);
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.section-title:after {
+    content: "";
+    position: absolute;
+    width: 80px;
+    height: 3px;
+    background: var(--accent-2);
+    bottom: -10px;
+    left: 0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width:991px) {
+    .hero {
+        padding: 36px 0;
+    }
+
+    .hero h1 {
+        font-size: clamp(1.8rem, 1.4rem + 2vw, 2.4rem);
+    }
+}
+
+@media (max-width:768px) {
+    .card.prodotto-card img {
+        height: 200px;
+    }
+}
+
+@media (max-width:576px) {
+    .hero {
+        padding: 28px 0;
+    }
+
+    .hero h1::after {
+        height: .45em;
+    }
+
+    #sedi-filters .form-label {
+        font-weight: 600;
+    }
+}
+
+/* ===== Filtri spazi (pagina sede) ===== */
+#spaziFilters .form-label {
+    color: var(--ink);
+    font-weight: 700;
+}
+
+#spaziFilters .form-select {
+    background: #fbfaf8;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: .8rem 1rem;
+    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+#spaziFilters .form-select:focus {
+    background: #fff;
+    border-color: #d7d2ca;
+    box-shadow: 0 0 0 .16rem rgba(71, 104, 91, .12);
+}
+
+/* ===== Dettaglio carrello (pagina prenotazione) ===== */
+.cart-card {
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
+    padding: 1.5rem;
+}
+
+/* Titolo spazio */
+.cart-card h2 {
+    font-family: "Playfair Display", serif;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: .5rem;
+}
+
+.cart-card p.text-muted {
+    margin-bottom: 1rem;
+    font-size: .95rem;
+}
+
+.cart-card ul {
+    padding-left: 0;
+    margin-bottom: 1rem;
+}
+
+.cart-card ul li {
+    font-size: .95rem;
+    margin-bottom: .25rem;
+}
+
+.cart-card ul li strong {
+    color: var(--ink);
+}
+
+.cart-card hr {
+    margin: 1rem 0;
+    border-color: var(--line);
+}
+
+.cart-card .form-label {
+    font-weight: 600;
+    font-size: .9rem;
+    color: var(--ink);
+}
+
+.cart-card .form-control {
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: #fbfaf8;
+    transition: all .2s ease;
+}
+
+.cart-card .form-control:focus {
+    border-color: var(--accent-2);
+    background: #fff;
+    box-shadow: 0 0 0 .16rem rgba(71, 104, 91, .15);
+}
+
+/* Box riepilogo */
+.summary-box {
+    background: #f6f5f2;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    margin-top: 1.2rem;
+    padding: 1rem 1.2rem;
+}
+
+.summary-box .row+.row {
+    margin-top: .4rem;
+}
+
+.summary-box .text-muted {
+    font-size: .9rem;
+}
+
+.summary-box strong {
+    font-weight: 700;
+    color: var(--accent);
+}
+
+/* Bottone conferma */
+#btnConferma {
+    border: 0;
+    border-radius: 12px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: #fff;
+    padding: 1rem;
+    margin-top: 1.2rem;
+    transition: all .2s ease;
+}
+
+#btnConferma:hover:not(:disabled) {
+    filter: brightness(1.05);
+    box-shadow: 0 8px 18px rgba(71, 104, 91, .25);
+    transform: translateY(-2px);
+}
+
+#btnConferma:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* ===== Filtro tipologia (uniforme a sedi) ===== */
+#filtroTipologia {
+    background: #fbfaf8;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: .8rem 1rem;
+    box-shadow: none;
+    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+#filtroTipologia:focus {
+    background: #fff;
+    border-color: #d7d2ca;
+    box-shadow: 0 0 0 .16rem rgba(71, 104, 91, .12);
+}
+
+label[for="filtroTipologia"] {
+    color: var(--ink);
+    font-weight: 700;
 }
