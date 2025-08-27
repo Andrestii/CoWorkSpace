@@ -344,13 +344,42 @@ $(async function () {
   // Submit modifica → PUT /users/updateInfo/:id
   $(document).on("submit", "#form-user-edit", async function (e) {
     e.preventDefault();
+
     const id = $("#ue-id").val();
-    const payload = {
+    const before = __usersCache.get(String(id)) || {};
+
+    // valori correnti dal form
+    const cur = {
       nome: $("#ue-nome").val().trim(),
       email: $("#ue-email").val().trim(),
       telefono: $("#ue-telefono").val().trim(),
       data_nascita: $("#ue-dob").val() || null
     };
+
+    const payload = {};
+    const addIfChanged = (key, newVal, oldVal) => {
+      const oldNorm = (oldVal == null) ? "" : String(oldVal);
+      const newNorm = (newVal == null) ? "" : String(newVal);
+      if (newNorm !== "" && newNorm !== oldNorm) payload[key] = newVal;
+    };
+
+    addIfChanged("nome", cur.nome, before.nome || before.first_name);
+    addIfChanged("email", cur.email, before.email);
+    // telefono e data_nascita sono opzionali: li mando solo se *diversi* e non vuoti
+    addIfChanged("telefono", cur.telefono, before.telefono || before.numero_telefono);
+    addIfChanged("data_nascita", cur.data_nascita, before.data_nascita || before.dob);
+
+    // se non c'è nulla da aggiornare, chiudo semplicemente
+    if (Object.keys(payload).length === 0) {
+      bootstrap.Modal.getInstance(document.getElementById("modalUserEdit"))?.hide();
+      toast("Nessuna modifica da salvare");
+      return;
+    }
+
+    // disabilita pulsante mentre salva
+    const $btn = $("#form-user-edit button[type='submit']");
+    const oldHtml = $btn.html();
+    $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm me-2"></span>Salvo...');
 
     try {
       await $.ajax({
@@ -361,7 +390,6 @@ $(async function () {
         headers: { Authorization: "Bearer " + token }
       });
 
-      // chiudi modal + feedback + ricarica lista
       bootstrap.Modal.getInstance(document.getElementById("modalUserEdit"))?.hide();
       toast("Utente aggiornato");
       loadUsers();
@@ -369,6 +397,8 @@ $(async function () {
       console.error(err);
       const msg = err?.responseJSON?.error || err?.responseJSON?.message || "Errore nell'aggiornamento";
       toast(msg, false);
+    } finally {
+      $btn.prop("disabled", false).html(oldHtml);
     }
   });
 
@@ -376,14 +406,12 @@ $(async function () {
   $(document).on("click", ".btn-ban-user", async function () {
     const id = String($(this).data("id") || "");
     if (!id) return;
-    if (!confirm("Sei sicuro di voler BANNARE questo utente?")) return;
 
     try {
       await $.ajax({
         url: `${API_USERS}/ban/${encodeURIComponent(id)}`,
         type: "PUT",
         contentType: "application/json",
-        data: JSON.stringify({ reason: "Violazione termini" }), // opzionale
         headers: { Authorization: "Bearer " + token }
       });
       toast("Utente bannato");
@@ -399,7 +427,6 @@ $(async function () {
   $(document).on("click", ".btn-unban-user", async function () {
     const id = String($(this).data("id") || "");
     if (!id) return;
-    if (!confirm("Sbloccare questo utente?")) return;
 
     try {
       await $.ajax({
@@ -416,13 +443,10 @@ $(async function () {
     }
   });
 
-
   // SOFT DELETE sede
   $(document).on("click", ".btn-del-sede", async function () {
     const id = String($(this).data("id") || "");
     if (!id) return;
-
-    if (!confirm("Eliminare questa sede? (soft delete)")) return;
 
     const $btn = $(this);
     const oldHtml = $btn.html();
@@ -435,8 +459,8 @@ $(async function () {
         headers: { Authorization: "Bearer " + token }
       });
       toast("Sede eliminata");
-      loadSedi();            // ricarica la lista (sparirà subito)
-      loadDashboard?.();     // opzionale: aggiorna i KPI se vuoi
+      loadSedi();
+      loadDashboard?.();
     } catch (err) {
       console.error(err);
       const msg = err?.responseJSON?.error || err?.responseJSON?.message || "Errore nell'eliminazione";
@@ -449,7 +473,6 @@ $(async function () {
   $(document).on("click", ".btn-del-spazio", async function () {
     const id = String($(this).data("id") || "");
     if (!id) return;
-    if (!confirm("Eliminare questo spazio? (soft delete)")) return;
 
     const $btn = $(this);
     const oldHtml = $btn.html();
@@ -472,7 +495,7 @@ $(async function () {
   });
 
 
-  // SEDI (mostra attive + disattivate, con bottone Ripristina)
+  // SEDI 
   async function loadSedi() {
     const $tb = $("#tbl-sedi tbody").html(loadingRow(5));
     try {
@@ -517,11 +540,10 @@ $(async function () {
     }
   }
 
-  // SPAZI (attivi + disattivati) con bottone Attiva/Disattiva
+  // SPAZI 
   async function loadSpazi() {
     const $tb = $("#tbl-spazi tbody").html(loadingRow(6));
     try {
-      // prendi tutti (se il backend supporta ?all=1)
       const spazi = (await get(`${API_SPAZI}/getSpazi?all=1`)) || [];
       if (!spazi.length) {
         $tb.html(`<tr><td colspan="6" class="text-muted text-center">Nessuno spazio trovato.</td></tr>`);
@@ -628,7 +650,6 @@ $(async function () {
   // Carica dashboard subito
   await loadDashboard();
 
-  // Se arrivo con hash tipo #prenotazioni-section, apri quella sezione
   const initialTarget = (location.hash || "").replace("#", "");
   if (initialTarget) {
     $(`.profile-nav .nav-item[data-target="${initialTarget}"]`).trigger("click");
