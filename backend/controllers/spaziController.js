@@ -76,6 +76,14 @@ class SpaziController {
             let changes = { ...req.body };
             const file = req.file;
 
+            delete changes.id;
+            delete changes.id_spazio;
+            delete changes.id_sede;
+
+            if (changes.capienza !== undefined) changes.capienza = Number(changes.capienza);
+            if (changes.prezzo_orario !== undefined) changes.prezzo_orario = Number(changes.prezzo_orario);
+            if (changes.attivo !== undefined) changes.attivo = Number(changes.attivo) === 1 || changes.attivo === true;
+
             if (file) {
                 const fileName = `spazi/${Date.now()}${path.extname(file.originalname)}`;
                 const { error } = await supabase.storage
