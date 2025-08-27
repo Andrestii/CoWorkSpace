@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Modifica Sede - CoWorkSpace</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="icon" href="favicon.ico">
+
+    <!-- Stili del sito -->
+    <link href="css/pagine/index.css" rel="stylesheet" />
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="container" style="padding-top:110px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="mb-1">Modifica Sede</h1>
+                <p class="text-muted mb-0">Aggiorna i dati della sede e salva le modifiche.</p>
+            </div>
+            <a href="profilo.html#mie-sedi" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left me-1"></i> Torna al profilo
+            </a>
+        </div>
+
+        <div class="content-card p-4 shadow-sm rounded">
+
+            <!-- Lista sedi (anteprima) -->
+            <div id="mie-sedi-list" class="row g-3 mb-4"></div>
+
+            <form id="form-edit-sede" enctype="multipart/form-data" novalidate>
+                <input type="hidden" id="id_sede" name="id">
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Nome *</label>
+                        <input type="text" class="form-control" id="nome" name="nome" required>
+                        <div class="invalid-feedback">Inserisci il nome della sede.</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Regione *</label>
+                        <input type="text" class="form-control" id="regione" name="regione" required>
+                        <div class="invalid-feedback">Inserisci la regione.</div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Descrizione</label>
+                        <textarea class="form-control" id="descrizione" name="descrizione" rows="3"
+                            placeholder="Descrizione della sede"></textarea>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label class="form-label">Indirizzo *</label>
+                        <input type="text" class="form-control" id="indirizzo" name="indirizzo" required>
+                        <div class="invalid-feedback">Inserisci l'indirizzo.</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Città *</label>
+                        <input type="text" class="form-control" id="citta" name="citta" required>
+                        <div class="invalid-feedback">Inserisci la città.</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Provincia (sigla) *</label>
+                        <input type="text" class="form-control text-uppercase" id="provincia" name="provincia"
+                            maxlength="2" pattern="^[A-Za-z]{2}$" required>
+                        <div class="invalid-feedback">Usa la sigla a 2 lettere (es. MI).</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">CAP *</label>
+                        <input type="text" class="form-control" id="cap" name="cap" inputmode="numeric"
+                            pattern="^[0-9]{5}$" maxlength="5" required>
+                        <div class="invalid-feedback">Inserisci 5 cifre.</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Latitudine</label>
+                        <input type="number" class="form-control" id="latitudine" name="latitudine" step="any"
+                            placeholder="es. 45.4642">
+                        <div class="invalid-feedback">Inserisci un numero valido.</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Longitudine</label>
+                        <input type="number" class="form-control" id="longitudine" name="longitudine" step="any"
+                            placeholder="es. 9.19">
+                        <div class="invalid-feedback">Inserisci un numero valido.</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Immagine (lascia vuoto per non cambiare)</label>
+                        <input class="form-control" type="file" id="immagine" name="immagine" accept="image/*">
+                    </div>
+
+                    <div class="col-md-6 d-flex align-items-end">
+                        <div class="form-check form-switch ms-auto">
+                            <input class="form-check-input" type="checkbox" id="attiva" name="attiva">
+                            <label class="form-check-label" for="attiva">Sede attiva</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <a href="profilo.html#mie-sedi" class="btn btn-outline-secondary me-2">Annulla</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-regular fa-floppy-disk me-1"></i> Salva modifiche
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </main>
+
+    <!-- Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index:1055">
+        <div id="global-toast" class="toast align-items-center border-0" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="global-toast-body">Operazione completata</div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Chiudi"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <hr class="my-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <p class="mb-md-0">&copy; 2025 CoWorkSpace. Tutti i diritti riservati.</p>
+                <div>
+                    <a href="privacy.html" class="text-white-50 me-3">Privacy Policy</a>
+                    <a href="termini.html" class="text-white-50">Termini di Servizio</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="./scripts/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="./scripts/auth.js"></script>
+    <script src="./scripts/partials/navbar.js"></script>
+    <script src="./scripts/pages/editSedi.js"></script>
+</body>
+
+</html>

@@ -69,12 +69,23 @@ const sediController = {
 
     async updateSede(req, res) {
         try {
-            let updateData = req.body;
+            const id = req.params.id;
+            if (!id) return res.status(400).json({ error: "ID sede mancante" });
+
+            let updateData = { ...req.body };
             const file = req.file;
 
+            delete updateData.id;
+            delete updateData.id_sede;
+
+            if (updateData.latitudine) updateData.latitudine = parseFloat(updateData.latitudine);
+            if (updateData.longitudine) updateData.longitudine = parseFloat(updateData.longitudine);
+            if (updateData.attiva !== undefined) updateData.attiva = Number(updateData.attiva) === 1;
+
+            // gestisce upload immagine
             if (file) {
                 const fileName = `sedi/${Date.now()}${path.extname(file.originalname)}`;
-                const { data, error } = await supabase.storage
+                const { error } = await supabase.storage
                     .from("sedi-images")
                     .upload(fileName, file.buffer, {
                         contentType: file.mimetype,
@@ -90,7 +101,7 @@ const sediController = {
                 updateData.immagine = urlData.publicUrl;
             }
 
-            const sede = await sediModel.updateSede(req.params.id, updateData);
+            const sede = await sediModel.updateSede(id, updateData);
             res.status(200).json(sede);
         } catch (error) {
             console.error("Errore updateSede:", error);
