@@ -18,39 +18,73 @@
   <link href="css/pagine/index.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="home-body">
 
   <!-- Navbar -->
   <div id="navbar-placeholder"></div>
 
   <!-- Hero Section -->
-  <section class="hero d-flex align-items-center text-white" style="margin-top: 80px;">
-    <div class="container text-center">
-      <h1 class="display-3 fw-bold mb-4">Scopri gli spazi di coworking in tutta Italia</h1>
-      <p class="lead mb-5 px-md-5 mx-md-5">
-        Spazi <span class="highlight-marker">unici</span>, progettati per favorire
-        <span class="highlight-marker">collaborazione</span> e creatività, in ogni città d’Italia.
-      </p>
-      <div class="d-flex justify-content-center gap-3">
-        <a href="sedi.html" class="btn btn-primary btn-lg">Conosci le sedi</a>
-        <a href="spazi.html" class="btn btn-outline-light btn-lg">Conosci gli spazi</a>
+  <header class="hero-sage">
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <span class="mono-tag">Coworking in Italia</span>
+          <h1 class="display-title">Lavora dove <span class="ink-underline">rendi meglio</span>.</h1>
+          <p class="lead text-muted">
+            Trova sedi e spazi, prenota in pochi clic e gestisci tutto dal tuo profilo.
+            Stesso account su tutte le città.
+          </p>
+          <div class="d-flex flex-wrap gap-2">
+            <a href="sedi.html" class="btn btn-cta"><i class="fa-solid fa-location-dot me-2"></i>Scopri le
+              sedi</a>
+            <a href="spazi.html" class="btn btn-ghost"><i class="fa-solid fa-chair me-2"></i>Vedi gli
+              spazi</a>
+          </div>
+          <ul class="hero-points mt-3">
+            <li><i class="fa-regular fa-circle-check"></i> Interfaccia essenziale</li>
+            <li><i class="fa-regular fa-circle-check"></i> Pagamenti sicuri</li>
+            <li><i class="fa-regular fa-circle-check"></i> Dati sempre protetti</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sezione “Come funziona” -->
+  <section class="container py-5 how-it-works">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="step-n">1</div>
+          <h3>Trova</h3>
+          <p class="text-muted">Cerca tra sedi e spazi in ogni città con filtri chiari e veloci.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="step-n">2</div>
+          <h3>Prenota</h3>
+          <p class="text-muted">Scegli data e orario, conferma il pagamento e sei dentro.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="step-n">3</div>
+          <h3>Lavora</h3>
+          <p class="text-muted">Gestisci tutto dal profilo: prenotazioni, sedi, disponibilità.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Categorie -->
-  <section class="container-fluid py-5 bg-white">
-    <!-- TODO: contenuti categorie -->
-  </section>
-
   <!-- Sedi in evidenza -->
-  <section class="container my-5 py-5">
-    <h2 class="text-center section-title">Sedi in evidenza</h2>
+  <section class="container pb-5">
+    <div class="section-head">
+      <h2 class="section-title">Sedi in evidenza</h2>
+      <a class="link-muted" href="sedi.html">Vedi tutte</a>
+    </div>
     <div id="products" class="row gy-4 mt-4">
       <!-- 3 sedi a caso dal backend -->
-    </div>
-    <div class="text-center mt-5">
-      <a href="sedi.html" class="btn btn-outline-primary btn-lg">Vedi tutte le sedi</a>
     </div>
   </section>
 
@@ -112,11 +146,6 @@
   <script src="./scripts/auth.js"></script>
   <script src="./scripts/pages/index.js"></script>
   <script src="./scripts/partials/navbar.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js');
-    }
-  </script>
 </body>
 
 </html>
