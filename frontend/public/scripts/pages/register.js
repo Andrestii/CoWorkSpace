@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    // Variabili per lo stepper
     let currentStep = 1;
     const totalSteps = 3;
 
@@ -9,15 +8,12 @@ $(document).ready(function () {
         if (role === "gestore") {
             $("#gestoreStepper, #stepperNavigation").show();
             $("#submitBtn").hide();
-            // Resettiamo allo step 1 quando diventa gestore
             currentStep = 1;
             updateStepperState();
         } else {
             $("#gestoreStepper, #stepperNavigation").hide();
-            $("#submitBtn").show(); // Mostra il pulsante di registrazione
-            // Nascondi tutti i passaggi extra
+            $("#submitBtn").show();
             hideAllStepsExcept(1);
-            // NON chiamare updateStepperState() per i clienti
         }
     });
 
@@ -55,7 +51,6 @@ $(document).ready(function () {
         if (avatar) formData.append("profileImage", avatar);
 
         console.log("formData", formData);
-        // Crea l'oggetto dati da inviare
 
         const $submitBtn = $(this).find('button[type="submit"]');
         const originalText = $submitBtn.text();
@@ -64,8 +59,6 @@ $(document).ready(function () {
             .html(
                 '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Registrazione...'
             );
-
-        // Prima gestione dell'immagine del profilo
 
         // Registra l'utente
         $.ajax({
@@ -76,54 +69,47 @@ $(document).ready(function () {
             contentType: false,
         })
             .done(function (response) {
-                // Se l'utente è un gestore, crea anche la sede
-                if (ruolo === "gestore") {
-                    // Salva token di autenticazione
-                    localStorage.setItem("authToken", response.token);
+                const token = response.token || response.session?.access_token;
+                if (token) localStorage.setItem("authToken", token);
 
-                    // Prepara dati sede
-                    const sedeData = {
-                        nome: $("#sedeNameField").val(),
-                        descrizione: $("#sedeDescriptionField").val(),
-                        indirizzo: $("#sedeAddressField").val(),
-                        citta: $("#sedeCityField").val(),
-                        provincia: $("#sedeProvinceField").val(),
-                        cap: $("#sedeCapField").val(),
-                        regione: $("#sedeRegionField").val(),
-                        latitudine: parseFloat($("#sedeLatField").val()) || null,
-                        longitudine: parseFloat($("#sedeLngField").val()) || null,
-                        attiva: $("#sedeActiveField").is(":checked") // true/false
-                    };
+                if ($("#ruoloField").val() === "gestore") {
+                    const sedeFD = new FormData();
+                    sedeFD.append("nome", $("#sedeNameField").val());
+                    sedeFD.append("descrizione", $("#sedeDescriptionField").val());
+                    sedeFD.append("indirizzo", $("#sedeAddressField").val());
+                    sedeFD.append("citta", $("#sedeCityField").val());
+                    sedeFD.append("provincia", $("#sedeProvinceField").val());
+                    sedeFD.append("cap", $("#sedeCapField").val());
+                    sedeFD.append("regione", $("#sedeRegionField").val());
+                    const latRaw = $("#sedeLatField").val().trim().replace(",", ".");
+                    const lngRaw = $("#sedeLngField").val().trim().replace(",", ".");
 
-                    // Crea sede con endpoint separato
+                    const lat = latRaw ? parseFloat(latRaw) : null;
+                    const lng = lngRaw ? parseFloat(lngRaw) : null;
+
+                    if (!isNaN(lat)) sedeFD.append("latitudine", lat.toFixed(7));
+                    if (!isNaN(lng)) sedeFD.append("longitudine", lng.toFixed(7));
+
+                    sedeFD.append("attiva", $("#sedeActiveField").is(":checked") ? "true" : "false");
+
+                    const logo = $("#sedeLogoField")[0]?.files?.[0];
+                    if (logo) sedeFD.append("immagine", logo);
+
                     $.ajax({
-                        url: apiConfig.apiUrl + "/sedes/register",
+                        url: apiConfig.apiUrl + "/sedi/createSede",
                         type: "POST",
-                        contentType: "application/json",
-                        headers: {
-                            Authorization: "Bearer " + response.token,
-                        },
-                        data: JSON.stringify(sedeData),
+                        data: sedeFD,
+                        processData: false,
+                        contentType: false,
+                        headers: { Authorization: "Bearer " + token },
                     })
-                        .done(function (sedeResponse) {
-                            // Carica logo se presente
-                            if ($("#sedeLogoField")[0].files.length > 0) {
-                                uploadSedeLogo(
-                                    sedeResponse.sede.id,
-                                    $("#sedeLogoField")[0].files[0],
-                                    function () {
-                                        showSuccessAndRedirect();
-                                    }
-                                );
-                            } else {
-                                showSuccessAndRedirect();
-                            }
+                        .done(function () {
+                            showSuccessAndRedirect();
                         })
-                        .fail(function (sedeError) {
-                            showError(sedeError, $submitBtn, originalText);
+                        .fail(function (err) {
+                            showError(err, $submitBtn, originalText);
                         });
                 } else {
-                    // Cliente semplice - mostra successo e reindirizza
                     showSuccessAndRedirect();
                 }
             })
@@ -138,7 +124,7 @@ $(document).ready(function () {
         formData.append("logo", file);
 
         $.ajax({
-            url: apiConfig.apiUrl + "/sedes/updateLogo/" + sedeId,
+            url: apiConfig.apiUrl + "/sedi/updateLogo/" + sedeId,
             type: "POST",
             data: formData,
             processData: false,
@@ -187,7 +173,6 @@ $(document).ready(function () {
     function updateStepperState() {
         console.log("Aggiornamento stato stepper:", currentStep);
 
-        // Aggiorna i pallini dello stepper
         $(".stepper-dot").removeClass("active completed");
 
         for (let i = 1; i <= totalSteps; i++) {
@@ -227,35 +212,33 @@ $(document).ready(function () {
     // Funzione per validare il passaggio corrente
     function validateCurrentStep() {
         console.log("Validazione step:", currentStep);
-
         let valid = true;
 
         if (currentStep === 1) {
-            // Valida email, password, nome, ecc.
             if (
-                $("#nomeField").val() === "" ||
-                $("#emailField").val() === "" ||
-                $("#passwordField").val() === "" ||
-                $("#ruoloField").val() === null
+                !$("#nomeField").val().trim() ||
+                !$("#emailField").val().trim() ||
+                !$("#passwordField").val().trim() ||
+                !$("#ruoloField").val()
             ) {
                 valid = false;
                 alert("Compila tutti i campi obbligatori");
             }
         } else if (currentStep === 2) {
-            // Valida i campi della sede
             if (
-                $("#sedeNameField").val().trim() === "" ||
-                $("#sedeDescriptionField").val().trim() === "" ||
-                $("#sedeAddressField").val().trim() === "" ||
-                $("#sedeCityField").val().trim() === ""
+                !$("#sedeNameField").val().trim() ||
+                !$("#sedeDescriptionField").val().trim() ||
+                !$("#sedeAddressField").val().trim() ||
+                !$("#sedeCityField").val().trim()
             ) {
                 valid = false;
                 alert("Compila i campi obbligatori della sede: Nome, Descrizione, Indirizzo e Città.");
             }
+        } else if (currentStep === 3) {
         }
+        return valid;
     }
 
-    // Funzione per convertire l'immagine in base64
     function handleImageUpload(file, callback) {
         if (!file) {
             callback(null);
