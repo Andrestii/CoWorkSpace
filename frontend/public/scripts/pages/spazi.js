@@ -1,4 +1,3 @@
-// ./scripts/pages/spazi.js
 $(document).ready(function () {
   const apiBase = apiConfig.apiUrl + '/spazi';
   const token = localStorage.getItem('authToken'); // non obbligatorio per GET
@@ -18,30 +17,30 @@ $(document).ready(function () {
     type: 'GET',
     headers: token ? { 'Authorization': 'Bearer ' + token } : undefined
   })
-  .done(function (spazi) {
-    $('#loading').hide();
+    .done(function (spazi) {
+      $('#loading').hide();
 
-    if (!Array.isArray(spazi) || spazi.length === 0) {
-      $('#spazi-container').html('<p class="text-center">Nessuno spazio disponibile.</p>');
-      return;
-    }
+      if (!Array.isArray(spazi) || spazi.length === 0) {
+        $('#spazi-container').html('<p class="text-center">Nessuno spazio disponibile.</p>');
+        return;
+      }
 
-    tuttiGliSpazi = spazi;
+      tuttiGliSpazi = spazi;
 
-    // popola filtro tipologia
-    populateTipologiaFilter(getUniqueTipologie(tuttiGliSpazi));
+      // popola filtro tipologia
+      populateTipologiaFilter(getUniqueTipologie(tuttiGliSpazi));
 
-    // render iniziale
-    renderSpazi(tuttiGliSpazi);
-  })
-  .fail(function (xhr) {
-    $('#loading').hide();
-    let msg = 'Errore nel caricamento degli spazi.';
-    if (xhr.responseJSON && (xhr.responseJSON.error || xhr.responseJSON.message)) {
-      msg = xhr.responseJSON.error || xhr.responseJSON.message;
-    }
-    $('#errore').removeClass('d-none').text(msg);
-  });
+      // render iniziale
+      renderSpazi(tuttiGliSpazi);
+    })
+    .fail(function (xhr) {
+      $('#loading').hide();
+      let msg = 'Errore nel caricamento degli spazi.';
+      if (xhr.responseJSON && (xhr.responseJSON.error || xhr.responseJSON.message)) {
+        msg = xhr.responseJSON.error || xhr.responseJSON.message;
+      }
+      $('#errore').removeClass('d-none').text(msg);
+    });
 
   // Filtro
   $('#filtroTipologia').on('change', function () {
@@ -96,19 +95,19 @@ $(document).ready(function () {
   }
 
   function populateTipologiaFilter(tipologie) {
-  const $sel = $('#filtroTipologia');
-  $sel.empty();
-  $sel.append(`<option value="">Tutte le tipologie</option>`);
+    const $sel = $('#filtroTipologia');
+    $sel.empty();
+    $sel.append(`<option value="">Tutte le tipologie</option>`);
 
-  tipologie
-    .sort((a, b) => a.localeCompare(b, 'it', { sensitivity: 'base' }))
-    .forEach(t => {
-      const label = t.charAt(0).toUpperCase() + t.slice(1); // prima lettera maiuscola
-      $sel.append(`<option value="${t}">${label}</option>`);
-    });
+    tipologie
+      .sort((a, b) => a.localeCompare(b, 'it', { sensitivity: 'base' }))
+      .forEach(t => {
+        const label = t.charAt(0).toUpperCase() + t.slice(1); // prima lettera maiuscola
+        $sel.append(`<option value="${t}">${label}</option>`);
+      });
 
-  $sel.prop('disabled', false);
-}
+    $sel.prop('disabled', false);
+  }
 
 
   function getUniqueTipologie(spazi) {

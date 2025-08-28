@@ -1,4 +1,3 @@
-// scripts/pages/sedi.js
 $(function () {
   const API = apiConfig.apiUrl;
   const token = localStorage.getItem("authToken");
@@ -194,28 +193,24 @@ $(function () {
 
     lista.forEach(sede => {
       const img = sede.immagine || "https://via.placeholder.com/400x250?text=Sede";
-      const badge = sede.attiva
-        ? '<span class="badge bg-success ms-2">Attiva</span>'
-        : '<span class="badge bg-secondary ms-2">Non attiva</span>';
 
       const html = `
-        <div class="col-md-4">
-          <div class="card h-100 shadow-sm">
-            <img src="${img}" class="card-img-top" alt="${escapeHtml(sede.nome || "Sede")}">
-            <div class="card-body">
-              <h5 class="card-title d-flex align-items-center justify-content-between">
-                <span>${escapeHtml(sede.nome || "Sede")}</span>
-                ${badge}
-              </h5>
-              <p class="card-text text-muted mb-2">
-                ${escapeHtml(sede.indirizzo || "")}${sede.citta ? `, ${escapeHtml(sede.citta)}` : ""}
-              </p>
-              <a class="btn btn-outline-primary" href="sede.html?id=${sede.id}">
-                <i class="fa-solid fa-circle-info me-1"></i> Dettagli
-              </a>
-            </div>
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <img src="${img}" class="card-img-top" alt="${escapeHtml(sede.nome || "Sede")}">
+          <div class="card-body">
+            <h5 class="card-title">
+              ${escapeHtml(sede.nome || "Sede")}
+            </h5>
+            <p class="card-text text-muted mb-2">
+              ${escapeHtml(sede.indirizzo || "")}${sede.citta ? `, ${escapeHtml(sede.citta)}` : ""}
+            </p>
+            <a class="btn btn-outline-primary" href="sede.html?id=${sede.id}">
+              <i class="fa-solid fa-circle-info me-1"></i> Dettagli
+            </a>
           </div>
-        </div>`;
+        </div>
+      </div>`;
       $wrap.append(html);
     });
   }

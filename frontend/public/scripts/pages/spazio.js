@@ -1,4 +1,3 @@
-// frontend/public/scripts/pages/spazio.js
 $(document).ready(function () {
   const API_SPAZI = `${apiConfig.apiUrl}/spazi`;
   const API_SEDI = `${apiConfig.apiUrl}/sedi`;
@@ -13,7 +12,7 @@ $(document).ready(function () {
     return;
   }
 
-  // Helpers stile identico a sede.js
+  // Helpers stile identico
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, (m) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -26,7 +25,7 @@ $(document).ready(function () {
       .join(" ");
   }
 
-  // Carico lista spazi (backend invariato) e filtro per id
+  // Carico lista spazi
   $.ajax({
     url: `${API_SPAZI}/getSpazi`,
     type: "GET",
@@ -43,7 +42,6 @@ $(document).ready(function () {
       // Aggiorna hero
       $("#spazioNome").text(spazio.nome || "Spazio");
 
-      // Se disponibile, carica dati della sede per mostrare indirizzo come in sede.html
       if (spazio.id_sede) {
         $.ajax({
           url: `${API_SEDI}/getAllSedi/${spazio.id_sede}`,
@@ -73,12 +71,11 @@ $(document).ready(function () {
     const cap = Number.isFinite(spazio.capienza) ? `${spazio.capienza} posti` : "-";
     const prezzo = (spazio.prezzo_orario != null) ? `${Number(spazio.prezzo_orario).toFixed(2)} € / h` : "-";
 
-    // Riga sede (nome + indirizzo)
+    // Riga sede 
     const sedeRiga = sede ? `
     <li>
       <i class="fa-solid fa-building me-2"></i>
       <a href="sede.html?id=${sede.id}">${escapeHtml(sede.nome || "Sede")}</a>
-      ${sede.attiva ? '<span class="badge bg-success ms-2">Attiva</span>' : '<span class="badge bg-secondary ms-2">Non attiva</span>'}
     </li>
     <li>
       <i class="fa-solid fa-location-dot me-2"></i>
@@ -86,7 +83,7 @@ $(document).ready(function () {
     </li>
   ` : "";
 
-    // Riga tipologia (subito sotto indirizzo)
+    // Riga tipologia
     const tipologiaRiga = tip ? `
     <li>
       <strong>Tipologia:</strong> ${tip}

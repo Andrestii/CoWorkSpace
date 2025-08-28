@@ -30,7 +30,7 @@ $(document).ready(function () {
   }
 
   // ====== Stato modalità Admin ======
-  let ADMIN_MODE = false; // quando true, le liste usano endpoint "globali"
+  let ADMIN_MODE = false;
 
   // ====== Bootstrap utente ======
   fetchMe()
@@ -48,21 +48,16 @@ $(document).ready(function () {
       const avatar = user.profileImageUrl || (user.profile_image ? supaPublicUrl(user.profile_image) : null);
       setImg($("#profile-image"), avatar);
 
-      // ✅ Riempie il form con i dati dal DB
       fillProfileForm(user);
 
-      // Menu per ruolo
       buildRoleMenu(ruolo);
 
-      // “Crea …” per il gestore
       replaceCtaForGestore(ruolo);
 
-      // Precarico sezioni base solo se NON admin
       if (ruolo !== "admin") {
         loadUserBookings();
       }
 
-      // Solo GESTORE carica le sezioni gestionali
       if (ruolo === "gestore") {
         renderKpiSkeleton();
         loadMieSedi();
@@ -79,7 +74,7 @@ $(document).ready(function () {
       url: `${API_USERS}/me`,
       type: "GET",
       headers: { Authorization: "Bearer " + token }
-    }).catch(() => userData); // fallback localStorage
+    }).catch(() => userData);
   }
 
   // ====== Sidebar switching ======
@@ -93,7 +88,6 @@ $(document).ready(function () {
     $(".content-section").removeClass("active").hide();
     $(`#${target}`).addClass("active").show();
 
-    // ricarichi leggeri on-demand
     switch (target) {
       case "prenotazioni": loadUserBookings(); break;
       case "mie-sedi": loadMieSedi(); break;
@@ -101,11 +95,10 @@ $(document).ready(function () {
       case "prenotazioni-gestore": loadPrenGestore(); break;
       case "disponibilita": loadSpaziGestore(); break;
       case "dash-gestore": loadPrenGestore({ forDashboard: true, limit: 50 }); break;
-      case "admin-mode":    /* niente, è solo info + scorciatoie */ break;
+      case "admin-mode": break;
     }
   });
 
-  // pulsanti "Vai alla lista" ecc.
   $(document).on("click", "[data-open]", function (e) {
     e.preventDefault();
     const t = $(this).data("open");
@@ -121,8 +114,8 @@ $(document).ready(function () {
 
   $("#cancel-edit").on("click", function () {
     fetchMe().then(u => {
-      $("#nome").val(u.nome || "");
-      $("#cognome").val(u.cognome || "");
+      const full = [u.nome, u.cognome].filter(Boolean).join(" ").trim();
+      $("#nome-completo").val(full || "");
       $("#email").val(u.email || "");
       $("#telefono").val(u.telefono || "");
       $("#data-nascita").val(u.data_nascita ? String(u.data_nascita).slice(0, 10) : "");
@@ -136,13 +129,20 @@ $(document).ready(function () {
 
   $("#profile-form").on("submit", function (e) {
     e.preventDefault();
+
+    const full = ($("#nome-completo").val() || "").trim();
+    const parts = full.split(/\s+/);
+    const nome = parts.shift() || "";
+    const cognome = parts.join(" ") || "";
+
     const payload = {
-      nome: $("#nome").val().trim(),
-      cognome: $("#cognome").val().trim(),
+      nome,
+      cognome,
       email: $("#email").val().trim(),
       telefono: $("#telefono").val().trim(),
       data_nascita: $("#data-nascita").val() || null
     };
+
     $.ajax({
       url: `${API_USERS}/profile`,
       type: "PUT",
@@ -154,7 +154,9 @@ $(document).ready(function () {
         $("#info-personali input").prop("readonly", true);
         $("#cancel-edit, #save-profile").addClass("d-none");
         $("#edit-info-btn").prop("disabled", false);
-        $("#user-name").text(u.nome || "Utente");
+
+        const headerName = [u.nome, u.cognome].filter(Boolean).join(" ").trim() || u.nome || "Utente";
+        $("#user-name").text(headerName);
         $("#user-email").text(u.email || "");
         const url = u.profileImageUrl || (u.profile_image ? supaPublicUrl(u.profile_image) : null);
         if (url) setImg($("#profile-image"), url);
@@ -180,7 +182,7 @@ $(document).ready(function () {
       .fail(xhr => alert(xhr?.responseJSON?.error || "Errore nel caricamento dell'immagine"));
   });
 
-  // ====== Logout locale (safe: esiste solo se lasciato in DOM) ======
+  // ====== Logout locale ======
   if ($("#logout-btn").length) {
     $("#logout-btn").on("click", function () {
       localStorage.removeItem("authToken");
@@ -203,7 +205,6 @@ $(document).ready(function () {
         headers: { Authorization: "Bearer " + token }
       });
 
-      // carico/riuso solo la mappa degli spazi (niente sedi)
       if (!SPAZI_MAP) SPAZI_MAP = await getSpaziMap();
 
       const rows = await prenPromise;
@@ -222,7 +223,6 @@ $(document).ready(function () {
 
     let rows = Array.isArray(allRows) ? allRows.slice() : [];
 
-    // ordina per data/creazione desc
     rows.sort((a, b) => {
       const da = new Date(a.created_at || `${a.data || ""}T${a.ora_inizio || "00:00"}`).getTime();
       const db = new Date(b.created_at || `${b.data || ""}T${b.ora_inizio || "00:00"}`).getTime();
@@ -309,7 +309,6 @@ $(document).ready(function () {
     }
   }
 
-  // carica sedi (mie oppure tutte se ADMIN_MODE)
   function loadMieSedi() {
     const $grid = $("#mie-sedi-grid").empty().append('<div class="text-muted">Caricamento sedi...</div>');
     const url = ADMIN_MODE ? `${API_SEDI}/getSedi` : `${API_SEDI}/mie`;
@@ -377,7 +376,6 @@ $(document).ready(function () {
   // ==========================================================
   function loadMieiSpazi() {
     const $g = $("#miei-spazi-grid").html('<div class="text-muted">Caricamento spazi...</div>');
-    // gestore: prendo sedi mie e filtro; admin: prendo tutti gli spazi
     const fetchAllSpazi = () => $.ajax({ url: `${API_SPAZI}/getSpazi`, type: "GET", headers: { Authorization: "Bearer " + token } });
 
     if (ADMIN_MODE) {
@@ -385,7 +383,6 @@ $(document).ready(function () {
         .done(spazi => renderSpaziGrid($g, spazi || []))
         .fail(() => $g.html(errorState("Errore nel caricamento degli spazi.")));
     } else {
-      // sedi del gestore -> filtra spazi per id_sede
       $.ajax({ url: `${API_SEDI}/mie`, type: "GET", headers: { Authorization: "Bearer " + token } })
         .done(mieSedi => {
           const ids = (mieSedi || []).map(s => s.id);
@@ -488,7 +485,7 @@ $(document).ready(function () {
         // 3) per ogni SPAZIO → prendo le prenotazioni di quello spazio
         const prenPromises = coppie.map(({ sede, spazio }) =>
           $.ajax({
-            url: `${API_PREN}/getPrenotazioniSpazio/${spazio.id}`,  // ✅ usa id_spazio
+            url: `${API_PREN}/getPrenotazioniSpazio/${spazio.id}`,
             type: "GET",
             headers: { Authorization: "Bearer " + token }
           })
@@ -517,7 +514,7 @@ $(document).ready(function () {
 
   function formatTime(timeStr) {
     if (!timeStr) return "-";
-    return timeStr.slice(0, 5); // prende solo HH:MM
+    return timeStr.slice(0, 5);
   }
 
   function renderPrenGestoreTable(rows) {
@@ -728,7 +725,6 @@ $(document).ready(function () {
       headers: { Authorization: "Bearer " + token },
     })
       .done(rows => {
-        // Filtro solo disponibilità relative a questo spazio
         let list = (rows || []).filter(
           x => String(x.id_spazio) === String(spazioId)
         );
@@ -739,10 +735,8 @@ $(document).ready(function () {
           return;
         }
 
-        // Ordina per data inizio
         list.sort((a, b) => new Date(a.start_at) - new Date(b.start_at));
 
-        // ✅ Mostra solo le disponibilità future
         const now = new Date();
         list = list.filter(d => new Date(d.start_at) >= now);
 
@@ -755,7 +749,7 @@ $(document).ready(function () {
           const id = d.id;
           const start = d.start_at ? new Date(d.start_at) : null;
           const end = d.end_at ? new Date(d.end_at) : null;
-          const closed = d.disponibile === false; // se disponibile = false → chiuso
+          const closed = d.disponibile === false;
 
           $tb.append(`
           <tr data-id="${id}" 
@@ -780,7 +774,7 @@ $(document).ready(function () {
       });
   }
 
-  // ====== Create/Update/Delete disponibilità (come nel tuo codice originale) ======
+  // ====== Create/Update/Delete disponibilità ======
   $(document).on("click", ".btn-new-disp", function () {
     const spazioId = $(this).data("spazio");
     $("#modalDispTitle").text("Nuova disponibilità");
@@ -794,8 +788,8 @@ $(document).ready(function () {
     const spazioId = $(this).data("spazio");
     const $tr = $(`#disp-tbody-${spazioId} tr[data-id="${id}"]`);
 
-    const startRaw = $tr.data("start"); // ISO
-    const endRaw = $tr.data("end");     // ISO
+    const startRaw = $tr.data("start");
+    const endRaw = $tr.data("end");
     const closed = $tr.data("closed");
 
     const startDate = startRaw ? new Date(startRaw) : null;
@@ -826,11 +820,8 @@ $(document).ready(function () {
       headers: { Authorization: "Bearer " + token }
     })
       .done(() => {
-        // ✅ Chiudi subito il modal
         bootstrap.Modal.getInstance(document.getElementById("modalDisp"))?.hide();
-        // ✅ Mostra popup
         toastOk("Disponibilità generate (08–17 per 10 giorni)");
-        // Ricarica tabella spazi
         loadDisponibilitaSpazio(spazioId);
       })
       .fail(() => {
@@ -843,8 +834,6 @@ $(document).ready(function () {
   $(document).on("click", ".btn-del-disp", function () {
     const id = $(this).data("id");
     const spazioId = $(this).data("spazio");
-
-    if (!confirm("Eliminare questa disponibilità?")) return;
 
     $.ajax({
       url: `${API_DISP}/delete/${id}`,
@@ -903,7 +892,7 @@ $(document).ready(function () {
       const $btn = $hdrSedi.find("a.btn").first();
       if ($btn.length) {
         $btn.attr("href", "creaSedi.html")
-            .html('<i class="fa-solid fa-plus me-1"></i> Crea sede');
+          .html('<i class="fa-solid fa-plus me-1"></i> Crea sede');
       } else {
         $hdrSedi.append(
           '<a href="creaSedi.html" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-plus me-1"></i> Crea sede</a>'
@@ -917,7 +906,7 @@ $(document).ready(function () {
       const $btn2 = $hdrSpazi.find("a.btn").first();
       if ($btn2.length) {
         $btn2.attr("href", "creaSpazi.html")
-             .html('<i class="fa-solid fa-plus me-1"></i> Crea spazio');
+          .html('<i class="fa-solid fa-plus me-1"></i> Crea spazio');
       } else {
         $hdrSpazi.append(
           '<a href="creaSpazio.html" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-plus me-1"></i> Crea spazio</a>'
@@ -927,16 +916,12 @@ $(document).ready(function () {
   }
 
   function fillProfileForm(user) {
-    // Popola i campi del form con i dati ricevuti dal backend
-    $("#nome").val(user.nome || "");
+    const fullName = [user.nome, user.cognome].filter(Boolean).join(" ").trim();
+    $("#nome-completo").val(fullName || "");
     $("#email").val(user.email || "");
     $("#telefono").val(user.numero_telefono || "");
     $("#data-nascita").val(user.data_nascita ? String(user.data_nascita).slice(0, 10) : "");
-
-    // Se hai anche la descrizione nel form
-    if ($("#descrizione").length) {
-      $("#descrizione").val(user.descrizione || "");
-    }
+    if ($("#descrizione").length) $("#descrizione").val(user.descrizione || "");
   }
 
   function loadingState(t) { return `<p class="text-muted"><i class="fas fa-spinner fa-spin me-2"></i>${t}</p>`; }

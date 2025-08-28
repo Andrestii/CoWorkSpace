@@ -31,14 +31,6 @@ $(function () {
         $profileLink.toggleClass("d-none", !isLogged);
         $logoutLink.toggleClass("d-none", !isLogged);
 
-        // Saluto accanto a Profilo
-        if (isLogged && $profileLink.find(".hello-chip").length === 0) {
-            const name = userData?.nome || "";
-            $profileLink.find("a").prepend(
-                `<small class="me-1 hello-chip">Ciao ${name ? name : ""}!</small>`
-            );
-        }
-
         // Azioni GESTORE
         if (isLogged && role === "gestore") {
             // se vuoi puoi aggiungere link gestore qui

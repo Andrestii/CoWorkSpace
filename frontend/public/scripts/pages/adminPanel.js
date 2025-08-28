@@ -348,7 +348,6 @@ $(async function () {
     const id = $("#ue-id").val();
     const before = __usersCache.get(String(id)) || {};
 
-    // valori correnti dal form
     const cur = {
       nome: $("#ue-nome").val().trim(),
       email: $("#ue-email").val().trim(),
@@ -365,11 +364,9 @@ $(async function () {
 
     addIfChanged("nome", cur.nome, before.nome || before.first_name);
     addIfChanged("email", cur.email, before.email);
-    // telefono e data_nascita sono opzionali: li mando solo se *diversi* e non vuoti
-    addIfChanged("telefono", cur.telefono, before.telefono || before.numero_telefono);
-    addIfChanged("data_nascita", cur.data_nascita, before.data_nascita || before.dob);
+    addIfChanged("numeroTelefono", cur.telefono, before.telefono || before.numero_telefono);
+    addIfChanged("dataNascita", cur.data_nascita, before.data_nascita || before.dob);
 
-    // se non c'è nulla da aggiornare, chiudo semplicemente
     if (Object.keys(payload).length === 0) {
       bootstrap.Modal.getInstance(document.getElementById("modalUserEdit"))?.hide();
       toast("Nessuna modifica da salvare");
@@ -508,15 +505,12 @@ $(async function () {
       $tb.empty();
       sedi.forEach(s => {
         const isActive = (s.attiva === true || s.attiva === 1 || String(s.attiva) === "true");
-        const statoTxt = isActive ? "Attiva" : "Disattivata";
-        const badgeCls = isActive ? "bg-success" : "bg-secondary";
 
         $tb.append(`
           <tr>
             <td>${s.id ?? "—"}</td>
             <td>${escapeHtml(s.nome || "—")}</td>
             <td>${escapeHtml([s.indirizzo, s.citta].filter(Boolean).join(", ") || "—")}</td>
-            <td><span class="badge ${badgeCls}">${statoTxt}</span></td>
             <td class="text-end">
               ${isActive
             ? `
@@ -552,9 +546,6 @@ $(async function () {
 
       $tb.empty();
       spazi.forEach(sp => {
-        const isActive = (sp.attivo === true || sp.attivo === 1 || String(sp.attivo) === "true");
-        const statoTxt = isActive ? "Attivo" : "Disattivato";
-        const badgeCls = isActive ? "bg-success" : "bg-secondary";
         const tipologia = (sp.tipologia || "").replaceAll("_", " ").replace(/^\w/, c => c.toUpperCase());
 
         $tb.append(`
@@ -563,7 +554,6 @@ $(async function () {
             <td>${escapeHtml(sp.nome || "—")}</td>
             <td>${escapeHtml(tipologia || "—")}</td>
             <td>${sp.id_sede ?? "—"}</td>
-            <td><span class="badge ${badgeCls}">${statoTxt}</span></td>
             <td class="text-end">
               <div class="btn-group">
                 <a class="btn btn-sm btn-outline-primary" href="spazio.html?id=${sp.id ?? ""}" title="Dettagli">

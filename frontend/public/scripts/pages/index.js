@@ -1,6 +1,4 @@
-// ./scripts/pages/index.js
 $(function () {
-    // Effetto ombra navbar on scroll (opzionale se non lo fai in navbar.js)
     $(window).on('scroll', function () {
         if ($(window).scrollTop() > 50) {
             $('.navbar').addClass('shadow-lg');
@@ -21,7 +19,6 @@ $(function () {
         })
             .done(function (sedi) {
                 if (!Array.isArray(sedi) || sedi.length === 0) {
-                    // fallback se non ci sono sedi
                     renderSediCards([]);
                     return;
                 }
@@ -30,7 +27,6 @@ $(function () {
                 renderSediCards(randomThree);
             })
             .fail(function () {
-                // fallback statico minimale
                 const fallback = [
                     { id: 0, nome: 'Sede Milano Navigli', indirizzo: 'Via Giovanni B., 12', citta: 'Milano', immagine: null },
                     { id: 0, nome: 'Sede Roma Centro', indirizzo: 'Via delle Arti, 5', citta: 'Roma', immagine: null },
@@ -42,7 +38,6 @@ $(function () {
 
     function pickRandom(arr, n) {
         const copy = arr.slice();
-        // Fisher–Yates shuffle in-place
         for (let i = copy.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [copy[i], copy[j]] = [copy[j], copy[i]];
@@ -65,8 +60,7 @@ $(function () {
         list.forEach(sede => {
             const img = sede.immagine || 'https://via.placeholder.com/600x360?text=Sede';
             const indirizzo = [sede.indirizzo, sede.citta].filter(Boolean).join(', ');
-            const id = sede.id || ''; // se fallback non ha id, link disabilitato
-
+            const id = sede.id || '';
             $grid.append(`
         <div class="col-lg-4 col-md-6">
           <div class="card h-100 shadow-sm prodotto-card">

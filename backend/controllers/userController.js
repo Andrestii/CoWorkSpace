@@ -3,18 +3,6 @@ const supabase = require("../config/database");
 var jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
-const storage = multer.memoryStorage();
-const upload = multer({
-    storage: storage,
-    fileFilter: function (req, file, cb) {
-        // Accetta solo immagini
-        if (!file.mimetype.startsWith("image/")) {
-            return cb(new Error("Solo i file immagine sono permessi!"), false);
-        }
-        cb(null, true);
-    },
-    limits: { fileSize: 5 * 1024 * 1024 }, // Limite di 5MB per file
-});
 
 require("dotenv").config();
 const userController = {
@@ -43,7 +31,7 @@ const userController = {
                     .upload(fileName, profileImageFile.buffer, {
                         contentType: profileImageFile.mimetype,
                         cacheControl: "3600", // Cache per 1 ora
-                        upsert: false, // Non sovrascrivere se esiste già (opzionale)
+                        upsert: false,
                     });
 
                 if (uploadError) {
@@ -51,9 +39,7 @@ const userController = {
                         "Errore durante l'upload dell'immagine a Supabase Storage:",
                         uploadError
                     );
-                    // Non bloccare la registrazione se l'upload fallisce, ma logga l'errore
                 } else if (uploadData) {
-                    // Ottieni l'URL pubblico dell'immagine caricata
                     const { data: urlData } = supabase.storage
                         .from("profile-pics")
                         .getPublicUrl(fileName);
@@ -67,7 +53,7 @@ const userController = {
                 .map(
                     (part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
                 )
-                .join(" "); // Prime letterre del nome maiuscole
+                .join(" ");
 
             // Create the user
             const data = await userModel.createUser({
@@ -92,7 +78,7 @@ const userController = {
                     email: userData.email,
                     ruolo: userData.ruolo,
                 },
-                process.env.JWT_SECRET, // Secret key
+                process.env.JWT_SECRET,
                 { expiresIn: process.env.JWT_EXPIRES_IN } // Scadenza (24h)
             );
 
@@ -125,51 +111,37 @@ const userController = {
     async login(req, res) {
         try {
             const { email, password } = req.body;
-
             if (!email || !password) {
-                return res
-                    .status(400)
-                    .json({ error: "Email and password are required" });
+                return res.status(400).json({ error: "Email and password are required" });
             }
 
             const result = await userModel.loginUser(email, password);
 
             if (result.error) {
-                return res.status(401).json({ error: result.error });
+                const code = result.httpStatus || 401;
+                return res.status(code).json({ error: result.error });
             }
 
-            console.log("Login successful:", result);
             const payload = {
                 id: result.user.id,
                 email: result.user.email,
                 ruolo: result.user.ruolo,
-                // Aggiungi altri dati utente essenziali se necessario (es. nome)
-                // nome: result.user.nome
             };
-
             if (result.user.ruolo === "gestore" && result.user.sede_id) {
                 payload.sede_id = result.user.sede_id;
-                console.log(
-                    `Gestore logged in. Adding sede_id ${payload.sede_id} to JWT payload.`
-                ); // Log per debug
             }
 
-            var token = jwt.sign(
-                payload,
-                process.env.JWT_SECRET, // Secret key
-                { expiresIn: process.env.JWT_EXPIRES_IN } // Scadenza (24h)
-            );
+            const token = jwt.sign(payload, process.env.JWT_SECRET, {
+                expiresIn: process.env.JWT_EXPIRES_IN,
+            });
 
-            res.status(200).json({
+            return res.status(200).json({
                 user: result.user,
-                session: result.session,
-                token: token,
+                token,
             });
         } catch (error) {
             console.error("Login error:", error);
-            res
-                .status(500)
-                .json({ error: error.message || "An error occurred during login" });
+            return res.status(500).json({ error: error.message || "An error occurred during login" });
         }
     },
 
@@ -178,7 +150,7 @@ const userController = {
      */
     async getCurrentUser(req, res) {
         try {
-            const userId = req.user.id; // Assuming auth middleware sets req.user
+            const userId = req.user.id;
 
             const userData = await userModel.getUserById(userId);
 
@@ -198,7 +170,7 @@ const userController = {
      */
     async updateProfile(req, res) {
         try {
-            const userId = req.user.id; // dall'auth middleware
+            const userId = req.user.id;
             const { nome, email, numero_telefono, data_nascita, descrizione } = req.body;
 
             const updatedData = await userModel.updateUserProfile(userId, {
@@ -296,19 +268,18 @@ const userController = {
         const userId = req.params.id;
         const { nome, cognome, email, numeroTelefono, dataNascita } = req.body;
 
-        if (!nome || !numeroTelefono) {
-            return res.status(400).json({
-                error: "Nome, telefono e indirizzo sono richiesti",
-            });
-        }
-
         try {
-            const updatedUser = await userModel.update(userId, {
-                nome: `${nome} ${cognome}`,
-                email,
-                numero_telefono: numeroTelefono,
-                data_nascita: dataNascita,
-            });
+            const fields = {};
+            if (nome || cognome) fields.nome = `${nome ?? ""} ${cognome ?? ""}`.trim();
+            if (email) fields.email = email;
+            if (numeroTelefono) fields.numero_telefono = numeroTelefono;
+            if (dataNascita) fields.data_nascita = dataNascita;
+
+            if (Object.keys(fields).length === 0) {
+                return res.status(400).json({ error: "Nessun dato da aggiornare" });
+            }
+
+            const updatedUser = await userModel.update(userId, fields);
 
             res.status(200).json({
                 message: "Informazioni utente aggiornate con successo",

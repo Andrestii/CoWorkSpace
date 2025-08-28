@@ -4,9 +4,6 @@ const {
     getAllUsers,
 } = require("../controllers/userController");
 
-/**
- * User model functions for interacting with the users table in Supabase
- */
 const userModel = {
     /**
      * Get a user by their ID
@@ -80,8 +77,7 @@ const userModel = {
             .update(profileData)
             .eq("id", userId)
             .select()
-            .single();   // <— così ritorna un record unico
-
+            .single();
         if (error) throw error;
         return data;
     },
@@ -98,7 +94,6 @@ const userModel = {
 
         if (profileError) throw profileError;
 
-        // Delete the user authentication
         const { error } = await supabase.auth.admin.deleteUser(userId);
         if (error) throw error;
 
@@ -119,25 +114,30 @@ const userModel = {
      * Login a user using direct database query
      */
     async loginUser(email, password) {
-        // Get user from utenti table
         const { data, error } = await supabase
             .from("utenti")
-            .select(
-                `
-          *
-        `
-            )
+            .select("id, email, nome, ruolo, profile_image, password, isBanned")
             .eq("email", email)
             .single();
 
         if (error) throw error;
 
-        // If no user found or password doesn't match
-        if (!data || data.password !== password) {
+        if (!data) {
             return { error: "Invalid email or password" };
         }
 
-        // Generate a simple session token (in a real app, use JWT)
+        const banned =
+            data.isBanned === true ||
+            data.isBanned === 1 ||
+            String(data.isBanned).toLowerCase() === "true";
+
+        if (banned) {
+            return { error: "Account sospeso, contatta l'assistenza.", httpStatus: 403 };
+        }
+
+        if (data.password !== password) {
+            return { error: "Invalid email or password" };
+        }
 
         const userToReturn = {
             id: data.id,
@@ -147,13 +147,8 @@ const userModel = {
             profile_image: data.profile_image,
         };
 
-        return {
-            user: userToReturn,
-            // Non è necessario restituire una sessione fittizia se usi JWT
-            error: null, // Indica successo
-        };
+        return { user: userToReturn, error: null };
     },
-
 
     async getAllUsers() {
         const { data, error } = await supabase.from("utenti").select(
