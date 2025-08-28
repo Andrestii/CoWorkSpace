@@ -886,32 +886,29 @@ $(document).ready(function () {
   function replaceCtaForGestore(ruolo) {
     if (ruolo !== "gestore") return;
 
-    // SEDI → Crea sede
+    const makeBtn = (href, classes, icon, text) =>
+      `<a href="${href}" class="btn btn-sm ${classes} ms-2">
+       <i class="${icon} me-1"></i> ${text}
+     </a>`;
+
+    // SEDI → Crea eedit sede
     const $hdrSedi = $("#mie-sedi .content-header");
     if ($hdrSedi.length) {
-      const $btn = $hdrSedi.find("a.btn").first();
-      if ($btn.length) {
-        $btn.attr("href", "creaSedi.html")
-          .html('<i class="fa-solid fa-plus me-1"></i> Crea sede');
-      } else {
-        $hdrSedi.append(
-          '<a href="creaSedi.html" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-plus me-1"></i> Crea sede</a>'
-        );
-      }
+      $hdrSedi.find("a.btn").remove();
+      $hdrSedi.append(
+        makeBtn("creaSedi.html", "btn-outline-primary btn-crea-sede", "fa-solid fa-plus", "Crea sede") +
+        makeBtn("editSedi.html", "btn-outline-primary btn-edit-sede", "fa-regular fa-pen-to-square", "Modifica sede")
+      );
     }
 
-    // SPAZI → Crea spazio
+    // SPAZI → Crea edit spazio
     const $hdrSpazi = $("#miei-spazi .content-header");
     if ($hdrSpazi.length) {
-      const $btn2 = $hdrSpazi.find("a.btn").first();
-      if ($btn2.length) {
-        $btn2.attr("href", "creaSpazi.html")
-          .html('<i class="fa-solid fa-plus me-1"></i> Crea spazio');
-      } else {
-        $hdrSpazi.append(
-          '<a href="creaSpazio.html" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-plus me-1"></i> Crea spazio</a>'
-        );
-      }
+      $hdrSpazi.find("a.btn").remove();
+      $hdrSpazi.append(
+        makeBtn("creaSpazi.html", "btn-outline-primary btn-crea-spazio", "fa-solid fa-plus", "Crea spazio") +
+        makeBtn("editSpazi.html", "btn-outline-primary btn-edit-spazio", "fa-regular fa-pen-to-square", "Modifica spazio")
+      );
     }
   }
 
