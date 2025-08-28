@@ -17,318 +17,325 @@
   <link rel="icon" href="favicon.ico">
 
   <!-- Styles -->
-  <link href="css/pagine/index.css" rel="stylesheet" />
   <link href="css/pagine/profilo.css" rel="stylesheet" />
 </head>
 
 <body>
-  <!-- Navbar (contiene il solo logout valido) -->
+  <!-- Navbar -->
   <div id="navbar-placeholder"></div>
 
   <!-- Profile Page -->
-  <div class="profile-container container py-5" id="profile-container" style="padding-top: 110px;">
-    <div class="profile-header mb-5 d-flex justify-content-between align-items-center">
-      <div>
-        <h1 class="mb-2">Il Mio Profilo</h1>
-        <p class="text-muted">Gestisci i tuoi dati personali e monitora le tue prenotazioni</p>
+  <header class="container pt-5" id="profile-container">
+    <div class="row align-items-center g-4">
+      <div class="col-md-auto">
+        <div class="avatar-container position-relative">
+          <img src="https://via.placeholder.com/120" alt="Avatar" class="rounded-circle user-avatar"
+            id="profile-image" />
+          <div class="avatar-edit" id="avatar-edit-btn"><i class="fas fa-camera"></i></div>
+          <input type="file" id="avatar-upload" accept="image/*" hidden />
+        </div>
       </div>
-      <!-- ❌ RIMOSSO il bottone Logout locale: resta solo quello in navbar -->
-    </div>
-
-    <div class="row g-4">
-      <!-- Sidebar -->
-      <aside class="col-lg-3">
-        <div class="profile-sidebar p-3 rounded shadow-sm">
-          <div class="user-info text-center mb-4">
-            <div class="avatar-container mb-3 position-relative">
-              <img src="https://via.placeholder.com/120" alt="Avatar" class="rounded-circle user-avatar"
-                id="profile-image" />
-              <div class="avatar-edit" id="avatar-edit-btn"><i class="fas fa-camera"></i></div>
-              <input type="file" id="avatar-upload" accept="image/*" hidden />
-            </div>
-            <h5 id="user-name">Nome Cognome</h5>
-            <p class="text-muted" id="user-email">email@email.com</p>
-            <div class="pill-container">
-              <p class="pill mt-2" id="user-role">RUOLO</p>
-            </div>
-          </div>
-
-          <!-- NAV dinamica (JS mostra/nasconde per ruolo) -->
-          <nav class="profile-nav">
-            <!-- Comuni -->
-            <div class="nav-item active" data-target="info-personali">
-              <i class="fas fa-user me-2"></i> Informazioni Personali
-            </div>
-            <div class="nav-item" data-target="prenotazioni">
-              <i class="fas fa-calendar-check me-2"></i> Le mie prenotazioni
-              <span class="badge bg-secondary ms-auto d-none">0</span>
-            </div>
-
-            <!-- Gestore -->
-            <div class="nav-item nav-gestore d-none" data-target="dash-gestore">
-              <i class="fas fa-chart-line me-2"></i> Dashboard gestore
-            </div>
-            <div class="nav-item nav-gestore d-none" data-target="mie-sedi">
-              <i class="fas fa-building me-2"></i> Le mie sedi
-              <span class="badge bg-secondary ms-auto d-none">0</span>
-            </div>
-            <div class="nav-item nav-gestore d-none" data-target="miei-spazi">
-              <i class="fas fa-chair me-2"></i> I miei spazi
-              <span class="badge bg-secondary ms-auto d-none">0</span>
-            </div>
-            <div class="nav-item nav-gestore d-none" data-target="disponibilita">
-              <i class="fas fa-clock me-2"></i> Disponibilità
-            </div>
-            <div class="nav-item nav-gestore d-none" data-target="prenotazioni-gestore">
-              <i class="fas fa-list-check me-2"></i> Prenotazioni ricevute
-              <span class="badge bg-secondary ms-auto d-none">0</span>
-            </div>
-
-          </nav>
+      <div class="col">
+        <h1 class="mb-1">Il Mio Profilo</h1>
+        <p class="text-muted mb-2">Gestisci i tuoi dati personali e monitora le tue prenotazioni</p>
+        <div class="pill-container">
+          <p class="pill mt-1" id="user-role">RUOLO</p>
         </div>
-      </aside>
-
-      <!-- Contenuti -->
-      <section class="col-lg-9">
-        <div class="profile-content-container">
-
-          <!-- Info Personali -->
-          <div class="content-section active" id="info-personali">
-            <div class="content-card p-4 shadow-sm rounded">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4>Informazioni Personali</h4>
-                <div>
-                  <button class="btn btn-sm btn-outline-dark" id="edit-info-btn">
-                    <i class="fas fa-pencil-alt"></i> Modifica
-                  </button>
-                </div>
-              </div>
-
-              <form id="profile-form">
-                <div class="row">
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Nome</label>
-                    <input type="text" class="form-control" id="nome" readonly />
-                  </div>
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label">Cognome</label>
-                    <input type="text" class="form-control" id="cognome" readonly />
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Email</label>
-                  <input type="email" class="form-control" id="email" readonly />
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Telefono</label>
-                  <input type="text" class="form-control" id="telefono" readonly />
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Data di nascita</label>
-                  <input type="date" class="form-control" id="data-nascita" readonly />
-                </div>
-                <div class="text-end">
-                  <button type="button" class="btn btn-outline-secondary me-2 d-none" id="cancel-edit">Annulla</button>
-                  <button type="submit" class="btn btn-primary d-none" id="save-profile">Salva Modifiche</button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <!-- Cliente: Le mie prenotazioni (stile tabella admin) -->
-          <div class="content-section" id="prenotazioni" style="display:none;">
-            <div class="content-header d-flex align-items-center justify-content-between mb-3">
-              <h4 class="mb-0">Tutte le Prenotazioni</h4>
-            </div>
-
-            <div class="content-body">
-              <div class="table-responsive">
-                <table class="table align-middle" id="tab-mie-pren">
-                  <thead>
-                    <tr>
-                      <th>Spazio</th>
-                      <th>Stato</th>
-                      <th>Totale</th>
-                      <th>Data</th>
-                      <th class="text-end">Azioni</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- rows via JS -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gestore: Dashboard sintetica -->
-          <div class="content-section" id="dash-gestore" style="display:none;">
-            <div class="row g-3">
-              <div class="col-md-4">
-                <div class="kpi-card">
-                  <div class="kpi-label">Prenotazioni oggi</div>
-                  <div class="kpi-value" id="kpi-ogg">—</div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="kpi-card">
-                  <div class="kpi-label">Settimana</div>
-                  <div class="kpi-value" id="kpi-week">—</div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="kpi-card">
-                  <div class="kpi-label">Mese</div>
-                  <div class="kpi-value" id="kpi-month">—</div>
-                </div>
-              </div>
-            </div>
-            <div class="card mt-4 shadow-sm">
-              <div class="content-header">
-                <h4>Ultime prenotazioni</h4>
-                <a href="#" class="btn btn-sm btn-outline-primary" data-open="prenotazioni-gestore">Vai alla lista</a>
-              </div>
-              <div class="content-body" id="dash-ultime"></div>
-            </div>
-          </div>
-
-          <!-- Gestore: Le mie sedi -->
-          <div class="content-section" id="mie-sedi" style="display:none;">
-            <div class="content-header">
-              <h4>Le mie sedi</h4>
-              <a href="sedi.html" class="btn btn-sm btn-outline-primary">Vai a Sedi</a>
-            </div>
-            <div class="content-body">
-              <div class="row" id="mie-sedi-grid"></div>
-            </div>
-          </div>
-
-          <!-- Gestore: I miei spazi -->
-          <div class="content-section" id="miei-spazi" style="display:none;">
-            <div class="content-header">
-              <h4>I miei spazi</h4>
-              <a href="spazi.html" class="btn btn-sm btn-outline-primary">Vai a Spazi</a>
-            </div>
-            <div class="content-body">
-              <div class="row" id="miei-spazi-grid"></div>
-            </div>
-          </div>
-
-          <!-- Gestore: Prenotazioni ricevute -->
-          <div class="content-section" id="prenotazioni-gestore" style="display:none;">
-            <div class="content-header">
-              <h4>Prenotazioni ricevute</h4>
-            </div>
-            <div class="content-body">
-              <div class="table-responsive">
-                <table class="table align-middle" id="tab-pren-gestore">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Data</th>
-                      <th>Sede</th>
-                      <th>Cliente</th>
-                      <th>Orario</th>
-                      <th>Totale</th>
-                      <th>Stato</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gestore: Disponibilità -->
-          <div class="content-section" id="disponibilita" style="display:none;">
-            <div class="content-header">
-              <h4>Gestione disponibilità</h4>
-            </div>
-            <div class="content-body">
-              <p class="text-muted">Crea, modifica o elimina disponibilità degli spazi che gestisci.</p>
-              <div id="disp-spazi-list" class="row g-3"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <!-- Toast globale -->
-  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
-    <div id="global-toast" class="toast align-items-center border-0" role="alert" aria-live="assertive"
-      aria-atomic="true">
-      <div class="d-flex">
-        <div class="toast-body" id="global-toast-body">
-          Operazione completata
-        </div>
-        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Chiudi"></button>
+      </div>
+      <div class="col-md-4 col-lg-3 text-md-end">
+        <h5 id="user-name" class="mb-1">Nome Cognome</h5>
+        <p id="user-email" class="text-muted mb-0">email@email.com</p>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- footer -->
-  <footer class="bg-dark text-white py-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-4 mb-4 mb-lg-0">
-          <h5 class="mb-3 text-uppercase">CoWorkSpace</h5>
-          <p>
-            La piattaforma che valorizza il coworking in Italia, mettendo in contatto
-            professionisti, aziende e creativi alla ricerca di spazi unici dove lavorare e collaborare.
-          </p>
-          <div class="social-icons mt-3">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-pinterest"></i></a>
+  <!-- NAV dinamica -->
+  <nav class="container mt-4">
+    <div class="profile-nav d-flex flex-wrap gap-2">
+      <!-- Comuni -->
+      <div class="nav-item active" data-target="info-personali">
+        <i class="fas fa-user me-2"></i> Informazioni Personali
+      </div>
+      <div class="nav-item" data-target="prenotazioni">
+        <i class="fas fa-calendar-check me-2"></i> Le mie prenotazioni
+        <span class="badge bg-secondary ms-2 d-none">0</span>
+      </div>
+
+      <!-- Gestore -->
+      <div class="nav-item nav-gestore d-none" data-target="dash-gestore">
+        <i class="fas fa-chart-line me-2"></i> Dashboard gestore
+      </div>
+      <div class="nav-item nav-gestore d-none" data-target="mie-sedi">
+        <i class="fas fa-building me-2"></i> Le mie sedi
+        <span class="badge bg-secondary ms-2 d-none">0</span>
+      </div>
+      <div class="nav-item nav-gestore d-none" data-target="miei-spazi">
+        <i class="fas fa-chair me-2"></i> I miei spazi
+        <span class="badge bg-secondary ms-2 d-none">0</span>
+      </div>
+      <div class="nav-item nav-gestore d-none" data-target="disponibilita">
+        <i class="fas fa-clock me-2"></i> Disponibilità
+      </div>
+      <div class="nav-item nav-gestore d-none" data-target="prenotazioni-gestore">
+        <i class="fas fa-list-check me-2"></i> Prenotazioni ricevute
+        <span class="badge bg-secondary ms-2 d-none">0</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenuti -->
+  <main class="container my-4">
+    <div class="profile-content-container">
+
+      <!-- Info Personali -->
+      <div class="content-section active" id="info-personali">
+        <div class="content-card p-4 shadow-sm rounded">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Informazioni Personali</h4>
+            <div>
+              <button class="btn btn-sm btn-outline-dark" id="edit-info-btn">
+                <i class="fas fa-pencil-alt"></i> Modifica
+              </button>
+            </div>
           </div>
+
+          <form id="profile-form">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Nome</label>
+                <input type="text" class="form-control" id="nome" readonly />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Cognome</label>
+                <input type="text" class="form-control" id="cognome" readonly />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Telefono</label>
+              <input type="text" class="form-control" id="telefono" readonly />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Data di nascita</label>
+              <input type="date" class="form-control" id="data-nascita" readonly />
+            </div>
+            <div class="text-end">
+              <button type="button" class="btn btn-outline-secondary me-2 d-none" id="cancel-edit">Annulla</button>
+              <button type="submit" class="btn btn-primary d-none" id="save-profile">Salva Modifiche</button>
+            </div>
+          </form>
         </div>
-        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-          <h5 class="mb-3 text-uppercase">Naviga</h5>
-          <ul class="list-unstyled">
-            <li><a href="index.html" class="text-white-50">Home</a></li>
-            <li><a href="sedi.html" class="text-white-50">Sedi</a></li>
-            <li><a href="spazi.html" class="text-white-50">Spazi</a></li>
-            <li><a href="about.html" class="text-white-50">Chi siamo</a></li>
-          </ul>
+      </div>
+
+      <!-- Cliente: Le mie prenotazioni  -->
+      <div class="content-section" id="prenotazioni" style="display:none;">
+        <div class="content-header d-flex align-items-center justify-content-between mb-3">
+          <h4 class="mb-0">Tutte le Prenotazioni</h4>
         </div>
-        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-          <h5 class="mb-3 text-uppercase">Account</h5>
-          <ul class="list-unstyled">
-            <li><a href="profilo.html" class="text-white-50">Il mio account</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-4 col-md-4">
-          <h5 class="mb-3 text-uppercase">Newsletter</h5>
-          <p class="text-white-50">Iscriviti per ricevere novità su sedi e servizi</p>
-          <div class="input-group mb-3">
-            <input type="email" class="form-control" placeholder="La tua email" aria-label="Email">
-            <button class="btn btn-primary" type="button">Iscriviti</button>
+
+        <div class="content-body">
+          <div class="table-responsive">
+            <table class="table align-middle" id="tab-mie-pren">
+              <thead>
+                <tr>
+                  <th>Spazio</th>
+                  <th>Stato</th>
+                  <th>Totale</th>
+                  <th>Data</th>
+                  <th class="text-end">Azioni</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- rows via JS -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-      <hr class="my-4">
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <p class="mb-md-0">&copy; 2025 CoWorkSpace. Tutti i diritti riservati.</p>
-        <div>
-          <a href="privacy.html" class="text-white-50 me-3">Privacy Policy</a>
-          <a href="termini.html" class="text-white-50">Termini di Servizio</a>
+
+      <!-- Gestore: Dashboard sintetica -->
+      <div class="content-section" id="dash-gestore" style="display:none;">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="kpi-card">
+              <div class="kpi-label">Prenotazioni oggi</div>
+              <div class="kpi-value" id="kpi-ogg">—</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="kpi-card">
+              <div class="kpi-label">Settimana</div>
+              <div class="kpi-value" id="kpi-week">—</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="kpi-card">
+              <div class="kpi-label">Mese</div>
+              <div class="kpi-value" id="kpi-month">—</div>
+            </div>
+          </div>
         </div>
+        <div class="card mt-4 shadow-sm">
+          <div class="content-header">
+            <h4>Ultime prenotazioni</h4>
+            <a href="#" class="btn btn-sm btn-outline-primary" data-open="prenotazioni-gestore">Vai alla lista</a>
+          </div>
+          <div class="content-body" id="dash-ultime"></div>
+        </div>
+      </div>
+
+      <!-- Gestore: Le mie sedi -->
+      <div class="content-section" id="mie-sedi" style="display:none;">
+        <div class="content-header">
+          <h4>Le mie sedi</h4>
+          <a href="sedi.html" class="btn btn-sm btn-outline-primary">Vai a Sedi</a>
+        </div>
+        <div class="content-body">
+          <div class="row" id="mie-sedi-grid"></div>
+        </div>
+      </div>
+
+      <!-- Gestore: I miei spazi -->
+      <div class="content-section" id="miei-spazi" style="display:none;">
+        <div class="content-header">
+          <h4>I miei spazi</h4>
+          <a href="spazi.html" class="btn btn-sm btn-outline-primary">Vai a Spazi</a>
+        </div>
+        <div class="content-body">
+          <div class="row" id="miei-spazi-grid"></div>
+        </div>
+      </div>
+
+      <!-- Gestore: Prenotazioni ricevute -->
+      <div class="content-section" id="prenotazioni-gestore" style="display:none;">
+        <div class="content-header">
+          <h4>Prenotazioni ricevute</h4>
+        </div>
+        <div class="content-body">
+          <div class="table-responsive">
+            <table class="table align-middle" id="tab-pren-gestore">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Data</th>
+                  <th>Sede</th>
+                  <th>Cliente</th>
+                  <th>Orario</th>
+                  <th>Totale</th>
+                  <th>Stato</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gestore: Disponibilità -->
+      <div class="content-section" id="disponibilita" style="display:none;">
+        <div class="content-header">
+          <h4>Gestione disponibilità</h4>
+        </div>
+        <div class="content-body">
+          <p class="text-muted">Crea, modifica o elimina disponibilità degli spazi che gestisci.</p>
+          <div id="disp-spazi-list" class="row g-3"></div>
         </div>
       </div>
     </div>
-  </footer>
+    </section>
+    </div>
+    </div>
 
-  <!-- Scripts -->
-  <script src="./scripts/config.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Toast globale -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+      <div id="global-toast" class="toast align-items-center border-0" role="alert" aria-live="assertive"
+        aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body" id="global-toast-body">
+            Operazione completata
+          </div>
+          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Chiudi"></button>
+        </div>
+      </div>
+    </div>
 
-  <!-- Auth helpers & pagina -->
-  <script src="./scripts/auth.js"></script>
-  <script src="./scripts/pages/profilo.js"></script>
-  <script src="./scripts/partials/navbar.js"></script>
+    <footer class="bg-dark text-white py-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4 mb-4 mb-lg-0">
+            <h5 class="mb-3 text-uppercase">CoWorkSpace</h5>
+            <p>
+              La piattaforma che valorizza il coworking in Italia, mettendo in contatto
+              professionisti, aziende e creativi alla ricerca di spazi unici dove lavorare e collaborare.
+            </p>
+            <div class="social-icons mt-3">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+            <h5 class="mb-3 text-uppercase">Naviga</h5>
+            <ul class="list-unstyled">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="sedi.html">Sedi</a></li>
+              <li><a href="spazi.html">Spazi</a></li>
+              <li><a href="about.html">Chi siamo</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+            <h5 class="mb-3 text-uppercase">Account</h5>
+            <ul class="list-unstyled">
+              <li><a href="profilo.html">Il mio account</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-4 col-md-4">
+            <h5 class="mb-3 text-uppercase">Newsletter</h5>
+            <p>Iscriviti per ricevere novità su sedi e servizi</p>
+            <div class="input-group mb-3">
+              <input type="email" class="form-control" placeholder="La tua email" aria-label="Email">
+              <button class="btn btn-primary" type="button">Iscriviti</button>
+            </div>
+          </div>
+        </div>
+        <hr class="my-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+          <p class="mb-md-0">&copy; 2025 CoWorkSpace. Tutti i diritti riservati.</p>
+          <div>
+            <a href="privacy.html" class="me-3">Privacy Policy</a>
+            <a href="termini.html">Termini di Servizio</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="./scripts/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="./scripts/auth.js"></script>
+    <script src="./scripts/pages/profilo.js"></script>
+    <script src="./scripts/partials/navbar.js"></script>
+
+    <script>
+      (function () {
+        function setNavHeight() {
+          const nav = document.querySelector('.navbar');
+          const h = nav ? Math.ceil(nav.getBoundingClientRect().height) : 76;
+          document.documentElement.style.setProperty('--nav-h', h + 'px');
+        }
+        setNavHeight();
+        window.addEventListener('resize', setNavHeight);
+        const obs = new MutationObserver(setNavHeight);
+        obs.observe(document.body, { childList: true, subtree: true });
+        window.addEventListener('load', setNavHeight);
+      })();
+    </script>
+
 </body>
 
 </html>
