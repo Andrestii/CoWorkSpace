@@ -321,7 +321,7 @@ $(document).ready(function () {
         if (!sedi.length) { $grid.html('<p class="text-muted">Nessuna sede trovata.</p>'); return; }
 
         sedi.forEach(s => {
-          const img = s.immagine || 'https://via.placeholder.com/800x500?text=Sede';
+          const img = s.immagine;
           const sedeId = s.id;
           $grid.append(`
             <div class="col-md-6 col-xl-4">
@@ -358,7 +358,7 @@ $(document).ready(function () {
     const $wrap = $(`#spazi-sede-${sedeId} .spazi-wrapper`).empty();
     if (!spazi.length) { $wrap.html('<div class="text-muted">Nessuno spazio per questa sede.</div>'); return; }
     spazi.forEach(sp => {
-      const img = sp.immagine || 'https://via.placeholder.com/600x400?text=Spazio';
+      const img = sp.immagine;
       $wrap.append(`
         <div class="d-flex align-items-center p-2 border rounded mb-2">
           <img src="${img}" style="width:86px;height:64px;object-fit:cover" class="me-2 rounded" alt="">
@@ -399,7 +399,7 @@ $(document).ready(function () {
     updateBadge("miei-spazi", spazi.length);
     if (!spazi.length) { $g.html('<p class="text-muted">Nessuno spazio trovato.</p>'); return; }
     spazi.forEach(sp => {
-      const img = sp.immagine || 'https://via.placeholder.com/800x500?text=Spazio';
+      const img = sp.immagine;
       $g.append(`
         <div class="col-md-6 col-xl-4">
           <div class="card h-100 shadow-sm">
@@ -617,7 +617,7 @@ $(document).ready(function () {
             <div class="modal-body">
               <input type="hidden" id="disp-spazio-id">
               <p>
-                Questa azione genererà disponibilità standard
+                Questa azione genererà disponibilità
                 <strong>08:00 – 17:00</strong> per i prossimi
                 <strong>10 giorni</strong>.<br>
                 Vuoi procedere?
@@ -684,7 +684,7 @@ $(document).ready(function () {
   }
 
   function renderSpazioDispCard(sp) {
-    const img = sp.immagine || 'https://via.placeholder.com/800x500?text=Spazio';
+    const img = sp.immagine;
     return `
     <div class="col-md-6">
       <div class="card h-100 shadow-sm">
@@ -907,7 +907,8 @@ $(document).ready(function () {
       $hdrSpazi.find("a.btn").remove();
       $hdrSpazi.append(
         makeBtn("creaSpazi.html", "btn-outline-primary btn-crea-spazio", "fa-solid fa-plus", "Crea spazio") +
-        makeBtn("editSpazi.html", "btn-outline-primary btn-edit-spazio", "fa-regular fa-pen-to-square", "Modifica spazio")
+        makeBtn("editSpazi.html", "btn-outline-primary btn-edit-spazio", "fa-regular fa-pen-to-square", "Modifica spazio") +
+        makeBtn("editServizi.html", "btn-outline-primary btn-edit-servizi", "fa-solid fa-pen-to-square", "Modifica servizi ")
       );
     }
   }

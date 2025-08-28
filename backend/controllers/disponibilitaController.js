@@ -26,11 +26,15 @@ const disponibilitaController = {
                 return res.status(400).json({ error: "id_spazio è obbligatorio" });
             }
 
-            // genera disponibilità per i prossimi 40 giorni, orario fisso 08–17
-            const created = await disponibilitaModel.creaDisponibilitaDefault(Number(id_spazio), 10);
+            await disponibilitaModel.deleteExpired(Number(id_spazio));
+
+            const created = await disponibilitaModel.creaDisponibilitaDefault(
+                Number(id_spazio),
+                10 // giorni
+            );
 
             res.status(201).json({
-                message: "Disponibilità generate (08:00–17:00, 10 giorni)",
+                message: "Disponibilità aggiornate (08:00–17:00)",
                 count: created.length
             });
         } catch (err) {

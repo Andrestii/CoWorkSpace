@@ -27,7 +27,6 @@ const disponibilitaModel = {
     },
 
     async create(slot) {
-        console.log("📝 Inserimento in disponibilita:", slot);
         const { data, error } = await supabase
             .from("disponibilita")
             .insert([{
@@ -95,12 +94,30 @@ const disponibilitaModel = {
     },
 
     async creaDisponibilitaDefault(id_spazio, giorni = 10) {
-        const today = new Date();
-        const slots = [];
+        const { data: last, error: eLast } = await supabase
+            .from("disponibilita")
+            .select("end_at")
+            .eq("id_spazio", id_spazio)
+            .order("end_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+        if (eLast) throw eLast;
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let startDate = new Date(today);
+        if (last?.end_at) {
+            const next = new Date(last.end_at);
+            next.setDate(next.getDate() + 1);
+            next.setHours(0, 0, 0, 0);
+            if (next > startDate) startDate = next;
+        }
+
+        const slots = [];
         for (let i = 0; i < giorni; i++) {
-            const d = new Date(today);
-            d.setDate(today.getDate() + i);
+            const d = new Date(startDate);
+            d.setDate(startDate.getDate() + i);
 
             const yyyy = d.getFullYear();
             const mm = String(d.getMonth() + 1).padStart(2, "0");
@@ -117,11 +134,25 @@ const disponibilitaModel = {
 
         const { data, error } = await supabase
             .from("disponibilita")
-            .insert(slots);
-
+            .upsert(slots, {
+                onConflict: "id_spazio,start_at",
+                ignoreDuplicates: true
+            })
+            .select();
         if (error) throw error;
-        return data;
-    }
+
+        return data || [];
+    },
+
+    async deleteExpired(id_spazio) {
+        const nowIso = new Date().toISOString();
+        const { error } = await supabase
+            .from("disponibilita")
+            .delete()
+            .eq("id_spazio", id_spazio)
+            .lt("end_at", nowIso);
+        if (error) throw error;
+    },
 };
 
 module.exports = disponibilitaModel;
