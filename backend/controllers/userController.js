@@ -48,7 +48,7 @@ const userController = {
                 }
             }
 
-            fullName = nome.split(" ");
+            const fullName = nome.split(" ");
             nome = fullName
                 .map(
                     (part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
@@ -67,10 +67,9 @@ const userController = {
                 profile_image: profileImageUrl,
             });
 
-
             console.log("User created:", data);
 
-            const userData = data.user[0];
+            const userData = (data?.user && Array.isArray(data.user)) ? data.user[0] : data.user || data;
 
             var token = jwt.sign(
                 {
@@ -84,7 +83,7 @@ const userController = {
 
             res.status(201).json({
                 message: "User registered successfully",
-                user: data,
+                user: userData,
                 token: token,
             });
         } catch (error) {
