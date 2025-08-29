@@ -299,29 +299,6 @@
     font-weight: 700;
 }
 
-/* ==================== Footer ==================== */
-footer {
-    background-color: #2a2a2a;
-}
-
-.social-icons a {
-    display: inline-flex;
-    width: 36px;
-    height: 36px;
-    background: #444;
-    color: #fff;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    transition: transform .2s ease, background .2s ease;
-}
-
-.social-icons a:hover {
-    background: #88a093;
-    transform: translateY(-3px);
-}
-
 /* ==================== Responsive ==================== */
 @media (max-width: 992px) {
     .display-title {

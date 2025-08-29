@@ -24,34 +24,56 @@ body {
     letter-spacing: .01em;
 }
 
-/* ===== Navbar minima ===== */
+/* ==================== Navbar ==================== */
 .navbar {
+    padding: 12px 0;
     background: #fff;
     border-bottom: 1px solid #e9e6e2;
 }
 
 .navbar-brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--ink) !important;
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    color: #232220;
 }
 
-.navbar-brand img,
-.logo-navbar {
+.logo-navbar,
+.navbar-brand img {
     width: 44px;
     height: 44px;
     object-fit: contain;
+    transition: transform .3s ease;
+}
+
+.logo-navbar:hover,
+.navbar-brand img:hover {
+    transform: rotate(10deg);
+}
+
+.nav-link {
+    color: var(--ink) !important;
+    font-weight: 600;
+    margin: 0 6px;
+}
+
+.nav-link:hover {
+    color: var(--accent) !important;
 }
 
 @media (max-width:576px) {
 
-    .navbar-brand img,
-    .logo-navbar {
+    .logo-navbar,
+    .navbar-brand img {
         width: 36px;
         height: 36px;
+    }
+
+    .navbar-brand {
+        font-size: 1.3rem;
     }
 }
 
@@ -94,7 +116,7 @@ header#profile-container,
     height: 120px;
     margin: 0 auto;
     cursor: pointer;
-    overflow: hidden;
+    overflow: visible;
     border-radius: 50%;
 }
 
@@ -131,7 +153,7 @@ header#profile-container,
 
 .pill-container {
     display: flex;
-    justify-content: center;
+    justify-content: start;
     margin-top: 6px;
 }
 
@@ -330,21 +352,6 @@ header#profile-container,
 }
 
 .booking-header,
-.booking-footer {
-    background: #faf9f7;
-    padding: 14px 18px;
-    display: flex;
-    justify-content: space-between;
-    font-size: .92rem;
-    border-bottom: 1px solid var(--line);
-}
-
-.booking-footer {
-    border-top: 1px solid var(--line);
-    border-bottom: none;
-    align-items: center;
-}
-
 .booking-id {
     font-weight: 700;
 }
@@ -507,57 +514,6 @@ header#profile-container,
     color: #fff;
 }
 
-/* ===== Footer ===== */
-footer.bg-dark {
-    background: #2a2a2a!important;
-    padding: 60px 0 30px 0;
-    margin-top: 40px;
-    color: #fff;
-}
-
-footer h5 {
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-}
-
-footer p,
-footer a {
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 0.92rem;
-}
-
-footer a:hover {
-    color: #fff;
-    text-decoration: none;
-}
-
-footer .social-icons a {
-    display: inline-block;
-    margin-right: 10px;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1.1rem;
-    transition: color .2s;
-}
-
-footer .social-icons a:hover {
-    color: var(--accent-2);
-}
-
-footer hr {
-    border-color: rgba(255, 255, 255, 0.15);
-    margin: 2rem 0;
-}
-
-footer .d-flex p {
-    margin: 0;
-    font-size: 0.85rem;
-}
-
-footer .d-flex a {
-    font-size: 0.85rem;
-}
 
 /* ===== Responsive ===== */
 @media (max-width:991px) {
@@ -573,6 +529,12 @@ footer .d-flex a {
     #dash-gestore .row {
         row-gap: 12px;
     }
+
+    .pill-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 6px;
+}
 }
 
 @media (max-width:768px) {
@@ -609,6 +571,12 @@ footer .d-flex a {
     .kpi-card {
         padding: 16px;
     }
+
+    .pill-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 6px;
+}
 }
 
 @media (max-width:992px) {
@@ -634,6 +602,12 @@ footer .d-flex a {
     .profile-content-container {
         border-radius: 14px;
     }
+
+    .pill-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 6px;
+}
 }
 
 @media (max-width:576px) {
@@ -671,6 +645,12 @@ footer .d-flex a {
     .table> :not(caption)>*>* {
         padding: .55rem .6rem;
     }
+
+    .pill-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 6px;
+}
 
     /* Mie prenotazioni: nascondi colonne 3 e 5 */
     #tab-mie-pren thead th:nth-child(3),

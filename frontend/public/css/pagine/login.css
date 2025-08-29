@@ -40,6 +40,12 @@
     padding: clamp(24px, 4vw, 64px);
 }
 
+@media (max-width: 992px) {
+    .auth-side {
+        justify-content: center;
+    }
+}
+
 .side-inner {
     max-width: 680px;
     padding-right: clamp(0px, 4vw, 48px);

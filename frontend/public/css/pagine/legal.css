@@ -1,13 +1,7 @@
-/* ============================
-   Stili pagine legali (no immagini)
-   ============================ */
-
-/* Variabile di offset per navbar sticky (fallback 80px) */
 :root { --nav-h: 80px; }
 
 html { scroll-behavior: smooth; }
 
-/* Sfondo come about */
 .gradient-ink {
   background: radial-gradient(1200px 400px at 50% -20%, #f0efe9 0%, #ffffff 60%, #ffffff 100%);
 }
@@ -32,7 +26,6 @@ html { scroll-behavior: smooth; }
   margin: 1rem auto;
 }
 
-/* Freccia */
 .arrow-down {
   display: inline-block;
   margin-top: 2rem;
@@ -46,10 +39,8 @@ html { scroll-behavior: smooth; }
 }
 
 /* ========== LAYOUT ========== */
-/* La sezione che riceve l'ancora non venga coperta dalla navbar */
 .legal-content { scroll-margin-top: calc(var(--nav-h) + 14px); }
 
-/* Prosa leggibile */
 .legal-prose { max-width: 72ch; }
 .legal-prose p {
   margin: 0 0 1rem 0;
@@ -65,7 +56,6 @@ html { scroll-behavior: smooth; }
   border-radius: 16px;
   box-shadow: 0 6px 18px rgba(0,0,0,.06);
   background: #fff;
-  /* se usi .sticky-top di Bootstrap, questo “top” lo rende centrato nel viewport */
   top: calc(var(--nav-h) + 20px);
 }
 .legal-toc .small { letter-spacing: .06em; }
@@ -86,7 +76,7 @@ html { scroll-behavior: smooth; }
   box-shadow: inset 0 0 0 1px #cfe2ff;
 }
 
-/* Accessibilità focus */
+
 .legal-toc .toc-link:focus-visible {
   outline: 2px solid #0d6efd;
   outline-offset: 2px;
@@ -106,11 +96,11 @@ html { scroll-behavior: smooth; }
   letter-spacing: -.2px;
 }
 
-/* Liste più ariose nei contenuti legali */
+
 .legal-section ul { padding-left: 1.1rem; margin: .5rem 0 1rem; }
 .legal-section li { color: #444; margin: .25rem 0; }
 
-/* ========== Reading progress top sottile ========== */
+/* ========== Reading progress  ========== */
 .reading-progress {
   position: sticky;
   top: var(--nav-h);
@@ -128,9 +118,8 @@ html { scroll-behavior: smooth; }
   border-radius: 2px;
 }
 
-/* ========== Variante opzionale: numerazione automatica ==========
-   Attivala aggiungendo la classe .legal--numbered su <body> o su #legal-content
-*/
+/* ========== Numerazione sezioni ========== */
+
 .legal--numbered { counter-reset: sec; }
 .legal--numbered .legal-section h2::before {
   counter-increment: sec;
