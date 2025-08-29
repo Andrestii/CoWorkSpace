@@ -1,9 +1,5 @@
 const supabase = require("../config/database");
-const {
-    getUserCount,
-    getAllUsers,
-} = require("../controllers/userController");
-
+const argon2 = require("argon2");
 const userModel = {
     /**
      * Get a user by their ID
@@ -11,7 +7,7 @@ const userModel = {
     async getUserById(id) {
         const { data, error } = await supabase
             .from("utenti")
-            .select("*")
+            .select("id, nome, email, ruolo, profile_image, numero_telefono, data_nascita, descrizione, isBanned")
             .eq("id", id)
             .single();
 
@@ -37,13 +33,15 @@ const userModel = {
      * Create a new user
      */
     async createUser(userData) {
+        const hashed = await argon2.hash(String(userData.password));
+
         const { data, error } = await supabase
             .from("utenti")
             .insert([
                 {
                     nome: userData.nome,
                     email: userData.email,
-                    password: userData.password,
+                    password: hashed,
                     ruolo: userData.ruolo,
                     profile_image: userData.profile_image || null,
                     numero_telefono: userData.numero_telefono || null,
@@ -51,7 +49,7 @@ const userModel = {
                     descrizione: userData.descrizione || null,
                 },
             ])
-            .select();
+            .select("id, nome, email, ruolo, profile_image, numero_telefono, data_nascita, descrizione, isBanned");
 
         if (error) throw error;
 
@@ -76,7 +74,7 @@ const userModel = {
             .from("utenti")
             .update(profileData)
             .eq("id", userId)
-            .select()
+            .select("id, nome, email, ruolo, profile_image, numero_telefono, data_nascita, descrizione, isBanned")
             .single();
         if (error) throw error;
         return data;
@@ -135,9 +133,16 @@ const userModel = {
             return { error: "Account sospeso, contatta l'assistenza.", httpStatus: 403 };
         }
 
-        if (data.password !== password) {
-            return { error: "Invalid email or password" };
+        let ok = false;
+        try { ok = await argon2.verify(data.password, String(password)); } catch { }
+
+        if (!ok && data.password === String(password)) {
+            const newHash = await argon2.hash(String(password));
+            await supabase.from("utenti").update({ password: newHash }).eq("id", data.id);
+            ok = true;
         }
+
+        if (!ok) return { error: "Invalid email or password" };
 
         const userToReturn = {
             id: data.id,
@@ -151,12 +156,9 @@ const userModel = {
     },
 
     async getAllUsers() {
-        const { data, error } = await supabase.from("utenti").select(
-            `
-        *
-      `
-        );
-
+        const { data, error } = await supabase
+            .from("utenti")
+            .select("id, nome, email, ruolo, profile_image, numero_telefono, data_nascita, descrizione, isBanned");
         if (error) throw error;
         return data;
     },
