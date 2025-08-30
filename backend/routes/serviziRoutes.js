@@ -79,4 +79,31 @@ router.post("/createServizio", authMiddleware, isGestore, serviziController.crea
  */
 router.delete("/deleteServizio/:id", authMiddleware, isGestore, serviziController.deleteServizio);
 
+/**
+ * @swagger
+ * /servizi/bySpazio/{id}:
+ *   get:
+ *     summary: Ottiene la lista dei servizi associati a uno spazio specifico
+ *     tags: [Servizi]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID dello spazio
+ *     responses:
+ *       200:
+ *         description: Lista dei servizi dello spazio
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Servizio'
+ *       404:
+ *         description: Spazio non trovato
+ */
+router.get("/bySpazio/:id", serviziController.getBySpazio);
+
 module.exports = router;
