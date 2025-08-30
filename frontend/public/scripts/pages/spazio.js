@@ -103,7 +103,7 @@ $(document).ready(function () {
           ${tipologiaRiga}
           <li><strong>Capienza:</strong> ${cap}</li>
           <li><strong>Prezzo orario:</strong> ${prezzo}</li>
-          <li id="riga-servizi"><strong>Servizi:</strong> <span id="serviziList" class="text-muted">Caricamento…</span></li>
+          <li id="riga-servizi"><strong>Servizi:</strong> <span id="serviziList">Caricamento…</span></li>
         </ul>
 
         <a href="carrello.html?spazio=${spazio.id}" class="btn btn-primary btn-lg mt-2">
