@@ -33,6 +33,7 @@ const sediModel = {
     },
 
     async createSede(sedeData) {
+        sedeData.attiva = true;
         const { data, error } = await supabase
             .from("sedi")
             .insert([sedeData])
