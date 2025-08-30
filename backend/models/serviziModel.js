@@ -2,6 +2,7 @@
 const supabase = require("../config/database");
 
 const TABLE_SERVIZI = "servizi";
+const TABLE_SPAZI_SERVIZI = "spazi_servizi";
 
 class ServiziModel {
     async listByName(nome) {
@@ -39,6 +40,19 @@ class ServiziModel {
 
         if (error) throw error;
         return data;
+    }
+
+    async getServiziBySpazio(idSpazio) {
+        const { data, error } = await supabase
+            .from(TABLE_SPAZI_SERVIZI)
+            .select(`
+                servizi: ${TABLE_SERVIZI} (id, nome, attivo)
+            `)
+            .eq("id_spazio", Number(idSpazio));
+
+        if (error) throw error;
+        // normalizza l’array: estrai direttamente i servizi
+        return (data || []).map(r => r.servizi).filter(Boolean);
     }
 }
 
