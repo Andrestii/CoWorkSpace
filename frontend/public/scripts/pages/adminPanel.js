@@ -11,7 +11,7 @@ $(async function () {
   const API_SEDI = `${API_ROOT}/sedi`;
   const API_SPAZI = `${API_ROOT}/spazi`;
   const API_PREN = `${API_ROOT}/prenotazioni`;
-  const API_DISP = `${API_ROOT}/disponibilita`; // usato solo per eventuali estensioni
+  const API_SERV = `${API_ROOT}/servizi`;
 
   //  Supabase (avatar) 
   const SUPABASE_URL = apiConfig.supabaseUrl;
@@ -113,6 +113,7 @@ $(async function () {
       case "sedi-section": loadSedi(); break;
       case "spazi-section": loadSpazi(); break;
       case "prenotazioni-section": loadPrenotazioni(); break;
+      case "servizi-section": loadServizi(); break;
     }
   });
 
@@ -598,7 +599,7 @@ $(async function () {
       $tb.empty();
       pren.forEach(p => {
         const sedeName = p.sede_nome || `Sede #${p.id_sede ?? "—"}`;
-        const cliente = p.utente_nome || `Utente #${p.id_utente ?? "—"}`;
+        const cliente = p._nome || `Utente #${p.id_utente ?? "—"}`;
         const stato = p.stato || "—";
         const badge = getStatusBadge(stato);
         const totale = (p.importo ?? p.totale) != null ? parseFloat(p.importo ?? p.totale).toFixed(2) : "—";
@@ -644,5 +645,114 @@ $(async function () {
   if (initialTarget) {
     $(`.profile-nav .nav-item[data-target="${initialTarget}"]`).trigger("click");
   }
+
+  // ===== SERVIZI =============================================================
+
+  // util per sistemare il nome: underscore -> spazio, ogni parola Maiuscola
+  function formatServName(raw) {
+    return String(raw || "")
+      .replaceAll("_", " ")
+      .toLowerCase()
+      .replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  async function loadServizi() {
+    // seleziono SOLO il tbody della tabella dentro #servizi-section
+    const $tb = $("#servizi-section #tbl-pren tbody").html(loadingRow(3));
+
+    try {
+      const servizi = (await get(`${API_SERV}/getServizi`)) || [];
+
+      if (!Array.isArray(servizi) || servizi.length === 0) {
+        $tb.html(`<tr><td colspan="3" class="text-center text-muted">Nessun servizio trovato.</td></tr>`);
+        return;
+      }
+
+      $tb.empty();
+      servizi.forEach(s => {
+        const id = s.id ?? "—";
+        const nome = formatServName(s.nome || s.nome_servizio || "");
+
+        $tb.append(`
+        <tr data-id="${id}">
+          <td>${id}</td>
+          <td>${escapeHtml(nome || "—")}</td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-danger btn-del-servizio" data-id="${id}" title="Elimina">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `);
+      });
+    } catch (e) {
+      console.error("Errore caricamento servizi:", e);
+      $tb.html(errorRow(3, "Errore nel caricamento dei servizi."));
+    }
+  }
+
+  // DELETE servizio
+  $(document).on("click", "#servizi-section .btn-del-servizio", async function () {
+    const id = String($(this).data("id") || "");
+    if (!id) return;
+
+    const $btn = $(this);
+    const oldHtml = $btn.html();
+    $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm"></span>');
+
+    try {
+      await $.ajax({
+        url: `${API_SERV}/deleteServizio/${encodeURIComponent(id)}`,
+        type: "DELETE",
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      toast("Servizio eliminato");
+      loadServizi();
+    } catch (err) {
+      console.error(err);
+      const msg = err?.responseJSON?.error || err?.responseJSON?.message || "Errore eliminazione servizio";
+      toast(msg, false);
+      $btn.prop("disabled", false).html(oldHtml);
+    }
+  });
+  // Apri modal
+  $(document).on("click", "#btn-new-servizio", function () {
+    $("#cs-nome").val("");
+    new bootstrap.Modal(document.getElementById("modalCreateServizio")).show();
+  });
+
+  // Submit → POST /servizi/createServizio
+  $(document).on("submit", "#form-create-servizio", async function (e) {
+    e.preventDefault();
+
+    const nome = ($("#cs-nome").val() || "").trim();
+    if (!nome) { toast("Inserisci un nome valido", false); return; }
+
+    const $btn = $("#form-create-servizio button[type='submit']");
+    const oldHtml = $btn.html();
+    $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm me-2"></span>Creo...');
+
+    try {
+      await $.ajax({
+        url: `${API_SERV}/createServizio`,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ nome }),
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      bootstrap.Modal.getInstance(document.getElementById("modalCreateServizio"))?.hide();
+      toast("Servizio creato");
+      loadServizi(); // ricarica la lista
+    } catch (err) {
+      console.error(err);
+      // gestisci 409/duplicati se il backend lo ritorna
+      const msg = err?.responseJSON?.error || err?.responseJSON?.message || "Errore creazione servizio";
+      toast(msg, false);
+    } finally {
+      $btn.prop("disabled", false).html(oldHtml);
+    }
+  });
 
 });

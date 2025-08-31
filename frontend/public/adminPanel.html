@@ -18,7 +18,7 @@
 
   <!-- Styles -->
   <link href="css/pagine/profilo.css" rel="stylesheet" />
- 
+
   <link href="css/pagine/adminPanel.css" rel="stylesheet" />
 </head>
 
@@ -70,6 +70,9 @@
             </div>
             <div class="nav-item" data-target="prenotazioni-section">
               <i class="fas fa-calendar-check me-2"></i> Prenotazioni
+            </div>
+            <div class="nav-item" data-target="servizi-section">
+              <i class="fas fa-calendar-check me-2"></i> Servizi
             </div>
           </nav>
         </div>
@@ -245,6 +248,34 @@
             </div>
           </div>
 
+          <!-- SERVIZI -->
+          <div class="content-section" id="servizi-section" style="display:none;">
+            <div class="content-header">
+              <h4>Tutti i servizi</h4>
+              <button id="btn-new-servizio" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-plus me-1"></i>
+              </button>
+            </div>
+            <div class="content-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-hover" id="tbl-pren">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nome</th>
+                      <th class="text-end">Azioni</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td colspan="8" class="text-center text-muted">Caricamento...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
     </div>
@@ -261,6 +292,29 @@
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
           aria-label="Chiudi"></button>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal CREA SERVIZIO -->
+  <div class="modal fade" id="modalCreateServizio" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content" id="form-create-servizio">
+        <div class="modal-header">
+          <h5 class="modal-title">Crea servizio</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nome servizio</label>
+            <input type="text" class="form-control" id="cs-nome" placeholder="Es. Wifi, Caffè, Aria Condizionata"
+              required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Annulla</button>
+          <button class="btn btn-primary" type="submit">Crea</button>
+        </div>
+      </form>
     </div>
   </div>
 
