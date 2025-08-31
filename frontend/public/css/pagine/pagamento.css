@@ -1,9 +1,226 @@
-/* --- Success toast (bottom-right) --- */
+:root {
+    --bg: #f3f1ed;
+    --paper: #fff;
+    --ink: #232220;
+    --muted: #6f6a63;
+    --line: #e3dfd9;
+    --accent: #47685b;
+    --accent-2: #88a093;
+    --ok: #198754;
+    --nav-h: 76px;
+    scroll-padding-top: calc(var(--nav-h) + 24px);
+}
+
+/* ===== Sfondo pagina ===== */
+html,
+body {
+    min-height: 100%
+}
+
+body {
+    background: repeating-linear-gradient(90deg, var(--bg) 0 22px, #efece7 22px, #efece7 23px);
+    color: var(--ink);
+    font-family: 'Poppins', 'Playfair Display', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    letter-spacing: .01em;
+}
+
+/* ==================== Navbar ==================== */
+.navbar {
+    padding: 12px 0;
+    background: #fff;
+    border-bottom: 1px solid #e9e6e2;
+}
+
+.navbar-brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--ink) !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-navbar,
+.navbar-brand img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    transition: transform .3s ease;
+}
+
+.logo-navbar:hover,
+.navbar-brand img:hover {
+    transform: rotate(10deg);
+}
+
+.nav-link {
+    color: var(--ink) !important;
+    font-weight: 600;
+    margin: 0 6px;
+}
+
+.nav-link:hover {
+    color: var(--accent) !important;
+}
+
+@media (max-width:576px) {
+
+    .logo-navbar,
+    .navbar-brand img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .navbar-brand {
+        font-size: 1.3rem;
+    }
+}
+
+/* ===== HERO ===== */
+.hero {
+    margin-top: 80px;
+    padding: 40px 0 46px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, .94), rgba(255, 255, 255, .94)),
+        repeating-linear-gradient(90deg, var(--bg) 0, var(--bg) 22px, #efece7 22px, #efece7 23px);
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+    text-align: center;
+}
+
+.hero .mono-tag {
+    display: inline-block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .8rem;
+    letter-spacing: .02em;
+    color: var(--accent);
+    background: #e8efe9;
+    border: 1px solid #d7e3dd;
+    padding: .2rem .5rem;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.hero h1 {
+    font-family: "Playfair Display", serif;
+    font-weight: 800;
+    letter-spacing: -.5px;
+    color: var(--ink);
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+    line-height: 1.12;
+    margin: 0;
+}
+
+.hero p.lead {
+    color: var(--muted);
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-size: clamp(1rem, .95rem + .25vw, 1.15rem);
+}
+
+/* Layout col */
+.pay-layout .cart-card {
+    margin: 0
+}
+
+/* Card “cart” coerente con Sedi/Carrello */
+.cart-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px 18px 20px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .06);
+}
+
+/* Icon-pill nei titoli */
+.pay-pill {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e8efe9;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+/* Badge circuiti carta */
+.brand-row {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap
+}
+
+.brand-badge {
+    font-weight: 800;
+    font-size: .75rem;
+    letter-spacing: .06em;
+    padding: .35rem .55rem;
+    border-radius: .5rem;
+    border: 1px solid #dfe5e2;
+    background: #f7faf8;
+    color: #3a4a43;
+}
+
+/* Form controls coerenti */
+.form-control,
+.form-select {
+    background: #fbfaf8;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: .8rem 1rem;
+    box-shadow: none;
+    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: #fff;
+    border-color: #d7d2ca;
+    box-shadow: 0 0 0 .16rem rgba(71, 104, 91, .12);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--ink)
+}
+
+.hint {
+    font-size: .9rem;
+    color: #6c757d
+}
+
+/* Riepilogo */
+.summary-box {
+    background: #faf9f7;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.summary-box .row+.row {
+    margin-top: .35rem
+}
+
+/* Bottone primario in palette */
+.btn-primary {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    border: 0;
+}
+
+.btn-primary:hover {
+    filter: saturate(1.04);
+    box-shadow: 0 12px 18px rgba(71, 104, 91, .22);
+}
+
+/* Success toast (bottom-right) */
 .success-pop {
     position: fixed;
     right: 24px;
     bottom: 24px;
-    z-index: 1080;
+    z-index: 1080
 }
 
 .success-card {
@@ -18,17 +235,17 @@
 .success-head {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 12px
 }
 
 .success-check {
     width: 54px;
     height: 54px;
     border-radius: 50%;
-    background: #22c55e;
+    background: var(--ok);
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center
 }
 
 .success-check svg {
@@ -39,24 +256,24 @@
     fill: none;
     stroke-dasharray: 48;
     stroke-dashoffset: 48;
-    animation: dash .6s .15s ease forwards;
+    animation: dash .6s .15s ease forwards
 }
 
 .success-text h6 {
     margin: 0;
-    font-weight: 700;
+    font-weight: 700
 }
 
 .success-text p {
     margin: 2px 0 0;
     color: #6c757d;
-    font-size: .95rem;
+    font-size: .95rem
 }
 
 .success-actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 10px;
+    margin-top: 10px
 }
 
 @keyframes slideUp {
@@ -77,13 +294,13 @@
     }
 }
 
-/* coriandoli */
+/* Confetti (opzionale, se li crei via JS) */
 .confetti {
     position: fixed;
     inset: 0 0 auto 0;
     height: 0;
     z-index: 1081;
-    pointer-events: none;
+    pointer-events: none
 }
 
 .confetti i {
@@ -94,12 +311,19 @@
     background: var(--c);
     opacity: .95;
     transform: rotate(30deg);
-    animation: fall 1.4s linear forwards;
+    animation: fall 1.4s linear forwards
 }
 
 @keyframes fall {
     to {
         transform: translateY(110vh) rotate(360deg);
-        opacity: 0.8;
+        opacity: .8
+    }
+}
+
+/* Responsive hero */
+@media (max-width:576px) {
+    .hero {
+        padding: 28px 0;
     }
 }

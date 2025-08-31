@@ -1,6 +1,7 @@
 $(document).ready(function () {
   const API_SPAZI = `${apiConfig.apiUrl}/spazi`;
   const API_SEDI = `${apiConfig.apiUrl}/sedi`;
+  const API_SERVIZI = `${apiConfig.apiUrl}/servizi`;
   const token = localStorage.getItem("authToken");
 
   const params = new URLSearchParams(window.location.search);
@@ -102,6 +103,7 @@ $(document).ready(function () {
           ${tipologiaRiga}
           <li><strong>Capienza:</strong> ${cap}</li>
           <li><strong>Prezzo orario:</strong> ${prezzo}</li>
+          <li id="riga-servizi"><strong>Servizi:</strong> <span id="serviziList">Caricamento…</span></li>
         </ul>
 
         <a href="carrello.html?spazio=${spazio.id}" class="btn btn-primary btn-lg mt-2">
@@ -112,6 +114,34 @@ $(document).ready(function () {
   `;
 
     $("#dettaglioSpazio").html(html);
+
+    caricaServiziSpazio(spazio.id);
   }
+
+  function caricaServiziSpazio(idSpazio) {
+  $.ajax({
+    url: `${API_SERVIZI}/bySpazio/${idSpazio}`,
+    type: "GET",
+    headers: { Authorization: "Bearer " + token },
+  })
+  .done(function (lista) {
+    const servizi = Array.isArray(lista) ? lista : [];
+    const $target = $("#serviziList");
+    if (!servizi.length) {
+      $target.text("Nessun servizio specificato");
+      return;
+    }
+    const nomi = servizi
+      .map(s => (s && s.nome ? String(s.nome) : null))
+      .filter(Boolean)
+      .map(escapeHtml);
+
+    $target.text(nomi.length ? nomi.join(", ") : "Nessun servizio specificato");
+  })
+  .fail(function () {
+    $("#serviziList").text("Nessun servizio specificato");
+  });
+}
+
 
 });
