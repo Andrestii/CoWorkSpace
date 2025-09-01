@@ -16,7 +16,6 @@ Thumbs.db
 # BACKEND (Node.js + Express)
 # ----------------------------
 backend/node_modules/
-backend/.env
 backend/coverage/
 backend/debug.log
 
@@ -26,9 +25,3 @@ backend/debug.log
 # Nessun node_modules perché non usi Vite/React
 frontend/public/assets/scripts/helpers/*.log
 frontend/public/assets/scripts/pages/*.log
-
-# ----------------------------
-# DOCKER / DEVOPS (se usi)
-# ----------------------------
-*.pid
-docker-compose.override.yml
